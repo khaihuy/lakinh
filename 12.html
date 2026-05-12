@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Kinh Thấu Giải - La Bàn Phong Thủy 12 Tầng</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Times New Roman',serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;color:#fff;padding:16px;display:flex;flex-direction:column;align-items:center}
+  h1{font-size:26px;margin-bottom:4px;text-align:center;color:#ffd700;text-shadow:2px 2px 4px rgba(0,0,0,.5);letter-spacing:2px}
+  .subtitle{font-size:13px;color:#ccc;margin-bottom:14px;text-align:center}
+  .layout{display:grid;grid-template-columns:1fr;gap:18px;width:100%;max-width:1200px}
+  @media(min-width:1000px){.layout{grid-template-columns:minmax(0,1.5fr) minmax(280px,1fr)}}
+  .compass-section{display:flex;flex-direction:column;align-items:center}
+  .info-panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:14px 18px;margin-bottom:14px;display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:10px;width:100%;max-width:700px;text-align:center}
+  .info-item{padding:0 6px}
+  .info-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+  .info-value{font-size:18px;font-weight:bold;color:#ffd700}
+  .compass-container{position:relative;width:100%;max-width:720px;aspect-ratio:1}
+  .compass-svg{width:100%;height:100%;transition:transform .1s linear;filter:drop-shadow(0 6px 20px rgba(0,0,0,.4))}
+  .pointer{position:absolute;top:50%;left:50%;width:4px;height:48%;background:linear-gradient(to top,transparent 0%,transparent 50%,#ff3333 50%,#ff3333 100%);transform-origin:bottom center;transform:translate(-50%,-100%);z-index:10;pointer-events:none}
+  .pointer::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:8px solid transparent;border-right:8px solid transparent;border-bottom:14px solid #ff3333}
+  .center-dot{position:absolute;top:50%;left:50%;width:12px;height:12px;background:#ffd700;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 10px rgba(255,215,0,.8);z-index:11;pointer-events:none}
+  .controls{margin-top:18px;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:600px}
+  button{background:linear-gradient(135deg,#ffd700 0%,#ff8c00 100%);color:#1a1a2e;border:none;padding:11px 28px;font-size:15px;font-weight:bold;border-radius:25px;cursor:pointer;box-shadow:0 4px 12px rgba(255,215,0,.3);transition:transform .2s;letter-spacing:1px}
+  button:hover{transform:translateY(-2px)}
+  .manual-control{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);padding:9px 14px;border-radius:12px;width:100%;max-width:500px}
+  .manual-control label{font-size:12px;color:#ccc;white-space:nowrap}
+  .manual-control input[type=range]{flex:1;accent-color:#ffd700}
+  .status{margin-top:10px;padding:8px 14px;background:rgba(255,215,0,.1);border-radius:8px;font-size:12px;text-align:center;max-width:600px;color:#ffd700}
+  .side-panel{display:flex;flex-direction:column;gap:14px}
+  .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:14px 16px;font-size:13px;line-height:1.6}
+  .card h3{color:#ffd700;margin-bottom:8px;font-size:14px;letter-spacing:1px;border-bottom:1px solid rgba(255,215,0,.25);padding-bottom:6px}
+  .row{display:flex;justify-content:space-between;padding:4px 0;border-bottom:1px dashed rgba(255,255,255,.08);font-size:12.5px}
+  .row:last-child{border-bottom:none}
+  .lbl{color:#aaa}
+  .val{color:#fff;font-weight:bold;text-align:right;max-width:60%}
+  .badge{display:inline-block;padding:2px 8px;border-radius:10px;font-size:11px;font-weight:bold;margin-left:4px}
+  .b-am{background:#222;color:#fff;border:1px solid #555}
+  .b-duong{background:#fff;color:#222;border:1px solid #888}
+  .b-thuy{background:#1a3a8a;color:#fff}
+  .b-moc{background:#1e7a3a;color:#fff}
+  .b-hoa{background:#c8202a;color:#fff}
+  .b-tho{background:#a07020;color:#fff}
+  .b-kim{background:#888;color:#fff}
+  .warn{background:rgba(200,32,42,.2);border:1px solid #c8202a;padding:8px 12px;border-radius:8px;margin-top:6px;font-size:12px;color:#ffcccc;display:none}
+  .warn.active{display:block}
+  .legend{font-size:11px;color:#bbb;display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .legend span{padding:1px 6px;border-radius:8px;font-weight:bold}
+  details{margin-top:8px}
+  details summary{cursor:pointer;color:#ffd700;font-size:12px;padding:4px 0}
+  details p{font-size:12px;color:#ccc;padding:6px 0;line-height:1.6}
+  @media(max-width:600px){h1{font-size:20px}.info-value{font-size:15px}}
+</style>
+</head>
+<body>
+  <h1>LA KINH THẤU GIẢI - LA BÀN PHONG THỦY</h1>
+  <div class="subtitle">12 tầng - <b style="color:#ffcc66">Hậu Thiên Lạc Việt</b> (Khôn ĐN, Tốn TN) + Nạp Âm theo Lạc Thư Hoa Giáp</div>
+
+  <div class="layout">
+    <div class="compass-section">
+      <div class="info-panel">
+        <div class="info-item"><div class="info-label">Độ</div><div class="info-value" id="degreeDisplay">0°</div></div>
+        <div class="info-item"><div class="info-label">Hướng</div><div class="info-value" id="directionDisplay">BẮC</div></div>
+        <div class="info-item"><div class="info-label">Sơn</div><div class="info-value" id="mountainDisplay">TÝ</div></div>
+        <div class="info-item"><div class="info-label">Quái</div><div class="info-value" id="trigramDisplay">KHẢM</div></div>
+      </div>
+
+      <div class="compass-container">
+        <svg class="compass-svg" id="compassSvg" viewBox="0 0 900 900" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fdfaf0"/>
+              <stop offset="70%" stop-color="#f5efd9"/>
+              <stop offset="100%" stop-color="#e8dfc0"/>
+            </radialGradient>
+            <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+              <stop offset="0%" stop-color="#fff"/>
+              <stop offset="100%" stop-color="#e0d8b8"/>
+            </radialGradient>
+          </defs>
+          <circle cx="450" cy="450" r="445" fill="url(#bgGrad)" stroke="#2a2a2a" stroke-width="3"/>
+          <g id="rings"></g>
+          <g id="yinYang" transform="translate(450,450)">
+            <circle r="50" fill="#fff" stroke="#000" stroke-width="2"/>
+            <path d="M 0,-50 A 50,50 0 0,1 0,50 A 25,25 0 0,1 0,0 A 25,25 0 0,0 0,-50 Z" fill="#000"/>
+            <circle cy="-25" r="7" fill="#fff"/>
+            <circle cy="25" r="7" fill="#000"/>
+          </g>
+        </svg>
+        <div class="pointer"></div>
+        <div class="center-dot"></div>
+      </div>
+
+      <div class="controls">
+        <button id="startBtn">BẬT LA BÀN (Cảm biến)</button>
+        <div class="manual-control">
+          <label>Xoay tay:</label>
+          <input type="range" id="manualSlider" min="0" max="360" value="0" step="0.5">
+          <span id="manualValue" style="min-width:50px;color:#ffd700;font-weight:bold">0°</span>
+        </div>
+        <div class="status" id="status">Bấm "BẬT LA BÀN" để dùng cảm biến (cần HTTPS trên di động) hoặc kéo thanh trượt.</div>
+      </div>
+    </div>
+
+    <div class="side-panel">
+      <div class="card">
+        <h3>◆ TỌA SƠN HIỆN TẠI ◆</h3>
+        <div class="row"><span class="lbl">Sơn (Địa Bàn Chính Châm):</span><span class="val" id="dSon">TÝ</span></div>
+        <div class="row"><span class="lbl">Nhân Bàn Trung Châm:</span><span class="val" id="nSon">NHÂM/TÝ</span></div>
+        <div class="row"><span class="lbl">Thiên Bàn Phùng Châm:</span><span class="val" id="tSon">TÝ/QUÝ</span></div>
+        <div class="row"><span class="lbl">Âm/Dương Long:</span><span class="val" id="yyVal">Dương</span></div>
+        <div class="row"><span class="lbl">Ngũ Hành chính:</span><span class="val" id="elVal">Thủy</span></div>
+        <div class="row"><span class="lbl">Quái (Hậu Thiên):</span><span class="val" id="qVal">KHẢM ☵</span></div>
+        <div class="row"><span class="lbl">Số Lạc Thư:</span><span class="val" id="lacShuVal">1</span></div>
+      </div>
+
+      <div class="card">
+        <h3>◆ CÁC SAO &amp; TINH TÚ ◆</h3>
+        <div class="row"><span class="lbl">Cửu Tinh:</span><span class="val" id="starVal">Phá Quân (Kim)</span></div>
+        <div class="row"><span class="lbl">24 Thiên Tinh:</span><span class="val" id="hsVal">Thiên Lũy</span></div>
+        <div class="row"><span class="lbl">28 Tú:</span><span class="val" id="xiuVal">Hư/Nguy</span></div>
+        <div class="row"><span class="lbl">24 Tiết Khí:</span><span class="val" id="qiVal">Đông Chí</span></div>
+      </div>
+
+      <div class="card">
+        <h3>◆ LUẬN ĐOÁN ◆</h3>
+        <div class="row"><span class="lbl">Tính chất quái:</span><span class="val" id="natureVal">Hiểm, thông tuệ</span></div>
+        <div class="row"><span class="lbl">Tam Hợp cục:</span><span class="val" id="tamHopVal">Thủy cục (Thân-Tý-Thìn)</span></div>
+        <div class="warn" id="batSatWarn">⚠ <strong>Bát Sát:</strong> <span id="batSatTxt"></span></div>
+      </div>
+
+      <div class="card">
+        <h3>◆ CHÚ THÍCH 12 TẦNG ◆</h3>
+        <details><summary>Tầng 1-2: Thái Cực &amp; Bát Quái</summary><p>Tâm Âm Dương Thái Cực. Tầng kế là Tiên Thiên Bát Quái (Phục Hy), tầng sau là Hậu Thiên Bát Quái (Văn Vương) + 9 cung số Lạc Thư.</p></details>
+        <details><summary>Tầng 3: Cửu Tinh</summary><p>9 sao (Tham, Cự, Lộc, Văn, Liêm, Vũ, Phá, Phụ, Bật) phối với 24 sơn để luận cát hung.</p></details>
+        <details><summary>Tầng 4: Địa Bàn Chính Châm (24 Sơn)</summary><p>Tầng chính để định hướng nhà. Tô màu theo Ngũ Hành: Thủy (xanh đậm), Mộc (xanh lá), Hỏa (đỏ), Thổ (vàng đất), Kim (xám). Chấm trắng = Dương, chấm đen = Âm.</p></details>
+        <details><summary>Tầng 5: Nhân Bàn Trung Châm</summary><p>Lệch +7,5° so với Địa Bàn. Dùng để "tiêu sa" (xét cát hung của núi).</p></details>
+        <details><summary>Tầng 6: Thiên Bàn Phùng Châm</summary><p>Lệch -7,5° so với Địa Bàn. Dùng để "nạp thủy" (xét cát hung của nước).</p></details>
+        <details><summary>Tầng 7: 24 Thiên Tinh</summary><p>24 sao trên trời ứng với 24 sơn dưới đất - Tam Tài thiên-địa hợp nhất.</p></details>
+        <details><summary>Tầng 8: 28 Tú</summary><p>28 chòm sao quanh hoàng đạo (4 phương × 7 chòm): Thanh Long (Đông), Huyền Vũ (Bắc), Bạch Hổ (Tây), Chu Tước (Nam).</p></details>
+        <details><summary>Tầng 9: 24 Tiết Khí</summary><p>24 tiết khí trong năm phối với 24 sơn - dùng định thời gian cát kỵ.</p></details>
+        <details><summary>Tầng 10-11: Hướng &amp; Độ</summary><p>8 hướng địa lý và vòng độ 0-360°.</p></details>
+        <div class="legend">
+          <span class="b-thuy">Thủy</span><span class="b-moc">Mộc</span><span class="b-hoa">Hỏa</span><span class="b-tho">Thổ</span><span class="b-kim">Kim</span>
+          <span class="b-duong">Dương</span><span class="b-am">Âm</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+const svg=document.getElementById('compassSvg');
+const CX=450,CY=450;
+const ringsG=document.getElementById('rings');
+
+// ===== Data =====
+const elementColors={Thủy:'#1a3a8a',Mộc:'#1e7a3a',Hỏa:'#c8202a',Thổ:'#a07020',Kim:'#666'};
+const elementBg={Thủy:'#dde4f5',Mộc:'#dff0d8',Hỏa:'#f8d7da',Thổ:'#f4e4c1',Kim:'#e8e8e8'};
+
+// 24 Sơn (counterclockwise starting TÝ at 0° = North top, going clockwise visually)
+// Each spans 15°, TÝ centered at 0°
+const son24=[
+ {name:'TÝ',   yy:'Dương', el:'Thủy', star:'Phá Quân',  starEl:'Kim', heavenStar:'Thiên Lũy',  xiu:'Hư'},
+ {name:'QUÝ',  yy:'Âm',    el:'Thủy', star:'Phá Quân',  starEl:'Kim', heavenStar:'Âm Quang',   xiu:'Nữ'},
+ {name:'SỬU',  yy:'Âm',    el:'Thổ',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Thiên Trù',  xiu:'Ngưu'},
+ {name:'CẤN',  yy:'Dương', el:'Thổ',  star:'Tham Lang', starEl:'Mộc', heavenStar:'Thiên Thị',  xiu:'Đẩu'},
+ {name:'DẦN',  yy:'Dương', el:'Mộc',  star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Thiên Bồi',  xiu:'Cơ'},
+ {name:'GIÁP', yy:'Dương', el:'Mộc',  star:'Lộc Tồn',   starEl:'Thổ', heavenStar:'Âm Cơ',      xiu:'Vỹ'},
+ {name:'MÃO',  yy:'Âm',    el:'Mộc',  star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Mạnh', xiu:'Phòng/Tâm'},
+ {name:'ẤT',   yy:'Âm',    el:'Mộc',  star:'Phụ Bật',   starEl:'Mộc', heavenStar:'Thiên Quan', xiu:'Chi'},
+ {name:'THÌN', yy:'Dương', el:'Thổ',  star:'Phá Quân',  starEl:'Kim', heavenStar:'Thiên Cương',xiu:'Cang'},
+ {name:'TỐN',  yy:'Âm',    el:'Mộc',  star:'Cự Môn',    starEl:'Thổ', heavenStar:'Thiên Ất',   xiu:'Giốc'},
+ {name:'TỴ',   yy:'Âm',    el:'Hỏa',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Thiên Hình', xiu:'Chẩn'},
+ {name:'BÍNH', yy:'Dương', el:'Hỏa',  star:'Tham Lang', starEl:'Mộc', heavenStar:'Thái Vi',    xiu:'Dực'},
+ {name:'NGỌ',  yy:'Dương', el:'Hỏa',  star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Cương Quyền',xiu:'Trương'},
+ {name:'ĐINH', yy:'Âm',    el:'Hỏa',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Nam Cực',    xiu:'Tinh'},
+ {name:'MÙI',  yy:'Âm',    el:'Thổ',  star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Thường',xiu:'Liễu'},
+ {name:'KHÔN', yy:'Âm',    el:'Thổ',  star:'Phụ Bật',   starEl:'Mộc', heavenStar:'Thiên Kính', xiu:'Quỷ'},
+ {name:'THÂN', yy:'Dương', el:'Kim',  star:'Phá Quân',  starEl:'Kim', heavenStar:'Thiên Quan', xiu:'Tỉnh'},
+ {name:'CANH', yy:'Dương', el:'Kim',  star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Hán',  xiu:'Sâm'},
+ {name:'DẬU',  yy:'Âm',    el:'Kim',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Thiếu Vi',   xiu:'Mão/Tất'},
+ {name:'TÂN',  yy:'Âm',    el:'Kim',  star:'Cự Môn',    starEl:'Thổ', heavenStar:'Thiên Ất',   xiu:'Vị'},
+ {name:'TUẤT', yy:'Dương', el:'Thổ',  star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Thiên Khôi', xiu:'Lâu'},
+ {name:'CÀN',  yy:'Dương', el:'Kim',  star:'Lộc Tồn',   starEl:'Thổ', heavenStar:'Thiên Cứu',  xiu:'Khuê'},
+ {name:'HỢI',  yy:'Âm',    el:'Thủy', star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Hoàng',xiu:'Bích'},
+ {name:'NHÂM', yy:'Dương', el:'Thủy', star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Thiên Phụ',  xiu:'Thất'}
+];
+
+// 24 Tiết Khí counterclockwise from Tý=Đông Chí
+const tietKhi=['Đông Chí','Tiểu Hàn','Đại Hàn','Lập Xuân','Vũ Thủy','Kinh Trập','Xuân Phân','Thanh Minh','Cốc Vũ','Lập Hạ','Tiểu Mãn','Mang Chủng','Hạ Chí','Tiểu Thử','Đại Thử','Lập Thu','Xử Thử','Bạch Lộ','Thu Phân','Hàn Lộ','Sương Giáng','Lập Đông','Tiểu Tuyết','Đại Tuyết'];
+
+// Hậu Thiên Bát Quái (positioned at cardinal/intercardinal directions)
+const hauThien=[
+ {name:'KHẢM',sym:'☵',lines:[0,1,0],angle:0,  el:'Thủy',lacshu:1,nature:'Hiểm trở, thông tuệ, lưu chuyển'},
+ {name:'CẤN', sym:'☶',lines:[0,0,1],angle:45, el:'Thổ', lacshu:8,nature:'Trầm tĩnh, bền vững như núi'},
+ {name:'CHẤN',sym:'☳',lines:[1,0,0],angle:90, el:'Mộc', lacshu:3,nature:'Động, phát sinh, khởi đầu'},
+ {name:'KHÔN',sym:'☷',lines:[0,0,0],angle:135,el:'Thổ', lacshu:2,nature:'Nhu thuận, bao dung, sinh dưỡng (Hậu Thiên Lạc Việt)'},
+ {name:'LY',  sym:'☲',lines:[1,0,1],angle:180,el:'Hỏa', lacshu:9,nature:'Sáng, rực rỡ, văn minh'},
+ {name:'TỐN', sym:'☴',lines:[0,1,1],angle:225,el:'Mộc', lacshu:4,nature:'Nhập, mềm mại, thuận theo (Hậu Thiên Lạc Việt)'},
+ {name:'ĐOÀI',sym:'☱',lines:[1,1,0],angle:270,el:'Kim', lacshu:7,nature:'Hỷ duyệt, vui vẻ, thu hoạch'},
+ {name:'CÀN', sym:'☰',lines:[1,1,1],angle:315,el:'Kim', lacshu:6,nature:'Mạnh mẽ, cương kiện, lãnh đạo'}
+];
+
+// Tiên Thiên Bát Quái - symbolic arrangement
+// Traditional South-up: Càn S, Đoài SE, Ly E, Chấn NE, Tốn SW, Khảm W, Cấn NW, Khôn N
+// We orient North up, so rotate 180°: Khôn at top, Tốn NE, Khảm E, Cấn SE, Càn S, Chấn SW, Ly W, Đoài NW
+const tienThien=[
+ {name:'KHÔN',sym:'☷',lines:[0,0,0],angle:0,  num:8},
+ {name:'TỐN', sym:'☴',lines:[0,1,1],angle:45, num:5},
+ {name:'KHẢM',sym:'☵',lines:[0,1,0],angle:90, num:6},
+ {name:'CẤN', sym:'☶',lines:[0,0,1],angle:135,num:7},
+ {name:'CÀN', sym:'☰',lines:[1,1,1],angle:180,num:1},
+ {name:'CHẤN',sym:'☳',lines:[1,0,0],angle:225,num:4},
+ {name:'LY',  sym:'☲',lines:[1,0,1],angle:270,num:3},
+ {name:'ĐOÀI',sym:'☱',lines:[1,1,0],angle:315,num:2}
+];
+
+const cardinals=[
+ {name:'BẮC',angle:0},{name:'ĐÔNG BẮC',angle:45},{name:'ĐÔNG',angle:90},{name:'ĐÔNG NAM',angle:135},
+ {name:'NAM',angle:180},{name:'TÂY NAM',angle:225},{name:'TÂY',angle:270},{name:'TÂY BẮC',angle:315}
+];
+
+// Bát Sát: each trigram has a killing direction
+const batSat={
+ 'KHẢM':['THÌN','TUẤT'],'KHÔN':['MÃO'],'CHẤN':['THÂN'],'TỐN':['DẬU'],
+ 'CÀN':['NGỌ'],'ĐOÀI':['TỴ'],'CẤN':['DẦN'],'LY':['HỢI']
+};
+
+// Tam Hợp cục
+const tamHop={
+ 'Thủy':'Thân-Tý-Thìn (Thủy cục)','Mộc':'Hợi-Mão-Mùi (Mộc cục)',
+ 'Hỏa':'Dần-Ngọ-Tuất (Hỏa cục)','Kim':'Tỵ-Dậu-Sửu (Kim cục)','Thổ':'(Thổ chia tứ duy)'
+};
+
+// ===== Helpers =====
+function polar(deg,r){const rad=(deg-90)*Math.PI/180;return{x:CX+r*Math.cos(rad),y:CY+r*Math.sin(rad)}}
+function arc(a1,a2,r1,r2){
+  const p1=polar(a1,r2),p2=polar(a2,r2),p3=polar(a2,r1),p4=polar(a1,r1);
+  const large=a2-a1>180?1:0;
+  return `M ${p1.x},${p1.y} A ${r2},${r2} 0 ${large},1 ${p2.x},${p2.y} L ${p3.x},${p3.y} A ${r1},${r1} 0 ${large},0 ${p4.x},${p4.y} Z`;
+}
+function textAt(deg,r,txt,fs,color,fw='normal',rotate=true){
+  const p=polar(deg,r);
+  const rot=rotate?`rotate(${deg}, ${p.x}, ${p.y})`:'';
+  return `<text x="${p.x}" y="${p.y}" font-size="${fs}" fill="${color}" font-weight="${fw}" text-anchor="middle" dominant-baseline="middle" transform="${rot}" font-family="Times New Roman, serif">${txt}</text>`;
+}
+function ring(r1,r2){return `<circle cx="${CX}" cy="${CY}" r="${r1}" fill="none" stroke="#2a2a2a" stroke-width="1"/><circle cx="${CX}" cy="${CY}" r="${r2}" fill="none" stroke="#2a2a2a" stroke-width="1"/>`}
+
+function drawTrigramLines(angle,centerR,size,color){
+  // 3 lines stacked radially: bottom line (index 0) closer to center
+  let h='';
+  const lineLen=size*0.9;
+  for(let j=0;j<3;j++){
+    const offset=(j-1)*size*0.32;
+    const lc=polar(angle,centerR+offset);
+    const aRad=(angle-90)*Math.PI/180;
+    const px=-Math.sin(aRad),py=Math.cos(aRad);
+    // line == 1 means solid (yang), 0 means broken (yin) — passed externally
+    // we receive 'lines' externally; render based on passed param
+    h+=`<g data-line="${j}" data-cr="${lc.x},${lc.y}" data-perp="${px},${py}" data-len="${lineLen}" data-color="${color}"/>`;
+  }
+  return h;
+}
+
+// Better: explicit renderer
+function bagua(lines,angle,centerR,size,color){
+  let h='';
+  const lineLen=size*0.95;
+  for(let j=0;j<3;j++){
+    const offset=(j-1)*size*0.35;
+    const lc=polar(angle,centerR+offset);
+    const aRad=(angle-90)*Math.PI/180;
+    const px=-Math.sin(aRad),py=Math.cos(aRad);
+    if(lines[j]===1){
+      const x1=lc.x-px*lineLen/2,y1=lc.y-py*lineLen/2,x2=lc.x+px*lineLen/2,y2=lc.y+py*lineLen/2;
+      h+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${size*0.16}" stroke-linecap="round"/>`;
+    }else{
+      const gap=size*0.18,seg=(lineLen-gap)/2;
+      const x1a=lc.x-px*lineLen/2,y1a=lc.y-py*lineLen/2;
+      const x1b=x1a+px*seg,y1b=y1a+py*seg;
+      const x2a=lc.x+px*(gap/2),y2a=lc.y+py*(gap/2);
+      const x2b=lc.x+px*lineLen/2,y2b=lc.y+py*lineLen/2;
+      h+=`<line x1="${x1a}" y1="${y1a}" x2="${x1b}" y2="${y1b}" stroke="${color}" stroke-width="${size*0.16}" stroke-linecap="round"/>`;
+      h+=`<line x1="${x2a}" y1="${y2a}" x2="${x2b}" y2="${y2b}" stroke="${color}" stroke-width="${size*0.16}" stroke-linecap="round"/>`;
+    }
+  }
+  return h;
+}
+
+// ===== Build rings =====
+let H='';
+
+// Radii for each ring (inside out)
+const R={
+  ttBQ_in:50, ttBQ_out:92,
+  htBQ_in:92, htBQ_out:135,
+  star_in:135, star_out:170,
+  diaSon_in:170, diaSon_out:225,
+  nhanSon_in:225, nhanSon_out:258,
+  thienSon_in:258, thienSon_out:290,
+  thienTinh_in:290, thienTinh_out:325,
+  xiu_in:325, xiu_out:357,
+  tietKhi_in:357, tietKhi_out:390,
+  card_in:390, card_out:418,
+  deg_in:418, deg_out:445
+};
+
+// ---- Tầng 1: Tiên Thiên Bát Quái ----
+tienThien.forEach(t=>{
+  const a1=t.angle-22.5,a2=t.angle+22.5;
+  H+=`<path d="${arc(a1,a2,R.ttBQ_in,R.ttBQ_out)}" fill="#f0e8c8" stroke="#2a2a2a" stroke-width="1"/>`;
+  H+=bagua(t.lines,t.angle,(R.ttBQ_in+R.ttBQ_out)/2+2,16,'#1a1a1a');
+  H+=textAt(t.angle,R.ttBQ_in+8,t.num,9,'#666','normal',true);
+});
+
+// ---- Tầng 2: Hậu Thiên Bát Quái + Lạc Thư ----
+hauThien.forEach(t=>{
+  const a1=t.angle-22.5,a2=t.angle+22.5;
+  const isKhon=t.name==='KHÔN';
+  const fill=isKhon?'#c8202a':'#fafafa';
+  const txtColor=isKhon?'#fff':'#1a1a1a';
+  H+=`<path d="${arc(a1,a2,R.htBQ_in,R.htBQ_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="1.2"/>`;
+  H+=bagua(t.lines,t.angle,(R.htBQ_in+R.htBQ_out)/2-4,18,txtColor);
+  H+=textAt(t.angle,R.htBQ_out-9,t.name,11,txtColor,'bold',true);
+  // Lạc Thư number
+  H+=textAt(t.angle,R.htBQ_in+7,t.lacshu,10,isKhon?'#fff':'#c8202a','bold',true);
+});
+
+// ---- Tầng 3: Cửu Tinh (per 24 son) ----
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const bg=elementBg[s.starEl]||'#fafafa';
+  H+=`<path d="${arc(a1,a2,R.star_in,R.star_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.8"/>`;
+  // Star name (2 lines if long)
+  const shortName=s.star.replace('Tham Lang','Tham').replace('Cự Môn','Cự').replace('Lộc Tồn','Lộc').replace('Văn Khúc','Văn').replace('Liêm Trinh','Liêm').replace('Vũ Khúc','Vũ').replace('Phá Quân','Phá').replace('Phụ Bật','Phụ');
+  H+=textAt(center,(R.star_in+R.star_out)/2,shortName,11,elementColors[s.starEl]||'#222','bold',true);
+});
+
+// ---- Tầng 4: Địa Bàn Chính Châm (24 Sơn) - Main ring ----
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const bg=elementBg[s.el];
+  const isCardinal=['TÝ','MÃO','NGỌ','DẬU'].includes(s.name);
+  H+=`<path d="${arc(a1,a2,R.diaSon_in,R.diaSon_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="${isCardinal?1.5:0.9}"/>`;
+  H+=textAt(center,(R.diaSon_in+R.diaSon_out)/2,s.name,18,elementColors[s.el],'bold',true);
+  // Âm/Dương dot at outer edge of this ring
+  const dot=polar(center,R.diaSon_out-7);
+  const dotFill=s.yy==='Dương'?'#fff':'#000';
+  const dotStroke=s.yy==='Dương'?'#000':'#000';
+  H+=`<circle cx="${dot.x}" cy="${dot.y}" r="3.5" fill="${dotFill}" stroke="${dotStroke}" stroke-width="1"/>`;
+});
+
+// ---- Tầng 5: Nhân Bàn Trung Châm (+7.5°) ----
+son24.forEach((s,i)=>{
+  const center=i*15+7.5; // offset
+  const a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.nhanSon_in,R.nhanSon_out)}" fill="#fff8e7" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  H+=textAt(center,(R.nhanSon_in+R.nhanSon_out)/2,s.name,13,'#5a3a10','bold',true);
+});
+
+// ---- Tầng 6: Thiên Bàn Phùng Châm (-7.5°) ----
+son24.forEach((s,i)=>{
+  const center=i*15-7.5; // offset
+  const a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.thienSon_in,R.thienSon_out)}" fill="#e7f1ff" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  H+=textAt(center,(R.thienSon_in+R.thienSon_out)/2,s.name,13,'#102a5a','bold',true);
+});
+
+// ---- Tầng 7: 24 Thiên Tinh ----
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.thienTinh_in,R.thienTinh_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  H+=textAt(center,(R.thienTinh_in+R.thienTinh_out)/2,s.heavenStar,10,'#222','normal',true);
+});
+
+// ---- Tầng 8: 28 Tú ----
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const isCardinal=['TÝ','MÃO','NGỌ','DẬU'].includes(s.name);
+  // Color by 4-symbol: N=black (Huyền Vũ), E=blue/green (Thanh Long), S=red (Chu Tước), W=white (Bạch Hổ)
+  let bg='#fafafa';
+  if(center>=315||center<45)bg='#ddd';      // North
+  else if(center>=45&&center<135)bg='#d0e8d0'; // East
+  else if(center>=135&&center<225)bg='#f8d0d0';// South
+  else bg='#f5f5e0';                          // West
+  H+=`<path d="${arc(a1,a2,R.xiu_in,R.xiu_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  H+=textAt(center,(R.xiu_in+R.xiu_out)/2,s.xiu,isCardinal?9:12,'#1a1a1a','bold',true);
+});
+
+// ---- Tầng 9: 24 Tiết Khí ----
+tietKhi.forEach((tk,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  // Alternate light backgrounds
+  const bg=i%2===0?'#fff3d6':'#ffe9b8';
+  H+=`<path d="${arc(a1,a2,R.tietKhi_in,R.tietKhi_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  H+=textAt(center,(R.tietKhi_in+R.tietKhi_out)/2,tk,10,'#5a3a10','bold',true);
+});
+
+// ---- Tầng 10: 8 Cardinals ----
+cardinals.forEach(c=>{
+  const a1=c.angle-22.5,a2=c.angle+22.5;
+  H+=`<path d="${arc(a1,a2,R.card_in,R.card_out)}" fill="#f5efd9" stroke="#2a2a2a" stroke-width="1.2"/>`;
+  H+=textAt(c.angle,(R.card_in+R.card_out)/2,c.name,16,'#1a1a1a','bold',true);
+});
+
+// ---- Tầng 11: Độ ----
+for(let d=0;d<360;d+=5){
+  const p1=polar(d,R.deg_in),p2=polar(d,d%30===0?R.deg_in+18:(d%10===0?R.deg_in+10:R.deg_in+5));
+  H+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#333" stroke-width="${d%30===0?1.2:0.5}"/>`;
+}
+for(let d=0;d<360;d+=15){
+  H+=textAt(d,R.deg_out-7,d+'°',9,'#222','normal',true);
+}
+
+// All boundary circles
+for(let r of [R.ttBQ_out,R.htBQ_out,R.star_out,R.diaSon_out,R.nhanSon_out,R.thienSon_out,R.thienTinh_out,R.xiu_out,R.tietKhi_out,R.card_out]){
+  H+=`<circle cx="${CX}" cy="${CY}" r="${r}" fill="none" stroke="#2a2a2a" stroke-width="0.6"/>`;
+}
+H+=`<circle cx="${CX}" cy="${CY}" r="${R.ttBQ_in}" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>`;
+H+=`<circle cx="${CX}" cy="${CY}" r="${R.deg_out}" fill="none" stroke="#2a2a2a" stroke-width="2"/>`;
+
+ringsG.innerHTML=H;
+
+// ===== Compass logic =====
+let curH=0;
+
+function dirName(d){
+  const dirs=[
+    {n:'BẮC',min:337.5,max:22.5},{n:'ĐÔNG BẮC',min:22.5,max:67.5},{n:'ĐÔNG',min:67.5,max:112.5},
+    {n:'ĐÔNG NAM',min:112.5,max:157.5},{n:'NAM',min:157.5,max:202.5},{n:'TÂY NAM',min:202.5,max:247.5},
+    {n:'TÂY',min:247.5,max:292.5},{n:'TÂY BẮC',min:292.5,max:337.5}
+  ];
+  for(const x of dirs){if(x.min>x.max){if(d>=x.min||d<x.max)return x.n}else if(d>=x.min&&d<x.max)return x.n}
+  return'BẮC';
+}
+function getSonIdx(d){let i=Math.floor(((d+7.5)%360)/15);if(i<0)i+=24;return i}
+function getTrigIdx(d){let i=Math.floor(((d+22.5)%360)/45);if(i<0)i+=8;return i}
+function getTietKhiIdx(d){return getSonIdx(d)} // tiết khí aligned 1:1 with sơn
+
+function update(h){
+  curH=((h%360)+360)%360;
+  svg.style.transform=`rotate(${-curH}deg)`;
+  document.getElementById('degreeDisplay').textContent=curH.toFixed(1)+'°';
+  document.getElementById('directionDisplay').textContent=dirName(curH);
+
+  const sIdx=getSonIdx(curH);
+  const s=son24[sIdx];
+  const t=hauThien[getTrigIdx(curH)];
+  const tk=tietKhi[getTietKhiIdx(curH)];
+
+  document.getElementById('mountainDisplay').textContent=s.name;
+  document.getElementById('trigramDisplay').textContent=t.name;
+  document.getElementById('dSon').textContent=s.name+' ('+s.yy+', '+s.el+')';
+
+  // Nhân Bàn Trung Châm — what sơn is at the current pointer in the +7.5° ring?
+  // Pointer points to bearing h on Địa Bàn. Nhân Bàn is shifted +7.5° clockwise,
+  // so the sơn at pointer in Nhân Bàn = sơn whose center is at h-7.5°
+  let nIdx=Math.floor((((curH-7.5)+7.5+360)%360)/15);nIdx=((nIdx%24)+24)%24;
+  document.getElementById('nSon').textContent=son24[nIdx].name+' ('+son24[nIdx].el+')';
+  let tIdx=Math.floor((((curH+7.5)+7.5+360)%360)/15);tIdx=((tIdx%24)+24)%24;
+  document.getElementById('tSon').textContent=son24[tIdx].name+' ('+son24[tIdx].el+')';
+
+  document.getElementById('yyVal').innerHTML=s.yy+' <span class="badge '+(s.yy==='Dương'?'b-duong':'b-am')+'">'+s.yy+'</span>';
+  document.getElementById('elVal').innerHTML=s.el+' <span class="badge b-'+s.el.toLowerCase().replace('thủy','thuy').replace('hỏa','hoa').replace('thổ','tho').replace('mộc','moc')+'">'+s.el+'</span>';
+  document.getElementById('qVal').textContent=t.name+' '+t.sym;
+  document.getElementById('lacShuVal').textContent=t.lacshu;
+  document.getElementById('starVal').textContent=s.star+' ('+s.starEl+')';
+  document.getElementById('hsVal').textContent=s.heavenStar;
+  document.getElementById('xiuVal').textContent=s.xiu;
+  document.getElementById('qiVal').textContent=tk;
+  document.getElementById('natureVal').textContent=t.nature;
+  document.getElementById('tamHopVal').textContent=tamHop[s.el]||'-';
+
+  // Bát Sát check
+  const killing=batSat[t.name]||[];
+  const warn=document.getElementById('batSatWarn');
+  if(killing.includes(s.name)){
+    warn.classList.add('active');
+    document.getElementById('batSatTxt').textContent='Sơn '+s.name+' là phương Bát Sát của quái '+t.name+'. Kỵ tọa hướng này.';
+  }else{
+    warn.classList.remove('active');
+  }
+
+  document.getElementById('manualSlider').value=curH;
+  document.getElementById('manualValue').textContent=curH.toFixed(1)+'°';
+}
+
+// ===== Sensor =====
+let sensorActive=false;
+function handleOrient(e){
+  let h=null;
+  if(e.webkitCompassHeading!==undefined)h=e.webkitCompassHeading;
+  else if(e.alpha!==null)h=360-e.alpha;
+  if(h!==null&&!isNaN(h))update(h);
+}
+document.getElementById('startBtn').addEventListener('click',async()=>{
+  const st=document.getElementById('status');
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      const p=await DeviceOrientationEvent.requestPermission();
+      if(p==='granted'){
+        window.addEventListener('deviceorientation',handleOrient,true);
+        sensorActive=true;
+        st.textContent='✓ Cảm biến đã bật. Xoay thiết bị để xem hướng.';
+      }else st.textContent='✗ Quyền cảm biến bị từ chối.';
+    }else if('DeviceOrientationEvent' in window){
+      window.addEventListener('deviceorientationabsolute',handleOrient,true);
+      window.addEventListener('deviceorientation',handleOrient,true);
+      sensorActive=true;
+      st.textContent='✓ Cảm biến đã bật. Chính xác nhất trên di động.';
+    }else st.textContent='✗ Thiết bị không có cảm biến hướng. Dùng thanh trượt.';
+  }catch(err){st.textContent='✗ Lỗi: '+err.message}
+});
+document.getElementById('manualSlider').addEventListener('input',e=>{if(!sensorActive)update(parseFloat(e.target.value))});
+
+update(0);
+</script>
+</body>
+</html>
