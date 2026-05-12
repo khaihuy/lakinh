@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Kinh - La Bàn Phong Thủy</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Times New Roman', serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%);
+    min-height: 100vh;
+    color: #fff;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+  h1 {
+    font-size: 28px;
+    margin-bottom: 8px;
+    text-align: center;
+    color: #ffd700;
+    text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    letter-spacing: 2px;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #ccc;
+    margin-bottom: 20px;
+    text-align: center;
+  }
+  .info-panel {
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,215,0,0.3);
+    border-radius: 12px;
+    padding: 16px 24px;
+    margin-bottom: 20px;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 700px;
+    text-align: center;
+  }
+  .info-item {
+    border-right: 1px solid rgba(255,255,255,0.1);
+    padding: 0 8px;
+  }
+  .info-item:last-child { border-right: none; }
+  .info-label {
+    font-size: 11px;
+    color: #aaa;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+  .info-value {
+    font-size: 22px;
+    font-weight: bold;
+    color: #ffd700;
+  }
+  .compass-container {
+    position: relative;
+    width: 100%;
+    max-width: 600px;
+    aspect-ratio: 1;
+  }
+  .compass-svg {
+    width: 100%;
+    height: 100%;
+    transition: transform 0.1s linear;
+  }
+  .pointer {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 4px;
+    height: 45%;
+    background: linear-gradient(to top, transparent 0%, transparent 50%, #ff3333 50%, #ff3333 100%);
+    transform-origin: bottom center;
+    transform: translate(-50%, -100%);
+    z-index: 10;
+    pointer-events: none;
+  }
+  .pointer::before {
+    content: '';
+    position: absolute;
+    top: -2px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 0;
+    height: 0;
+    border-left: 8px solid transparent;
+    border-right: 8px solid transparent;
+    border-bottom: 14px solid #ff3333;
+  }
+  .center-dot {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 14px;
+    height: 14px;
+    background: #ffd700;
+    border-radius: 50%;
+    transform: translate(-50%, -50%);
+    box-shadow: 0 0 10px rgba(255,215,0,0.8);
+    z-index: 11;
+    pointer-events: none;
+  }
+  .controls {
+    margin-top: 24px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    width: 100%;
+    max-width: 600px;
+  }
+  button {
+    background: linear-gradient(135deg, #ffd700 0%, #ff8c00 100%);
+    color: #1a1a2e;
+    border: none;
+    padding: 12px 32px;
+    font-size: 16px;
+    font-weight: bold;
+    border-radius: 25px;
+    cursor: pointer;
+    box-shadow: 0 4px 12px rgba(255,215,0,0.3);
+    transition: transform 0.2s;
+    letter-spacing: 1px;
+  }
+  button:hover { transform: translateY(-2px); }
+  button:active { transform: translateY(0); }
+  .manual-control {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255,255,255,0.08);
+    padding: 10px 16px;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 500px;
+  }
+  .manual-control label {
+    font-size: 13px;
+    color: #ccc;
+    white-space: nowrap;
+  }
+  .manual-control input[type="range"] {
+    flex: 1;
+    accent-color: #ffd700;
+  }
+  .status {
+    margin-top: 12px;
+    padding: 10px 16px;
+    background: rgba(255,215,0,0.1);
+    border-radius: 8px;
+    font-size: 13px;
+    text-align: center;
+    max-width: 600px;
+    color: #ffd700;
+  }
+  .interpretation {
+    margin-top: 20px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,215,0,0.2);
+    border-radius: 12px;
+    padding: 16px 20px;
+    max-width: 700px;
+    width: 100%;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+  .interpretation h3 {
+    color: #ffd700;
+    margin-bottom: 10px;
+    font-size: 16px;
+    text-align: center;
+    letter-spacing: 1px;
+  }
+  .interp-row {
+    display: flex;
+    justify-content: space-between;
+    padding: 6px 0;
+    border-bottom: 1px dashed rgba(255,255,255,0.1);
+  }
+  .interp-row:last-child { border-bottom: none; }
+  .interp-label { color: #aaa; }
+  .interp-value { color: #fff; font-weight: bold; }
+  @media (max-width: 600px) {
+    h1 { font-size: 22px; }
+    .info-value { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+  <h1>LA KINH PHONG THỦY</h1>
+  <div class="subtitle">Kết hợp La Bàn điện tử - 24 Sơn Hướng - Bát Quái</div>
+
+  <div class="info-panel">
+    <div class="info-item">
+      <div class="info-label">Góc (Độ)</div>
+      <div class="info-value" id="degreeDisplay">0°</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Hướng</div>
+      <div class="info-value" id="directionDisplay">BẮC</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Sơn (24 Sơn)</div>
+      <div class="info-value" id="mountainDisplay">TÝ</div>
+    </div>
+    <div class="info-item">
+      <div class="info-label">Quái</div>
+      <div class="info-value" id="trigramDisplay">KHẢM</div>
+    </div>
+  </div>
+
+  <div class="compass-container">
+    <svg class="compass-svg" id="compassSvg" viewBox="0 0 800 800" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fdfaf0"/>
+          <stop offset="70%" stop-color="#f5efd9"/>
+          <stop offset="100%" stop-color="#e8dfc0"/>
+        </radialGradient>
+        <radialGradient id="centerGrad" cx="50%" cy="50%" r="50%">
+          <stop offset="0%" stop-color="#fff"/>
+          <stop offset="100%" stop-color="#e0d8b8"/>
+        </radialGradient>
+      </defs>
+
+      <!-- Background circles -->
+      <circle cx="400" cy="400" r="395" fill="url(#bgGrad)" stroke="#2a2a2a" stroke-width="3"/>
+      <circle cx="400" cy="400" r="370" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
+      <circle cx="400" cy="400" r="320" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
+      <circle cx="400" cy="400" r="260" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
+      <circle cx="400" cy="400" r="200" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>
+      <circle cx="400" cy="400" r="140" fill="url(#centerGrad)" stroke="#2a2a2a" stroke-width="2"/>
+
+      <!-- Ring 1: Numbers 1-30 (outermost) -->
+      <g id="numberRing"></g>
+
+      <!-- Ring 2: 8 Cardinal directions -->
+      <g id="cardinalRing"></g>
+
+      <!-- Ring 3: Degree markings -->
+      <g id="degreeRing"></g>
+
+      <!-- Ring 4: 24 Mountains -->
+      <g id="mountainRing"></g>
+
+      <!-- Ring 5: 8 Trigrams (Bát Quái) -->
+      <g id="trigramRing"></g>
+
+      <!-- Center: Yin-Yang -->
+      <g id="yinYang" transform="translate(400,400)">
+        <circle cx="0" cy="0" r="90" fill="#fff" stroke="#000" stroke-width="2"/>
+        <path d="M 0,-90 A 90,90 0 0,1 0,90 A 45,45 0 0,1 0,0 A 45,45 0 0,0 0,-90 Z" fill="#000"/>
+        <circle cx="0" cy="-45" r="12" fill="#fff"/>
+        <circle cx="0" cy="45" r="12" fill="#000"/>
+      </g>
+    </svg>
+
+    <div class="pointer"></div>
+    <div class="center-dot"></div>
+  </div>
+
+  <div class="controls">
+    <button id="startBtn">BẬT LA BÀN (Cảm biến)</button>
+    <div class="manual-control">
+      <label>Xoay tay:</label>
+      <input type="range" id="manualSlider" min="0" max="360" value="0" step="1">
+      <span id="manualValue" style="min-width:45px;color:#ffd700;font-weight:bold;">0°</span>
+    </div>
+    <div class="status" id="status">Bấm "BẬT LA BÀN" để dùng cảm biến (cần HTTPS trên di động), hoặc dùng thanh trượt để xoay thủ công.</div>
+  </div>
+
+  <div class="interpretation">
+    <h3>◆ DIỄN GIẢI HƯỚNG HIỆN TẠI ◆</h3>
+    <div class="interp-row">
+      <span class="interp-label">Cung (Bát Trạch):</span>
+      <span class="interp-value" id="palaceDisplay">KHẢM (Bắc)</span>
+    </div>
+    <div class="interp-row">
+      <span class="interp-label">Ngũ hành:</span>
+      <span class="interp-value" id="elementDisplay">Thủy</span>
+    </div>
+    <div class="interp-row">
+      <span class="interp-label">Âm/Dương:</span>
+      <span class="interp-value" id="yinyangDisplay">Dương</span>
+    </div>
+    <div class="interp-row">
+      <span class="interp-label">Tính chất:</span>
+      <span class="interp-value" id="natureDisplay">Hiểm trở, thông tuệ</span>
+    </div>
+  </div>
+
+<script>
+const svg = document.getElementById('compassSvg');
+const CX = 400, CY = 400;
+
+// ===== Helpers =====
+function polar(angleDeg, r) {
+  // 0° = North (top), increases clockwise
+  const rad = (angleDeg - 90) * Math.PI / 180;
+  return { x: CX + r * Math.cos(rad), y: CY + r * Math.sin(rad) };
+}
+
+function textAt(angleDeg, r, text, fontSize, color, fontWeight='normal', rotate=true) {
+  const p = polar(angleDeg, r);
+  const rot = rotate ? `rotate(${angleDeg}, ${p.x}, ${p.y})` : '';
+  return `<text x="${p.x}" y="${p.y}" font-size="${fontSize}" fill="${color}" font-weight="${fontWeight}" text-anchor="middle" dominant-baseline="middle" transform="${rot}" font-family="Times New Roman, serif">${text}</text>`;
+}
+
+// ===== Ring 1: Numbers 1-30 =====
+const numberRing = document.getElementById('numberRing');
+let numHtml = '';
+const blueNums = [3, 7, 13, 18, 22, 27]; // highlighted numbers like in image
+for (let i = 1; i <= 30; i++) {
+  const angle = (i / 30) * 360 - 6; // distribute evenly, offset
+  const a1 = ((i - 1) / 30) * 360;
+  const a2 = (i / 30) * 360;
+  const p1 = polar(a1, 395);
+  const p2 = polar(a2, 395);
+  const p3 = polar(a2, 370);
+  const p4 = polar(a1, 370);
+  const isBlue = blueNums.includes(i);
+  const fill = isBlue ? '#1a3a8a' : '#fafafa';
+  const txtColor = isBlue ? '#fff' : '#222';
+  numHtml += `<path d="M ${p1.x},${p1.y} A 395,395 0 0,1 ${p2.x},${p2.y} L ${p3.x},${p3.y} A 370,370 0 0,0 ${p4.x},${p4.y} Z" fill="${fill}" stroke="#2a2a2a" stroke-width="0.8"/>`;
+  numHtml += textAt((a1 + a2) / 2, 382, i, 16, txtColor, 'bold', true);
+}
+numberRing.innerHTML = numHtml;
+
+// ===== Ring 2: 8 Cardinal directions =====
+const cardinalRing = document.getElementById('cardinalRing');
+const cardinals = [
+  { name: 'BẮC', angle: 0 },
+  { name: 'ĐÔNG BẮC', angle: 45 },
+  { name: 'ĐÔNG', angle: 90 },
+  { name: 'ĐÔNG NAM', angle: 135 },
+  { name: 'NAM', angle: 180 },
+  { name: 'TÂY NAM', angle: 225 },
+  { name: 'TÂY', angle: 270 },
+  { name: 'TÂY BẮC', angle: 315 }
+];
+let cardHtml = '';
+cardinals.forEach(c => {
+  cardHtml += textAt(c.angle, 345, c.name, 18, '#2a2a2a', 'bold', true);
+});
+cardinalRing.innerHTML = cardHtml;
+
+// ===== Ring 3: Degree markings =====
+const degreeRing = document.getElementById('degreeRing');
+let degHtml = '';
+for (let d = 0; d < 360; d += 10) {
+  degHtml += textAt(d, 305, d + '°', 9, '#444', 'normal', true);
+}
+// Tick marks every 5°
+for (let d = 0; d < 360; d += 5) {
+  const p1 = polar(d, 320);
+  const p2 = polar(d, d % 30 === 0 ? 295 : 312);
+  degHtml += `<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#333" stroke-width="${d % 30 === 0 ? 1.2 : 0.6}"/>`;
+}
+degreeRing.innerHTML = degHtml;
+
+// ===== Ring 4: 24 Mountains =====
+// 24 Sơn starting from TÝ at North (0°), 15° each
+const mountains = [
+  'TÝ','QUÝ','SỬU','CẤN','DẦN','GIÁP','MÃO','ẤT',
+  'THÌN','TỐN','TỴ','BÍNH','NGỌ','ĐINH','MÙI','KHÔN',
+  'THÂN','CANH','DẬU','TÂN','TUẤT','CÀN','HỢI','NHÂM'
+];
+// TÝ is centered at 0° (North), so first sector starts at -7.5° = 352.5°
+const mountainRing = document.getElementById('mountainRing');
+let mHtml = '';
+mountains.forEach((m, i) => {
+  const center = i * 15; // TÝ at 0°, QUÝ at 15°, etc.
+  const a1 = center - 7.5;
+  const a2 = center + 7.5;
+  const p1 = polar(a1, 260);
+  const p2 = polar(a2, 260);
+  const p3 = polar(a2, 200);
+  const p4 = polar(a1, 200);
+  // Color: alternating fills, special for cardinal stems
+  const isCardinalBranch = ['TÝ','MÃO','NGỌ','DẬU'].includes(m);
+  const fill = isCardinalBranch ? '#fff5d6' : '#fafafa';
+  mHtml += `<path d="M ${p1.x},${p1.y} A 260,260 0 0,1 ${p2.x},${p2.y} L ${p3.x},${p3.y} A 200,200 0 0,0 ${p4.x},${p4.y} Z" fill="${fill}" stroke="#2a2a2a" stroke-width="0.8"/>`;
+  mHtml += textAt(center, 230, m, 15, '#1a1a1a', 'bold', true);
+});
+mountainRing.innerHTML = mHtml;
+
+// ===== Ring 5: 8 Trigrams =====
+const trigrams = [
+  { name: 'KHẢM', symbol: '☵', lines: [0,1,0], angle: 0,   color: '#1a1a1a' }, // Water - North
+  { name: 'CẤN',  symbol: '☶', lines: [1,0,0], angle: 45,  color: '#1a1a1a' }, // Mountain - NE
+  { name: 'CHẤN', symbol: '☳', lines: [0,0,1], angle: 90,  color: '#1a1a1a' }, // Thunder - East
+  { name: 'TỐN',  symbol: '☴', lines: [1,1,0], angle: 135, color: '#1a1a1a' }, // Wind - SE
+  { name: 'LY',   symbol: '☲', lines: [1,0,1], angle: 180, color: '#1a1a1a' }, // Fire - South
+  { name: 'KHÔN', symbol: '☷', lines: [0,0,0], angle: 225, color: '#a01818' }, // Earth - SW (red like image)
+  { name: 'ĐOÀI', symbol: '☱', lines: [1,1,0], angle: 270, color: '#1a1a1a' }, // Lake - West
+  { name: 'CÀN',  symbol: '☰', lines: [1,1,1], angle: 315, color: '#1a1a1a' }  // Heaven - NW
+];
+// Correct trigram line patterns (bottom to top):
+const trigramLines = {
+  'KHẢM': [0,1,0],
+  'CẤN':  [0,0,1],
+  'CHẤN': [1,0,0],
+  'TỐN':  [0,1,1],
+  'LY':   [1,0,1],
+  'KHÔN': [0,0,0],
+  'ĐOÀI': [1,1,0],
+  'CÀN':  [1,1,1]
+};
+const trigramRing = document.getElementById('trigramRing');
+let tHtml = '';
+trigrams.forEach((t, i) => {
+  const a1 = t.angle - 22.5;
+  const a2 = t.angle + 22.5;
+  const p1 = polar(a1, 200);
+  const p2 = polar(a2, 200);
+  const p3 = polar(a2, 140);
+  const p4 = polar(a1, 140);
+  const isKhon = t.name === 'KHÔN';
+  const fill = isKhon ? '#c8202a' : '#fafafa';
+  const txtColor = isKhon ? '#fff' : '#1a1a1a';
+  tHtml += `<path d="M ${p1.x},${p1.y} A 200,200 0 0,1 ${p2.x},${p2.y} L ${p3.x},${p3.y} A 140,140 0 0,0 ${p4.x},${p4.y} Z" fill="${fill}" stroke="#2a2a2a" stroke-width="1"/>`;
+  // Draw trigram lines
+  const lines = trigramLines[t.name];
+  const center = polar(t.angle, 175);
+  // Three horizontal lines stacked, rotated to face center
+  const lineSpacing = 8;
+  const lineLength = 36;
+  for (let j = 0; j < 3; j++) {
+    // j=0 is bottom line, j=2 is top
+    // Position offset from center (top line is closer to outer ring)
+    const offset = (1 - j) * lineSpacing;
+    const lineCenter = polar(t.angle, 175 - offset);
+    const angleRad = (t.angle - 90) * Math.PI / 180;
+    // Perpendicular direction
+    const px = -Math.sin(angleRad);
+    const py = Math.cos(angleRad);
+    if (lines[j] === 1) {
+      // Solid line (Yang)
+      const x1 = lineCenter.x - px * lineLength / 2;
+      const y1 = lineCenter.y - py * lineLength / 2;
+      const x2 = lineCenter.x + px * lineLength / 2;
+      const y2 = lineCenter.y + py * lineLength / 2;
+      tHtml += `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${txtColor}" stroke-width="4" stroke-linecap="round"/>`;
+    } else {
+      // Broken line (Yin) - two segments with gap
+      const gap = 6;
+      const segLen = (lineLength - gap) / 2;
+      const x1a = lineCenter.x - px * lineLength / 2;
+      const y1a = lineCenter.y - py * lineLength / 2;
+      const x1b = x1a + px * segLen;
+      const y1b = y1a + py * segLen;
+      const x2a = lineCenter.x + px * (gap / 2);
+      const y2a = lineCenter.y + py * (gap / 2);
+      const x2b = lineCenter.x + px * lineLength / 2;
+      const y2b = lineCenter.y + py * lineLength / 2;
+      tHtml += `<line x1="${x1a}" y1="${y1a}" x2="${x1b}" y2="${y1b}" stroke="${txtColor}" stroke-width="4" stroke-linecap="round"/>`;
+      tHtml += `<line x1="${x2a}" y1="${y2a}" x2="${x2b}" y2="${y2b}" stroke="${txtColor}" stroke-width="4" stroke-linecap="round"/>`;
+    }
+  }
+  // Trigram name (smaller, below the lines toward center)
+  const namePos = polar(t.angle, 152);
+  tHtml += `<text x="${namePos.x}" y="${namePos.y}" font-size="13" fill="${txtColor}" font-weight="bold" text-anchor="middle" dominant-baseline="middle" transform="rotate(${t.angle}, ${namePos.x}, ${namePos.y})" font-family="Times New Roman, serif">${t.name}</text>`;
+});
+trigramRing.innerHTML = tHtml;
+
+// ===== Compass logic =====
+let currentHeading = 0;
+
+function getDirection(deg) {
+  const dirs = [
+    { name: 'BẮC',       min: 337.5, max: 22.5 },
+    { name: 'ĐÔNG BẮC',  min: 22.5,  max: 67.5 },
+    { name: 'ĐÔNG',      min: 67.5,  max: 112.5 },
+    { name: 'ĐÔNG NAM',  min: 112.5, max: 157.5 },
+    { name: 'NAM',       min: 157.5, max: 202.5 },
+    { name: 'TÂY NAM',   min: 202.5, max: 247.5 },
+    { name: 'TÂY',       min: 247.5, max: 292.5 },
+    { name: 'TÂY BẮC',   min: 292.5, max: 337.5 }
+  ];
+  for (const d of dirs) {
+    if (d.min > d.max) {
+      if (deg >= d.min || deg < d.max) return d.name;
+    } else if (deg >= d.min && deg < d.max) return d.name;
+  }
+  return 'BẮC';
+}
+
+function getMountain(deg) {
+  // TÝ centered at 0°. Each mountain = 15°.
+  // Mountain index = round((deg + 7.5) / 15) % 24
+  let idx = Math.floor(((deg + 7.5) % 360) / 15);
+  if (idx < 0) idx += 24;
+  return mountains[idx];
+}
+
+function getTrigram(deg) {
+  // Each trigram covers 45°. KHẢM centered at 0°.
+  let idx = Math.floor(((deg + 22.5) % 360) / 45);
+  if (idx < 0) idx += 8;
+  return trigrams[idx].name;
+}
+
+const interpretations = {
+  'KHẢM': { palace: 'KHẢM (Bắc)', element: 'Thủy', yy: 'Dương', nature: 'Hiểm trở, thông tuệ, lưu chuyển' },
+  'CẤN':  { palace: 'CẤN (Đông Bắc)', element: 'Thổ', yy: 'Dương', nature: 'Trầm tĩnh, bền vững như núi' },
+  'CHẤN': { palace: 'CHẤN (Đông)', element: 'Mộc', yy: 'Dương', nature: 'Động, phát sinh, khởi đầu' },
+  'TỐN':  { palace: 'TỐN (Đông Nam)', element: 'Mộc', yy: 'Âm', nature: 'Nhập, mềm mại, thuận theo' },
+  'LY':   { palace: 'LY (Nam)', element: 'Hỏa', yy: 'Âm', nature: 'Sáng, rực rỡ, văn minh' },
+  'KHÔN': { palace: 'KHÔN (Tây Nam)', element: 'Thổ', yy: 'Âm', nature: 'Nhu thuận, bao dung, sinh dưỡng' },
+  'ĐOÀI': { palace: 'ĐOÀI (Tây)', element: 'Kim', yy: 'Âm', nature: 'Hỷ duyệt, vui vẻ, thu hoạch' },
+  'CÀN':  { palace: 'CÀN (Tây Bắc)', element: 'Kim', yy: 'Dương', nature: 'Mạnh mẽ, cương kiện, lãnh đạo' }
+};
+
+function updateDisplay(heading) {
+  currentHeading = ((heading % 360) + 360) % 360;
+  // Rotate the compass so that current heading aligns with top (pointer)
+  // Pointer is fixed at top pointing up. Rotating compass by -heading puts the
+  // bearing direction under the pointer.
+  svg.style.transform = `rotate(${-currentHeading}deg)`;
+
+  document.getElementById('degreeDisplay').textContent = currentHeading.toFixed(1) + '°';
+  document.getElementById('directionDisplay').textContent = getDirection(currentHeading);
+  const m = getMountain(currentHeading);
+  document.getElementById('mountainDisplay').textContent = m;
+  const t = getTrigram(currentHeading);
+  document.getElementById('trigramDisplay').textContent = t;
+
+  const info = interpretations[t];
+  if (info) {
+    document.getElementById('palaceDisplay').textContent = info.palace;
+    document.getElementById('elementDisplay').textContent = info.element;
+    document.getElementById('yinyangDisplay').textContent = info.yy;
+    document.getElementById('natureDisplay').textContent = info.nature;
+  }
+
+  // Sync slider
+  document.getElementById('manualSlider').value = Math.round(currentHeading);
+  document.getElementById('manualValue').textContent = Math.round(currentHeading) + '°';
+}
+
+// ===== Device Orientation =====
+let sensorActive = false;
+
+function handleOrientation(e) {
+  let heading = null;
+  if (e.webkitCompassHeading !== undefined) {
+    // iOS - already gives compass heading (0 = North)
+    heading = e.webkitCompassHeading;
+  } else if (e.alpha !== null) {
+    // Android - alpha is rotation around Z axis (0 = device orientation reference, NOT necessarily North)
+    // Heading = 360 - alpha gives a rough North-based heading
+    heading = 360 - e.alpha;
+  }
+  if (heading !== null && !isNaN(heading)) {
+    updateDisplay(heading);
+  }
+}
+
+document.getElementById('startBtn').addEventListener('click', async () => {
+  const statusEl = document.getElementById('status');
+  try {
+    if (typeof DeviceOrientationEvent !== 'undefined' && typeof DeviceOrientationEvent.requestPermission === 'function') {
+      // iOS 13+
+      const perm = await DeviceOrientationEvent.requestPermission();
+      if (perm === 'granted') {
+        window.addEventListener('deviceorientation', handleOrientation, true);
+        sensorActive = true;
+        statusEl.textContent = '✓ Đã bật cảm biến la bàn. Xoay thiết bị để xem hướng.';
+      } else {
+        statusEl.textContent = '✗ Quyền truy cập cảm biến bị từ chối.';
+      }
+    } else if ('DeviceOrientationEvent' in window) {
+      window.addEventListener('deviceorientationabsolute', handleOrientation, true);
+      window.addEventListener('deviceorientation', handleOrientation, true);
+      sensorActive = true;
+      statusEl.textContent = '✓ Đã bật cảm biến la bàn. Xoay thiết bị để xem hướng (chính xác nhất trên di động).';
+    } else {
+      statusEl.textContent = '✗ Thiết bị không hỗ trợ cảm biến hướng. Dùng thanh trượt thủ công bên dưới.';
+    }
+  } catch (err) {
+    statusEl.textContent = '✗ Lỗi: ' + err.message + '. Dùng thanh trượt thủ công.';
+  }
+});
+
+// ===== Manual slider =====
+document.getElementById('manualSlider').addEventListener('input', (e) => {
+  if (!sensorActive) {
+    updateDisplay(parseFloat(e.target.value));
+  }
+});
+
+// Initial render
+updateDisplay(0);
+</script>
+</body>
+</html>
