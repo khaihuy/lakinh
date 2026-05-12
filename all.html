@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luận Tuổi Lạc Việt - Hoa Giáp - La Kinh (Tổng hợp)</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Times New Roman',Georgia,serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;color:#f0e8d0;padding:16px}
+  .container{max-width:1400px;margin:0 auto}
+  header{text-align:center;margin-bottom:18px}
+  h1{font-size:28px;color:#ffd700;text-shadow:2px 2px 4px rgba(0,0,0,.5);letter-spacing:2px;margin-bottom:4px}
+  .subtitle{font-size:13px;color:#ccc}
+  .tabs{display:flex;gap:8px;margin-bottom:18px;border-bottom:2px solid rgba(255,215,0,.3);flex-wrap:wrap}
+  .tab{padding:11px 22px;background:transparent;border:none;color:#aaa;font-size:14px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;font-family:inherit;letter-spacing:1px}
+  .tab.active{color:#ffd700;border-bottom-color:#ffd700;background:rgba(255,215,0,.08)}
+  .tab:hover{color:#ffd700}
+  .panel{display:none}
+  .panel.active{display:block}
+  .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.25);border-radius:12px;padding:18px 22px;margin-bottom:14px}
+  .card h2{color:#ffd700;font-size:18px;border-bottom:1px solid rgba(255,215,0,.3);padding-bottom:8px;margin-bottom:12px;letter-spacing:1px}
+  .card h3{color:#ffe066;font-size:15px;margin:10px 0 6px}
+  .form-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:12px;margin-bottom:14px}
+  .form-row{display:flex;flex-direction:column;gap:4px}
+  .form-row label{font-size:12px;color:#ccc;letter-spacing:.5px}
+  .form-row input,.form-row select{padding:9px 12px;background:rgba(0,0,0,.3);border:1px solid rgba(255,215,0,.3);border-radius:8px;color:#fff;font-size:14px;font-family:inherit}
+  .form-row input:focus,.form-row select:focus{outline:none;border-color:#ffd700;box-shadow:0 0 0 2px rgba(255,215,0,.15)}
+  button.action{background:linear-gradient(135deg,#ffd700 0%,#ff8c00 100%);color:#1a1a2e;border:none;padding:11px 28px;font-size:14px;font-weight:bold;border-radius:25px;cursor:pointer;letter-spacing:1px;margin:4px;font-family:inherit;box-shadow:0 4px 10px rgba(255,215,0,.25)}
+  button.action:hover{transform:translateY(-1px)}
+  button.secondary{background:linear-gradient(135deg,#4a90e2 0%,#357abd 100%);color:#fff}
+  button.danger{background:linear-gradient(135deg,#e74c3c 0%,#c0392b 100%);color:#fff}
+  .children-list{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+  .child-item{display:flex;gap:8px;align-items:center}
+  .child-item input{flex:1}
+  .person-card{background:rgba(255,255,255,.04);border-left:4px solid #ffd700;padding:10px 14px;border-radius:6px;margin-bottom:10px}
+  .person-card.husband{border-left-color:#4a90e2}
+  .person-card.wife{border-left-color:#ff80a8}
+  .person-card.child{border-left-color:#8fd980}
+  .person-card .who{font-weight:bold;color:#ffd700;font-size:13px;letter-spacing:1px;margin-bottom:6px}
+  .person-card .info{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:4px;font-size:12.5px}
+  .person-card .info span:nth-child(odd){color:#aaa}
+  .person-card .info span:nth-child(even){color:#fff;font-weight:bold}
+  .verdict{padding:10px 14px;border-radius:8px;margin:6px 0;font-size:13.5px;line-height:1.6}
+  .verdict.good{background:rgba(76,175,80,.18);border-left:4px solid #4caf50;color:#d4edda}
+  .verdict.bad{background:rgba(231,76,60,.18);border-left:4px solid #e74c3c;color:#fce4e4}
+  .verdict.neutral{background:rgba(255,193,7,.15);border-left:4px solid #ffc107;color:#fff3cd}
+  .verdict.info{background:rgba(74,144,226,.15);border-left:4px solid #4a90e2;color:#d4e8ff}
+  .verdict-title{font-weight:bold;margin-bottom:4px;color:#ffd700}
+  table.hoa-giap{width:100%;border-collapse:collapse;font-size:12.5px;background:rgba(0,0,0,.2);border-radius:8px;overflow:hidden}
+  table.hoa-giap th,table.hoa-giap td{padding:7px 10px;border:1px solid rgba(255,255,255,.08);text-align:left}
+  table.hoa-giap th{background:rgba(255,215,0,.15);color:#ffd700;font-weight:bold;letter-spacing:.5px;position:sticky;top:0}
+  table.hoa-giap td.canchi{font-weight:bold;color:#ffd700}
+  table.hoa-giap tr.thuy td{background:rgba(26,58,138,.15)}
+  table.hoa-giap tr.moc td{background:rgba(30,122,58,.15)}
+  table.hoa-giap tr.hoa td{background:rgba(200,32,42,.15)}
+  table.hoa-giap tr.tho td{background:rgba(160,112,32,.15)}
+  table.hoa-giap tr.kim td{background:rgba(120,120,120,.15)}
+  .badge{display:inline-block;padding:2px 9px;border-radius:11px;font-size:11px;font-weight:bold}
+  .b-thuy{background:#1a3a8a;color:#fff}
+  .b-moc{background:#1e7a3a;color:#fff}
+  .b-hoa{background:#c8202a;color:#fff}
+  .b-tho{background:#a07020;color:#fff}
+  .b-kim{background:#8a8a8a;color:#fff}
+  .b-am{background:#222;color:#fff;border:1px solid #888}
+  .b-duong{background:#fff;color:#222}
+  .filter-bar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap;align-items:center}
+  .filter-bar input,.filter-bar select{padding:7px 10px;background:rgba(0,0,0,.3);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:#fff;font-size:13px;font-family:inherit}
+  .table-wrap{max-height:70vh;overflow-y:auto;border-radius:8px}
+  .lakinh-mini{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:14px;margin-top:12px}
+  .lk-card{background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:12px 16px}
+  .lk-card .lk-title{color:#ffd700;font-weight:bold;font-size:13px;margin-bottom:6px;letter-spacing:.5px}
+  .lk-card .lk-row{display:flex;justify-content:space-between;padding:3px 0;font-size:12.5px;border-bottom:1px dashed rgba(255,255,255,.08)}
+  .lk-card .lk-row:last-child{border-bottom:none}
+  .lk-card .lk-row span:first-child{color:#aaa}
+  .lk-card .lk-row span:last-child{color:#fff;font-weight:bold}
+  .direction-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:10px}
+  .dir-cell{padding:10px 8px;border-radius:8px;text-align:center;font-size:12.5px}
+  .dir-cell .dn{font-weight:bold;font-size:14px;display:block;margin-bottom:3px}
+  .dir-cell.cat-dai{background:rgba(76,175,80,.25);border:1px solid #4caf50}
+  .dir-cell.cat{background:rgba(139,195,74,.18);border:1px solid #8bc34a}
+  .dir-cell.hung{background:rgba(255,152,0,.18);border:1px solid #ff9800}
+  .dir-cell.hung-dai{background:rgba(231,76,60,.25);border:1px solid #e74c3c}
+  .external-link{display:inline-block;padding:10px 20px;background:rgba(255,215,0,.15);border:1px solid #ffd700;border-radius:8px;color:#ffd700;text-decoration:none;font-weight:bold;margin-top:10px}
+  .external-link:hover{background:rgba(255,215,0,.25)}
+  .empty{text-align:center;color:#888;padding:30px;font-style:italic}
+  details{margin:6px 0}
+  details summary{cursor:pointer;color:#ffd700;font-size:13px;padding:6px 0}
+  details p{font-size:12.5px;color:#ccc;padding:6px 0 6px 16px;line-height:1.6}
+  .principle-list{font-size:12.5px;color:#ddd;line-height:1.7}
+  .principle-list b{color:#ffd700}
+  @media(max-width:600px){h1{font-size:22px}.direction-grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div class="container">
+  <header>
+    <h1>LUẬN TUỔI LẠC VIỆT &middot; HOA GIÁP &middot; LA KINH</h1>
+    <div class="subtitle">Công cụ tổng hợp theo "Luận Tuổi Lạc Việt" (Thiên Sứ Nguyễn Vũ Tuấn Anh) &amp; "La Kinh Thấu Giải" (Vương Đạo Hạnh)</div>
+  </header>
+
+  <nav class="tabs">
+    <button class="tab active" data-tab="calc">⚖ LUẬN TUỔI</button>
+    <button class="tab" data-tab="hoagiap">📜 LẠC THƯ HOA GIÁP</button>
+    <button class="tab" data-tab="lakinh">🧭 LA KINH &amp; HƯỚNG NHÀ</button>
+    <button class="tab" data-tab="guide">📖 NGUYÊN LÝ</button>
+  </nav>
+
+  <!-- ==================== TAB 1: CALCULATOR ==================== -->
+  <div class="panel active" id="panel-calc">
+    <div class="card">
+      <h2>NHẬP THÔNG TIN GIA ĐÌNH</h2>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Năm sinh CHỒNG (Dương lịch)</label>
+          <input type="number" id="husbandYear" placeholder="VD: 1985" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Năm sinh VỢ (Dương lịch)</label>
+          <input type="number" id="wifeYear" placeholder="VD: 1987" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Năm hiện tại (để xét Tam Tai)</label>
+          <input type="number" id="currentYear" value="2026" min="1900" max="2100">
+        </div>
+      </div>
+
+      <h3>Các con (nhập năm sinh - thêm đứa con út cuối cùng):</h3>
+      <div class="children-list" id="childrenList"></div>
+      <div style="margin-top:10px">
+        <button class="action secondary" onclick="addChild()">+ Thêm con</button>
+        <button class="action" onclick="analyze()">PHÂN TÍCH TUỔI</button>
+        <button class="action danger" onclick="resetForm()">↺ Xóa form</button>
+      </div>
+    </div>
+
+    <div id="results"></div>
+  </div>
+
+  <!-- ==================== TAB 2: HOA GIAP TABLE ==================== -->
+  <div class="panel" id="panel-hoagiap">
+    <div class="card">
+      <h2>BẢNG LẠC THƯ HOA GIÁP - 60 NĂM</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Theo "Luận Tuổi Lạc Việt", thay thế bảng "Lục Thập Hoa Giáp" cổ Hán. Mỗi tuổi gồm Thiên Can + Địa Chi + Nạp Âm (Thân Mạng).</p>
+      <div class="filter-bar">
+        <input type="text" id="hgSearch" placeholder="🔍 Tìm Can-Chi, Nạp Âm..." oninput="filterHoaGiap()">
+        <select id="hgFilterEl" onchange="filterHoaGiap()">
+          <option value="">Tất cả ngũ hành</option>
+          <option value="Thủy">Thủy</option>
+          <option value="Mộc">Mộc</option>
+          <option value="Hỏa">Hỏa</option>
+          <option value="Thổ">Thổ</option>
+          <option value="Kim">Kim</option>
+        </select>
+        <span style="font-size:12px;color:#aaa">Tổng: <span id="hgCount">60</span> tuổi</span>
+      </div>
+      <div class="table-wrap">
+        <table class="hoa-giap" id="hgTable">
+          <thead>
+            <tr><th>STT</th><th>Can-Chi</th><th>Âm/Dương</th><th>Nạp Âm (Thân Mạng)</th><th>Ngũ Hành</th><th>Tam Hợp</th><th>Năm Dương lịch (gần đây)</th></tr>
+          </thead>
+          <tbody id="hgBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 3: LA KINH ==================== -->
+  <div class="panel" id="panel-lakinh">
+    <div class="card">
+      <h2>LA KINH &amp; HƯỚNG NHÀ HỢP TUỔI</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Sau khi nhập tuổi gia chủ, công cụ sẽ tính <b>Cung Phi Bát Trạch</b> và 8 hướng cát-hung theo trường phái Bát Trạch.</p>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Năm sinh gia chủ</label>
+          <input type="number" id="ownerYear" placeholder="VD: 1985" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Giới tính</label>
+          <select id="ownerGender">
+            <option value="nam">Nam</option>
+            <option value="nu">Nữ</option>
+          </select>
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="calcBatTrach()">TÍNH CUNG PHI &amp; HƯỚNG</button>
+        </div>
+      </div>
+
+      <div id="batTrachResult"></div>
+
+      <h3>Liên kết La Kinh đầy đủ:</h3>
+      <a class="external-link" href="la-kinh-day-du-36-tang.html" target="_blank">🧭 Mở La Kinh 36 tầng (full)</a>
+      <a class="external-link" href="la-kinh-la-ban.html" target="_blank">🧭 Mở La Kinh 12 tầng (gọn)</a>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 4: GUIDE ==================== -->
+  <div class="panel" id="panel-guide">
+    <div class="card">
+      <h2>NGUYÊN LÝ "LUẬN TUỔI LẠC VIỆT"</h2>
+
+      <h3>Ba yếu tố tương tác (theo tỷ trọng)</h3>
+      <div class="principle-list">
+        <p>🔸 <b>Thiên Can (55-65%)</b> - Thuần Dương, ứng với chồng/cha. Tương tác mạnh nhất.</p>
+        <p>🔸 <b>Thân Mạng (30-40%)</b> - Vận khí Lạc Thư Hoa Giáp, ứng với vợ/mẹ.</p>
+        <p>🔸 <b>Địa Chi (10-25%)</b> - Thuần Âm, yếu nhất - nhưng nếu hợp cách (Tam Hợp, Tứ Hành Xung đủ bộ) sẽ rất mạnh và mang tính tiên tri.</p>
+      </div>
+
+      <h3>5 trường hợp Thiên Can</h3>
+      <details><summary>1. Tương sinh thuận lý (TỐT NHẤT)</summary><p>Thiên Can chồng sinh vợ &amp; con. Vd: chồng Bính (Hỏa) → vợ Mậu (Thổ). Gia đình hòa thuận, chồng trách nhiệm.</p></details>
+      <details><summary>2. Tương sinh nghịch lý</summary><p>Vợ sinh chồng. Vợ làm kinh tế chính, chồng phụ. Vẫn ổn nếu các yếu tố khác tốt.</p></details>
+      <details><summary>3. Tương khắc thuận lý (XẤU)</summary><p>Chồng khắc vợ - "Dương khắc Âm tắc bế". Trì trệ phát triển.</p></details>
+      <details><summary>4. Tương khắc nghịch lý (XẤU NHẤT)</summary><p>Vợ khắc chồng - "Âm khắc Dương tắc loạn". Bất hòa, dễ chia ly.</p></details>
+      <details><summary>5. Bình hòa</summary><p>Cùng hành. Xem thêm Thân Mạng và Địa Chi.</p></details>
+
+      <h3>4 Tam Hợp &amp; Tam Tai</h3>
+      <table class="hoa-giap"><thead><tr><th>Tam Hợp</th><th>Cục</th><th>Tam Tai (3 năm xui)</th></tr></thead><tbody>
+        <tr class="thuy"><td><b>Thân-Tý-Thìn</b></td><td><span class="badge b-thuy">Thủy</span></td><td>Dần-Mão-Thìn</td></tr>
+        <tr class="moc"><td><b>Hợi-Mão-Mùi</b></td><td><span class="badge b-moc">Mộc</span></td><td>Tỵ-Ngọ-Mùi</td></tr>
+        <tr class="hoa"><td><b>Dần-Ngọ-Tuất</b></td><td><span class="badge b-hoa">Hỏa</span></td><td>Thân-Dậu-Tuất</td></tr>
+        <tr class="kim"><td><b>Tỵ-Dậu-Sửu</b></td><td><span class="badge b-kim">Kim</span></td><td>Hợi-Tý-Sửu</td></tr>
+      </tbody></table>
+
+      <h3>3 Tứ Hành Xung (đủ bộ = TỐT, thiếu = XẤU)</h3>
+      <div class="principle-list">
+        <p>🔸 <b>Tứ Sinh:</b> Dần-Thân-Tỵ-Hợi → phát giai đoạn đầu</p>
+        <p>🔸 <b>Tứ Vượng:</b> Tý-Ngọ-Mão-Dậu → phát trung vận</p>
+        <p>🔸 <b>Tứ Phúc:</b> Thìn-Tuất-Sửu-Mùi → phát hậu vận, chắc chắn</p>
+      </div>
+
+      <h3>Bát Trạch Cung Phi</h3>
+      <div class="principle-list">
+        <p>🔸 <b>Đông tứ mệnh</b> (Khảm-1, Chấn-3, Tốn-4, Ly-9): hợp 4 hướng <b>Bắc, Đông, Đông Nam, Nam</b></p>
+        <p>🔸 <b>Tây tứ mệnh</b> (Khôn-2, Càn-6, Đoài-7, Cấn-8): hợp 4 hướng <b>Đông Bắc, Tây Nam, Tây, Tây Bắc</b></p>
+      </div>
+
+      <h3>8 phương vị Bát Trạch</h3>
+      <div class="principle-list">
+        <p>🟢 <b>Sinh Khí</b> (đại cát): tài lộc, thăng tiến, sinh con quý tử</p>
+        <p>🟢 <b>Diên Niên</b> (đại cát): hòa hợp vợ chồng, sức khỏe, sống lâu</p>
+        <p>🟢 <b>Thiên Y</b> (đại cát): bình an, hết bệnh, gặp quý nhân</p>
+        <p>🟡 <b>Phục Vị</b> (cát): an cư, ổn định, lập nghiệp</p>
+        <p>🟠 <b>Họa Hại</b> (hung): cãi vã, kiện tụng, mất của</p>
+        <p>🟠 <b>Lục Sát</b> (hung): tai họa, bệnh tật, ly tán</p>
+        <p>🔴 <b>Ngũ Quỷ</b> (đại hung): kiện cáo, mất trộm, lửa cháy</p>
+        <p>🔴 <b>Tuyệt Mệnh</b> (đại hung): tử vong, đại bệnh, suy bại</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+// ============== CORE DATA ==============
+const CAN=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+const CHI=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+const CAN_EL={Giáp:'Mộc',Ất:'Mộc',Bính:'Hỏa',Đinh:'Hỏa',Mậu:'Thổ',Kỷ:'Thổ',Canh:'Kim',Tân:'Kim',Nhâm:'Thủy',Quý:'Thủy'};
+const CAN_YY={Giáp:'Dương',Ất:'Âm',Bính:'Dương',Đinh:'Âm',Mậu:'Dương',Kỷ:'Âm',Canh:'Dương',Tân:'Âm',Nhâm:'Dương',Quý:'Âm'};
+const CHI_EL={Tý:'Thủy',Sửu:'Thổ',Dần:'Mộc',Mão:'Mộc',Thìn:'Thổ',Tỵ:'Hỏa',Ngọ:'Hỏa',Mùi:'Thổ',Thân:'Kim',Dậu:'Kim',Tuất:'Thổ',Hợi:'Thủy'};
+const CHI_YY={Tý:'Dương',Sửu:'Âm',Dần:'Dương',Mão:'Âm',Thìn:'Dương',Tỵ:'Âm',Ngọ:'Dương',Mùi:'Âm',Thân:'Dương',Dậu:'Âm',Tuất:'Dương',Hợi:'Âm'};
+
+// 60 Nạp Âm (mỗi cặp 2 năm cùng nạp âm)
+const NAP_AM=[
+'Hải Trung Kim','Hải Trung Kim','Lư Trung Hỏa','Lư Trung Hỏa','Đại Lâm Mộc','Đại Lâm Mộc',
+'Lộ Bàng Thổ','Lộ Bàng Thổ','Kiếm Phong Kim','Kiếm Phong Kim','Sơn Đầu Hỏa','Sơn Đầu Hỏa',
+'Giản Hạ Thủy','Giản Hạ Thủy','Thành Đầu Thổ','Thành Đầu Thổ','Bạch Lạp Kim','Bạch Lạp Kim',
+'Dương Liễu Mộc','Dương Liễu Mộc','Tuyền Trung Thủy','Tuyền Trung Thủy','Ốc Thượng Thổ','Ốc Thượng Thổ',
+'Tích Lịch Hỏa','Tích Lịch Hỏa','Tùng Bách Mộc','Tùng Bách Mộc','Trường Lưu Thủy','Trường Lưu Thủy',
+'Sa Trung Kim','Sa Trung Kim','Sơn Hạ Hỏa','Sơn Hạ Hỏa','Bình Địa Mộc','Bình Địa Mộc',
+'Bích Thượng Thổ','Bích Thượng Thổ','Kim Bạc Kim','Kim Bạc Kim','Phú Đăng Hỏa','Phú Đăng Hỏa',
+'Thiên Hà Thủy','Thiên Hà Thủy','Đại Trạch Thổ','Đại Trạch Thổ','Thoa Xuyến Kim','Thoa Xuyến Kim',
+'Tang Đố Mộc','Tang Đố Mộc','Đại Khê Thủy','Đại Khê Thủy','Sa Trung Thổ','Sa Trung Thổ',
+'Thiên Thượng Hỏa','Thiên Thượng Hỏa','Thạch Lựu Mộc','Thạch Lựu Mộc','Đại Hải Thủy','Đại Hải Thủy'];
+
+function napAmEl(name){
+  if(name.includes('Kim'))return'Kim';
+  if(name.includes('Mộc'))return'Mộc';
+  if(name.includes('Thủy'))return'Thủy';
+  if(name.includes('Hỏa'))return'Hỏa';
+  if(name.includes('Thổ'))return'Thổ';
+  return'';
+}
+
+// Tam Hợp
+const TAM_HOP={
+  'Thân':'Thủy','Tý':'Thủy','Thìn':'Thủy',
+  'Hợi':'Mộc','Mão':'Mộc','Mùi':'Mộc',
+  'Dần':'Hỏa','Ngọ':'Hỏa','Tuất':'Hỏa',
+  'Tỵ':'Kim','Dậu':'Kim','Sửu':'Kim'
+};
+const TAM_HOP_GROUP={
+  'Thủy':['Thân','Tý','Thìn'],
+  'Mộc':['Hợi','Mão','Mùi'],
+  'Hỏa':['Dần','Ngọ','Tuất'],
+  'Kim':['Tỵ','Dậu','Sửu']
+};
+const TAM_TAI={
+  'Thủy':['Dần','Mão','Thìn'],
+  'Mộc':['Tỵ','Ngọ','Mùi'],
+  'Hỏa':['Thân','Dậu','Tuất'],
+  'Kim':['Hợi','Tý','Sửu']
+};
+
+// Tứ Hành Xung
+const TU_XUNG={
+  'Sinh':['Dần','Thân','Tỵ','Hợi'],
+  'Vượng':['Tý','Ngọ','Mão','Dậu'],
+  'Phúc':['Thìn','Tuất','Sửu','Mùi']
+};
+
+// Lục Hại
+const LUC_HAI={'Tý':'Mùi','Sửu':'Ngọ','Dần':'Tỵ','Mão':'Thìn','Thân':'Hợi','Dậu':'Tuất'};
+// Full both ways
+const LUC_HAI_FULL={};
+Object.entries(LUC_HAI).forEach(([a,b])=>{LUC_HAI_FULL[a]=b;LUC_HAI_FULL[b]=a});
+
+// Lục Xung (đối xứng qua trục)
+const LUC_XUNG={'Tý':'Ngọ','Sửu':'Mùi','Dần':'Thân','Mão':'Dậu','Thìn':'Tuất','Tỵ':'Hợi'};
+const LUC_XUNG_FULL={};
+Object.entries(LUC_XUNG).forEach(([a,b])=>{LUC_XUNG_FULL[a]=b;LUC_XUNG_FULL[b]=a});
+
+// Ngũ Hành tương sinh tương khắc
+const NH_SINH={Thủy:'Mộc',Mộc:'Hỏa',Hỏa:'Thổ',Thổ:'Kim',Kim:'Thủy'};
+const NH_KHAC={Thủy:'Hỏa',Hỏa:'Kim',Kim:'Mộc',Mộc:'Thổ',Thổ:'Thủy'};
+
+// ============== HELPERS ==============
+function yearToCanChi(year){
+  // Năm 4 (CN) = Giáp Tý. (year - 4) % 60 = sexagenary index
+  let idx=((year-4)%60+60)%60;
+  return{
+    canIdx:idx%10,
+    chiIdx:idx%12,
+    can:CAN[idx%10],
+    chi:CHI[idx%12],
+    napAm:NAP_AM[idx],
+    sexIdx:idx
+  };
+}
+
+function fullPersonInfo(year,role){
+  const cc=yearToCanChi(year);
+  return{
+    role,year,
+    can:cc.can,chi:cc.chi,
+    canEl:CAN_EL[cc.can],chiEl:CHI_EL[cc.chi],
+    canYY:CAN_YY[cc.can],chiYY:CHI_YY[cc.chi],
+    napAm:cc.napAm,napAmEl:napAmEl(cc.napAm),
+    tamHop:TAM_HOP[cc.chi],
+    sexIdx:cc.sexIdx
+  };
+}
+
+// Bát Trạch Cung Phi
+function cungPhi(year,gender){
+  // Reduce year digits to single digit
+  let sum=0;
+  let s=String(year);
+  for(const c of s)sum+=parseInt(c);
+  while(sum>=10){let n=0;for(const c of String(sum))n+=parseInt(c);sum=n}
+  let phi;
+  if(gender==='nam'){
+    phi=11-sum;
+    if(phi>=10)phi-=9;
+    if(phi===5)phi=2;
+  }else{
+    phi=sum+4;
+    if(phi>=10)phi-=9;
+    if(phi===5)phi=8;
+  }
+  const map={1:'Khảm',2:'Khôn',3:'Chấn',4:'Tốn',6:'Càn',7:'Đoài',8:'Cấn',9:'Ly'};
+  const elMap={Khảm:'Thủy',Khôn:'Thổ',Chấn:'Mộc',Tốn:'Mộc',Càn:'Kim',Đoài:'Kim',Cấn:'Thổ',Ly:'Hỏa'};
+  const trach=([1,3,4,9].includes(phi))?'Đông tứ mệnh':'Tây tứ mệnh';
+  return{num:phi,name:map[phi],el:elMap[map[phi]],trach};
+}
+
+// 8 hướng Bát Trạch theo cung phi
+const BAT_TRACH_DIR={
+  'Khảm':{'Bắc':'Phục Vị','Đông Bắc':'Ngũ Quỷ','Đông':'Thiên Y','Đông Nam':'Sinh Khí','Nam':'Diên Niên','Tây Nam':'Tuyệt Mệnh','Tây':'Họa Hại','Tây Bắc':'Lục Sát'},
+  'Khôn':{'Bắc':'Tuyệt Mệnh','Đông Bắc':'Sinh Khí','Đông':'Họa Hại','Đông Nam':'Ngũ Quỷ','Nam':'Lục Sát','Tây Nam':'Phục Vị','Tây':'Thiên Y','Tây Bắc':'Diên Niên'},
+  'Chấn':{'Bắc':'Thiên Y','Đông Bắc':'Lục Sát','Đông':'Phục Vị','Đông Nam':'Diên Niên','Nam':'Sinh Khí','Tây Nam':'Họa Hại','Tây':'Tuyệt Mệnh','Tây Bắc':'Ngũ Quỷ'},
+  'Tốn':{'Bắc':'Sinh Khí','Đông Bắc':'Tuyệt Mệnh','Đông':'Diên Niên','Đông Nam':'Phục Vị','Nam':'Thiên Y','Tây Nam':'Ngũ Quỷ','Tây':'Lục Sát','Tây Bắc':'Họa Hại'},
+  'Càn':{'Bắc':'Lục Sát','Đông Bắc':'Thiên Y','Đông':'Ngũ Quỷ','Đông Nam':'Họa Hại','Nam':'Tuyệt Mệnh','Tây Nam':'Diên Niên','Tây':'Sinh Khí','Tây Bắc':'Phục Vị'},
+  'Đoài':{'Bắc':'Họa Hại','Đông Bắc':'Diên Niên','Đông':'Tuyệt Mệnh','Đông Nam':'Lục Sát','Nam':'Ngũ Quỷ','Tây Nam':'Thiên Y','Tây':'Phục Vị','Tây Bắc':'Sinh Khí'},
+  'Cấn':{'Bắc':'Ngũ Quỷ','Đông Bắc':'Phục Vị','Đông':'Lục Sát','Đông Nam':'Tuyệt Mệnh','Nam':'Họa Hại','Tây Nam':'Sinh Khí','Tây':'Diên Niên','Tây Bắc':'Thiên Y'},
+  'Ly':{'Bắc':'Diên Niên','Đông Bắc':'Họa Hại','Đông':'Sinh Khí','Đông Nam':'Thiên Y','Nam':'Phục Vị','Tây Nam':'Lục Sát','Tây':'Ngũ Quỷ','Tây Bắc':'Tuyệt Mệnh'}
+};
+
+const DIR_CLASS={
+  'Sinh Khí':'cat-dai','Diên Niên':'cat-dai','Thiên Y':'cat-dai',
+  'Phục Vị':'cat',
+  'Họa Hại':'hung','Lục Sát':'hung',
+  'Ngũ Quỷ':'hung-dai','Tuyệt Mệnh':'hung-dai'
+};
+
+// ============== TABS ==============
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>{
+    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+    t.classList.add('active');
+    document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+  });
+});
+
+// ============== CHILDREN INPUT ==============
+let childCount=0;
+function addChild(year){
+  childCount++;
+  const div=document.createElement('div');
+  div.className='child-item';
+  div.innerHTML=`<input type="number" placeholder="Năm sinh con thứ ${childCount}" value="${year||''}" min="1900" max="2100">
+    <button class="action danger" onclick="this.parentElement.remove()">✕</button>`;
+  document.getElementById('childrenList').appendChild(div);
+}
+function resetForm(){
+  document.getElementById('husbandYear').value='';
+  document.getElementById('wifeYear').value='';
+  document.getElementById('childrenList').innerHTML='';
+  childCount=0;
+  document.getElementById('results').innerHTML='';
+}
+
+// ============== ANALYZE ==============
+function analyze(){
+  const hY=parseInt(document.getElementById('husbandYear').value);
+  const wY=parseInt(document.getElementById('wifeYear').value);
+  const curY=parseInt(document.getElementById('currentYear').value)||2026;
+  if(!hY||!wY){alert('Vui lòng nhập năm sinh chồng và vợ');return}
+  const childInputs=document.querySelectorAll('#childrenList input');
+  const childYears=Array.from(childInputs).map(i=>parseInt(i.value)).filter(y=>y);
+
+  const H=fullPersonInfo(hY,'CHỒNG');
+  const W=fullPersonInfo(wY,'VỢ');
+  const children=childYears.map((y,i)=>fullPersonInfo(y,`Con thứ ${i+1}${i===childYears.length-1&&childYears.length>1?' (ÚT)':''}`));
+
+  let html='';
+
+  // ====== Persons ======
+  html+='<div class="card"><h2>THÔNG TIN TỪNG NGƯỜI</h2>';
+  html+=renderPerson(H,'husband');
+  html+=renderPerson(W,'wife');
+  children.forEach(c=>html+=renderPerson(c,'child'));
+  html+='</div>';
+
+  // ====== Thiên Can analysis ======
+  html+='<div class="card"><h2>I. PHÂN TÍCH THIÊN CAN (Trọng số 55-65%)</h2>';
+  html+=analyzeThienCan(H,W,children);
+  html+='</div>';
+
+  // ====== Thân Mạng analysis ======
+  html+='<div class="card"><h2>II. PHÂN TÍCH THÂN MẠNG / NẠP ÂM (Trọng số 30-40%)</h2>';
+  html+=analyzeThanMang(H,W,children);
+  html+='</div>';
+
+  // ====== Địa Chi analysis ======
+  html+='<div class="card"><h2>III. PHÂN TÍCH ĐỊA CHI (Trọng số 10-25%)</h2>';
+  html+=analyzeDiaChi(H,W,children,curY);
+  html+='</div>';
+
+  // ====== Tam Tai ======
+  html+='<div class="card"><h2>IV. CẢNH BÁO TAM TAI NĂM '+curY+'</h2>';
+  html+=analyzeTamTai(H,W,children,curY);
+  html+='</div>';
+
+  // ====== Conclusion ======
+  html+='<div class="card"><h2>V. KẾT LUẬN TỔNG HỢP</h2>';
+  html+=conclude(H,W,children);
+  html+='</div>';
+
+  document.getElementById('results').innerHTML=html;
+  document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function renderPerson(p,cls){
+  const elClass=p.napAmEl?'b-'+p.napAmEl.toLowerCase().replace('thủy','thuy').replace('hỏa','hoa').replace('thổ','tho').replace('mộc','moc'):'';
+  return `<div class="person-card ${cls}">
+    <div class="who">${p.role} - Năm ${p.year}</div>
+    <div class="info">
+      <span>Can-Chi:</span><span>${p.can} ${p.chi}</span>
+      <span>Thiên Can:</span><span>${p.can} (${p.canEl}, ${p.canYY})</span>
+      <span>Địa Chi:</span><span>${p.chi} (${p.chiEl}, ${p.chiYY})</span>
+      <span>Nạp Âm:</span><span>${p.napAm} <span class="badge ${elClass}">${p.napAmEl}</span></span>
+      <span>Tam Hợp cục:</span><span>${p.tamHop} (${TAM_HOP_GROUP[p.tamHop].join('-')})</span>
+    </div>
+  </div>`;
+}
+
+function compareEl(elA,elB){
+  if(elA===elB)return'binhhoa';
+  if(NH_SINH[elA]===elB)return'AsinhB';
+  if(NH_SINH[elB]===elA)return'BsinhA';
+  if(NH_KHAC[elA]===elB)return'AkhacB';
+  if(NH_KHAC[elB]===elA)return'BkhacA';
+  return'binhhoa';
+}
+
+function analyzeThienCan(H,W,children){
+  let html='';
+  // Husband vs Wife
+  const cmp=compareEl(H.canEl,W.canEl);
+  let v={text:'',cls:'neutral',title:''};
+  if(cmp==='AsinhB'){v={cls:'good',title:'TƯƠNG SINH THUẬN LÝ (Tốt nhất)',text:`Thiên Can chồng ${H.can} (${H.canEl}) sinh vợ ${W.can} (${W.canEl}). "Dương sinh Âm" - chồng có trách nhiệm, yêu thương vợ con. Gia đình hòa thuận, phát triển bền vững.`};}
+  else if(cmp==='BsinhA'){v={cls:'neutral',title:'TƯƠNG SINH NGHỊCH LÝ',text:`Vợ ${W.can} (${W.canEl}) sinh chồng ${H.can} (${H.canEl}). Vợ làm kinh tế chính, chồng phụ. Nếu các yếu tố khác tốt thì vẫn ổn; nếu xấu thì vợ vất vả.`};}
+  else if(cmp==='AkhacB'){v={cls:'bad',title:'TƯƠNG KHẮC THUẬN LÝ',text:`Chồng ${H.can} (${H.canEl}) khắc vợ ${W.can} (${W.canEl}). "Dương khắc Âm tắc bế" - trì trệ phát triển, sức khỏe vợ yếu. Chồng bảo thủ. Cuộc sống tình cảm hạn chế.`};}
+  else if(cmp==='BkhacA'){v={cls:'bad',title:'TƯƠNG KHẮC NGHỊCH LÝ (Xấu nhất)',text:`Vợ ${W.can} khắc chồng ${H.can}. "Âm khắc Dương tắc loạn" - bất hòa, dễ chia ly nếu các yếu tố khác cũng xấu.`};}
+  else{v={cls:'info',title:'BÌNH HÒA',text:`Chồng và vợ cùng hành ${H.canEl}. ${H.canYY===W.canYY?'Cùng Âm/Dương: hợp tính, an hòa.':'Khác Âm/Dương: tương hợp tốt theo Tiên Thiên.'}`};}
+  html+=`<div class="verdict ${v.cls}"><div class="verdict-title">VỢ CHỒNG: ${v.title}</div>${v.text}</div>`;
+
+  // Special pairings (Hậu Thiên Lạc Việt)
+  const specialPairs=[['Kỷ','Giáp'],['Bính','Tân'],['Nhâm','Đinh'],['Canh','Ất']];
+  for(const [a,b] of specialPairs){
+    if((H.can===a&&W.can===b)||(H.can===b&&W.can===a)){
+      html+=`<div class="verdict good"><div class="verdict-title">HẬU THIÊN TƯƠNG HỢP ĐẶC BIỆT</div>Cặp ${a}-${b} tương hợp theo Hậu Thiên Lạc Việt phối Hà Đồ - đây là cặp Thiên Can hoàn hảo, vợ chồng hỗ trợ nhau mạnh mẽ.</div>`;
+      break;
+    }
+  }
+
+  // Children
+  if(children.length){
+    const youngest=children[children.length-1];
+    const cmpHC=compareEl(H.canEl,youngest.canEl);
+    const cmpWC=compareEl(W.canEl,youngest.canEl);
+    let kid={text:'',cls:'neutral',title:''};
+    if(cmpHC==='AsinhB'&&cmpWC==='AsinhB'){kid={cls:'good',title:'CHA MẸ ĐỀU SINH CON ÚT - CỰC TỐT',text:`Cha ${H.can} và mẹ ${W.can} đều sinh Thiên Can con út ${youngest.can}. Gia đình đại phát.`};}
+    else if(cmpHC==='AsinhB'){kid={cls:'good',title:'CHA SINH CON ÚT',text:`Cha ${H.can} (${H.canEl}) sinh con út ${youngest.can} (${youngest.canEl}). ${youngest.canYY==='Dương'?'Đặc biệt tốt với con trai - Dương sinh Dương.':'Tốt với con gái.'}`};}
+    else if(cmpWC==='AsinhB'){kid={cls:'good',title:'MẸ SINH CON ÚT',text:`Mẹ ${W.can} sinh con út ${youngest.can}. Tốt - tăng hòa thuận gia đình.`};}
+    else if(cmpHC==='BkhacA'){kid={cls:'bad',title:'CON ÚT KHẮC CHA',text:`Con út ${youngest.can} khắc cha ${H.can}. "Âm khắc Dương" - rất xấu, đặc biệt với con trai. Cha-con khó hòa hợp.`};}
+    else if(cmpHC==='AkhacB'){kid={cls:'bad',title:'CHA KHẮC CON ÚT',text:`Cha ${H.can} khắc con út ${youngest.can}. Trì trệ về phát triển con, gia đình kinh tế chậm phát.`};}
+    else if(cmpWC==='BkhacA'){kid={cls:'bad',title:'CON ÚT KHẮC MẸ',text:`Con út khắc mẹ ${W.can}. Mẹ vất vả vì con.`};}
+    else{kid={cls:'info',title:'TƯƠNG TÁC TRUNG TÍNH',text:`Thiên Can con út không có tương tác sinh-khắc mạnh với cha mẹ.`};}
+    html+=`<div class="verdict ${kid.cls}"><div class="verdict-title">CON ÚT (${youngest.role}, ${youngest.can} ${youngest.chi}): ${kid.title}</div>${kid.text}</div>`;
+  }
+  return html;
+}
+
+function analyzeThanMang(H,W,children){
+  let html='';
+  const cmp=compareEl(H.napAmEl,W.napAmEl);
+  let v={cls:'info',title:'',text:''};
+  // Theo Luận Tuổi Lạc Việt: Vợ sinh chồng là THUẬN
+  if(cmp==='BsinhA'){v={cls:'good',title:'VỢ SINH CHỒNG (THUẬN LÝ Thân Mạng)',text:`Mạng vợ ${W.napAm} (${W.napAmEl}) sinh chồng ${H.napAm} (${H.napAmEl}). Tốt theo nguyên lý "Cân bằng Âm Dương" - vợ là Âm so Thiên Can Dương. Người vợ có trách nhiệm, yêu thương chồng con, lo lắng gia đình.`};}
+  else if(cmp==='AsinhB'){v={cls:'neutral',title:'CHỒNG SINH VỢ (NGHỊCH LÝ Thân Mạng)',text:`Mạng chồng ${H.napAm} sinh vợ ${W.napAm}. Không thuận về Thân Mạng - chồng phải gánh vác nhiều, vợ thụ hưởng.`};}
+  else if(cmp==='AkhacB'){v={cls:'bad',title:'CHỒNG KHẮC VỢ (về Mạng)',text:`Mạng chồng khắc vợ. Vợ dễ ốm đau, gia đình trì trệ.`};}
+  else if(cmp==='BkhacA'){v={cls:'bad',title:'VỢ KHẮC CHỒNG (về Mạng)',text:`Mạng vợ khắc chồng. Cần xét tượng hình nạp âm chi tiết - vd: Sa Trung Kim (vàng trong cát) cần Hỏa luyện thì không sợ Hỏa khắc.`};}
+  else{v={cls:'info',title:'BÌNH HÒA',text:`Vợ chồng cùng hành ${H.napAmEl}. Xét thêm Địa Chi.`};}
+  html+=`<div class="verdict ${v.cls}"><div class="verdict-title">VỢ CHỒNG: ${v.title}</div>${v.text}</div>`;
+
+  // Special tượng hình notes
+  const tuongHinh={
+    'Sa Trung Kim':'Vàng trong cát - cần Hỏa để luyện thành hữu dụng. Không sợ Hỏa khắc.',
+    'Kim Bạc Kim':'Vàng lá mỏng - sợ Hỏa mạnh.',
+    'Bình Địa Mộc':'Cỏ dại - Kim khó khắc triệt để.',
+    'Đại Lâm Mộc':'Rừng già - cần Kim mạnh để chế ngự.',
+    'Thiên Hà Thủy':'Nước Ngân Hà - không thể tưới cây (không sinh Mộc thường).',
+    'Đại Hải Thủy':'Biển lớn - không sợ Thổ thường khắc.',
+    'Lư Trung Hỏa':'Lửa lò - cần Mộc nuôi, sợ Thủy dập.',
+    'Thiên Thượng Hỏa':'Lửa mặt trời - không sợ Thủy thường.'
+  };
+  for(const p of[H,W,...children]){
+    if(tuongHinh[p.napAm]){
+      html+=`<div class="verdict info"><div class="verdict-title">TƯỢNG HÌNH NẠP ÂM (${p.role})</div><b>${p.napAm}:</b> ${tuongHinh[p.napAm]}</div>`;
+    }
+  }
+
+  // Children mạng
+  if(children.length){
+    const youngest=children[children.length-1];
+    const cmpHC=compareEl(H.napAmEl,youngest.napAmEl);
+    const cmpWC=compareEl(W.napAmEl,youngest.napAmEl);
+    // "Con trai nhờ mẹ, con gái nhờ cha" về Thân Mạng
+    const isBoy=true; // Cannot determine, default
+    let kid={cls:'info',title:'',text:''};
+    if(cmpWC==='AsinhB'&&cmpHC==='AsinhB'){kid={cls:'good',title:'CHA MẸ SINH CON ÚT (về Mạng)',text:`Cả cha và mẹ đều sinh mạng con út ${youngest.napAm}. Tốt.`};}
+    else if(cmpWC==='AsinhB'){kid={cls:'good',title:'MẸ SINH CON ÚT (về Mạng)',text:`Mẹ ${W.napAm} sinh con út ${youngest.napAm}. "Con trai nhờ đức mẹ" - rất tốt cho con trai.`};}
+    else if(cmpHC==='AsinhB'){kid={cls:'good',title:'CHA SINH CON ÚT (về Mạng)',text:`Cha sinh mạng con. Tốt cho con gái nhiều hơn theo "Âm Dương tương hợp".`};}
+    else if(cmpWC==='AkhacB'){kid={cls:'bad',title:'MẸ KHẮC CON ÚT (về Mạng)',text:`Mạng mẹ khắc con út. Mẹ vất vả nuôi con, con dễ ốm vặt.`};}
+    else if(cmpHC==='AkhacB'){kid={cls:'bad',title:'CHA KHẮC CON ÚT (về Mạng)',text:`Mạng cha khắc con út. Cần xem tượng hình nạp âm.`};}
+    else if(cmpHC==='BkhacA'||cmpWC==='BkhacA'){kid={cls:'bad',title:'CON ÚT KHẮC CHA/MẸ',text:`Con khắc cha mẹ về Mạng - "Âm khắc Dương" - cần hóa giải bằng các yếu tố khác.`};}
+    else{kid={cls:'info',title:'BÌNH HÒA',text:`Mạng con út không có tương tác mạnh.`};}
+    html+=`<div class="verdict ${kid.cls}"><div class="verdict-title">CON ÚT (${youngest.napAm}): ${kid.title}</div>${kid.text}</div>`;
+  }
+  return html;
+}
+
+function analyzeDiaChi(H,W,children,curY){
+  let html='';
+  const allChi=[H.chi,W.chi,...children.map(c=>c.chi)];
+  const allPeople=[H,W,...children];
+
+  // Same chi (vợ chồng cùng tuổi)
+  if(H.chi===W.chi&&H.can===W.can){
+    html+=`<div class="verdict info"><div class="verdict-title">VỢ CHỒNG CÙNG TUỔI HOÀN TOÀN (${H.can} ${H.chi})</div>"Vợ chồng cùng tuổi nằm duỗi mà ăn" hay "manh chiếu rách"? - QUYẾT ĐỊNH bởi TUỔI CON, đặc biệt CON ÚT.</div>`;
+  }else if(H.chi===W.chi){
+    html+=`<div class="verdict info"><div class="verdict-title">VỢ CHỒNG CÙNG ĐỊA CHI ${H.chi}</div>Cùng cung Địa Chi nhưng khác Thiên Can. Xét thêm các yếu tố khác.</div>`;
+  }
+
+  // Lục Xung (đối xứng - vd Tý-Ngọ)
+  if(LUC_XUNG_FULL[H.chi]===W.chi){
+    html+=`<div class="verdict bad"><div class="verdict-title">LỤC XUNG (${H.chi}-${W.chi})</div>Vợ chồng Lục Xung (đối xứng qua trục). Theo nguyên lý đối xứng của Luận Tuổi Lạc Việt: NẾU CÓ ĐỦ BỘ ĐỐI XỨNG với con cái thì lại TỐT. Nếu lẻ thì xấu - thường xung đột.</div>`;
+  }
+
+  // Lục Hại
+  if(LUC_HAI_FULL[H.chi]===W.chi){
+    html+=`<div class="verdict bad"><div class="verdict-title">LỤC HẠI (${H.chi}-${W.chi})</div>Vợ chồng Lục Hại. Nếu vào bộ thành cách đối xứng lại tốt; nếu lẻ thì xấu - thường hay bất hòa, kiện cáo.</div>`;
+  }
+
+  // Tam Hợp
+  const tamHopHW=H.tamHop===W.tamHop;
+  if(tamHopHW){
+    html+=`<div class="verdict good"><div class="verdict-title">VỢ CHỒNG TAM HỢP (${H.tamHop} cục)</div>Cùng cục ${H.tamHop} - ${TAM_HOP_GROUP[H.tamHop].join('-')}. Rất hợp về Địa Chi.</div>`;
+  }
+
+  // Check full Tam Hợp family
+  if(children.length){
+    const hopGroups={};
+    allPeople.forEach(p=>{
+      if(!hopGroups[p.tamHop])hopGroups[p.tamHop]=[];
+      hopGroups[p.tamHop].push(p.chi);
+    });
+    for(const[cuc,chis] of Object.entries(hopGroups)){
+      const uniqueChis=[...new Set(chis)];
+      if(uniqueChis.length===3){
+        html+=`<div class="verdict good"><div class="verdict-title">GIA ĐÌNH ĐỦ TAM HỢP ${cuc} CỤC</div>${uniqueChis.join('-')} đủ cục. Rất phát. CẢNH BÁO: Khi vào năm Tam Tai (${TAM_TAI[cuc].join('-')}) thì cả nhà bị hạn - "Tam Hợp hóa Tam Tai".</div>`;
+      }
+    }
+  }
+
+  // Tứ Hành Xung (đủ bộ)
+  for(const[name,group] of Object.entries(TU_XUNG)){
+    const has=group.filter(c=>allChi.includes(c));
+    if(has.length===4){
+      html+=`<div class="verdict good"><div class="verdict-title">ĐỦ BỘ TỨ ${name.toUpperCase()} (${group.join('-')})</div>${name==='Sinh'?'Phát giai đoạn đầu':name==='Vượng'?'Phát trung vận, phát triển nhanh':'Phát hậu vận, chắc chắn'}. Gia đình có cách này, nếu kết hợp Địa Lý &amp; Số phận tốt sẽ giàu có.</div>`;
+    }else if(has.length===2||has.length===3){
+      html+=`<div class="verdict bad"><div class="verdict-title">THIẾU BỘ TỨ ${name.toUpperCase()} (chỉ có ${has.join('-')})</div>Nhị/Tam hành xung - vất vả. Cần sinh thêm con để đủ bộ ${group.filter(c=>!allChi.includes(c)).join(', ')} thì lại tốt.</div>`;
+    }
+  }
+
+  // Chuỗi dây (3+ consecutive)
+  const chiOrder=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  const indices=allChi.map(c=>chiOrder.indexOf(c)).sort((a,b)=>a-b);
+  let maxRun=1,run=1;
+  for(let i=1;i<indices.length;i++){
+    if(indices[i]===indices[i-1]+1){run++;maxRun=Math.max(maxRun,run)}
+    else if(indices[i]!==indices[i-1])run=1;
+  }
+  if(maxRun>=3){
+    html+=`<div class="verdict good"><div class="verdict-title">CHUỖI DÂY LIÊN TỤC ≥ ${maxRun}</div>Các tuổi liền nhau theo Địa Chi tạo chuỗi sinh tương sinh. Cuộc sống ổn định, bình an.</div>`;
+  }
+
+  // Đối xứng
+  const symmetricPairs=[];
+  for(let i=0;i<allChi.length-1;i++){
+    for(let j=i+1;j<allChi.length;j++){
+      if(LUC_XUNG_FULL[allChi[i]]===allChi[j]){
+        symmetricPairs.push([allChi[i],allChi[j]]);
+      }
+    }
+  }
+  if(symmetricPairs.length>=2){
+    html+=`<div class="verdict good"><div class="verdict-title">CÁCH ĐỐI XỨNG ĐA TRỤC</div>Có ${symmetricPairs.length} cặp đối xứng: ${symmetricPairs.map(p=>p.join('-')).join(', ')}. Theo Luận Tuổi Lạc Việt, gia đình có nhiều cặp đối xứng rất phát về công danh và tiền bạc.</div>`;
+  }
+
+  return html;
+}
+
+function analyzeTamTai(H,W,children,curY){
+  const curChi=yearToCanChi(curY).chi;
+  const allPeople=[H,W,...children];
+  let html='';
+  let hasTamTai=false;
+  for(const p of allPeople){
+    const cuc=p.tamHop;
+    const tt=TAM_TAI[cuc];
+    if(tt.includes(curChi)){
+      hasTamTai=true;
+      const order=tt.indexOf(curChi)+1;
+      html+=`<div class="verdict bad"><div class="verdict-title">${p.role.toUpperCase()} (${p.can} ${p.chi}) - TAM TAI</div>Năm ${curY} (${curChi}) là năm Tam Tai thứ ${order}/3 của tuổi ${p.chi} (cục ${cuc}). ${order===1?'Đầu Tam Tai - cẩn thận sức khỏe, công việc.':order===2?'Giữa Tam Tai - hạn nặng nhất.':'Cuối Tam Tai - hạn nhẹ dần, qua năm sau sẽ hết.'}</div>`;
+    }
+  }
+  if(!hasTamTai){
+    html+=`<div class="verdict good"><div class="verdict-title">KHÔNG AI BỊ TAM TAI</div>Năm ${curY} không thuộc Tam Tai của bất kỳ ai trong gia đình.</div>`;
+  }
+  // Tam Hợp hóa Tam Tai check
+  if(children.length){
+    const youngest=children[children.length-1];
+    const hopFamily=[H,W,youngest].every(p=>p.tamHop===youngest.tamHop);
+    if(hopFamily&&TAM_TAI[youngest.tamHop].includes(curChi)){
+      html+=`<div class="verdict bad"><div class="verdict-title">⚠ "TAM HỢP HÓA TAM TAI"</div>Cả nhà (cha-mẹ-con út) cùng cục ${youngest.tamHop} và năm ${curY} đang trong Tam Tai. Cả gia đình bị hạn năm nay.</div>`;
+    }
+  }
+  return html;
+}
+
+function conclude(H,W,children){
+  let goodCount=0,badCount=0;
+  // TC
+  const tc=compareEl(H.canEl,W.canEl);
+  if(tc==='AsinhB')goodCount+=3;
+  else if(tc==='BsinhA')goodCount+=1;
+  else if(tc==='AkhacB')badCount+=2;
+  else if(tc==='BkhacA')badCount+=3;
+  // TM
+  const tm=compareEl(H.napAmEl,W.napAmEl);
+  if(tm==='BsinhA')goodCount+=2;
+  else if(tm==='AsinhB')badCount+=1;
+  else if(tm==='AkhacB'||tm==='BkhacA')badCount+=1;
+  // DC
+  if(H.tamHop===W.tamHop)goodCount+=1;
+  if(LUC_HAI_FULL[H.chi]===W.chi)badCount+=1;
+  if(LUC_XUNG_FULL[H.chi]===W.chi)badCount+=1;
+
+  let level='trung tính';
+  let cls='neutral';
+  if(goodCount>=4&&badCount<=1){level='RẤT TỐT';cls='good'}
+  else if(goodCount>badCount+1){level='Tốt';cls='good'}
+  else if(badCount>goodCount+2){level='Xấu - cần cẩn trọng';cls='bad'}
+  else if(badCount>goodCount){level='Hơi xấu';cls='bad'}
+
+  let txt=`Tổng hợp 3 yếu tố (Thiên Can 55-65%, Thân Mạng 30-40%, Địa Chi 10-25%), cặp đôi/gia đình này được đánh giá: <b>${level}</b>.`;
+  txt+=`<br><br>Điểm tốt: ${goodCount} · Điểm xấu: ${badCount}`;
+  txt+=`<br><br><i>Lưu ý: Đây chỉ là tổng hợp theo công thức Luận Tuổi Lạc Việt. Trong thực tế cần kết hợp với:</i>`;
+  txt+=`<br>• Tử Vi - Bát Tự (giờ, ngày, tháng sinh)`;
+  txt+=`<br>• Địa Lý Phong Thủy (nhà ở, mồ mả)`;
+  txt+=`<br>• Tượng hình Nạp Âm chi tiết`;
+  txt+=`<br>• Tuổi các con (đặc biệt con út)`;
+
+  if(children.length===0){
+    txt+=`<br><br>⚠ Chưa nhập tuổi con - phân tích còn thiếu. "Giàu con út, khó con út" - tuổi con út quyết định hạnh phúc gia đình.`;
+  }
+  return `<div class="verdict ${cls}"><div class="verdict-title">KẾT LUẬN</div>${txt}</div>`;
+}
+
+// ============== HOA GIAP TABLE ==============
+function buildHoaGiapTable(){
+  const tbody=document.getElementById('hgBody');
+  let html='';
+  const curYear=new Date().getFullYear();
+  for(let i=0;i<60;i++){
+    const can=CAN[i%10],chi=CHI[i%12];
+    const napAm=NAP_AM[i];
+    const el=napAmEl(napAm);
+    const yy=CAN_YY[can];
+    const tamHop=TAM_HOP_GROUP[TAM_HOP[chi]].join('-');
+    // Find years matching: year where (year-4)%60 === i, nearest to current
+    let yr=curYear-((curYear-4)%60-i+60)%60;
+    if(yr>curYear)yr-=60;
+    const yr2=yr-60;
+    const cl=el.toLowerCase().replace('thủy','thuy').replace('hỏa','hoa').replace('thổ','tho').replace('mộc','moc');
+    html+=`<tr class="${cl}" data-search="${can} ${chi} ${napAm} ${el}" data-el="${el}">
+      <td>${i+1}</td>
+      <td class="canchi">${can} ${chi}</td>
+      <td><span class="badge ${yy==='Dương'?'b-duong':'b-am'}">${yy}</span></td>
+      <td>${napAm}</td>
+      <td><span class="badge b-${cl}">${el}</span></td>
+      <td>${tamHop}</td>
+      <td>${yr2}, ${yr}</td>
+    </tr>`;
+  }
+  tbody.innerHTML=html;
+}
+function filterHoaGiap(){
+  const s=document.getElementById('hgSearch').value.toLowerCase();
+  const el=document.getElementById('hgFilterEl').value;
+  const rows=document.querySelectorAll('#hgBody tr');
+  let count=0;
+  rows.forEach(r=>{
+    const t=r.dataset.search.toLowerCase();
+    const re=r.dataset.el;
+    const show=(!s||t.includes(s))&&(!el||re===el);
+    r.style.display=show?'':'none';
+    if(show)count++;
+  });
+  document.getElementById('hgCount').textContent=count;
+}
+
+// ============== BAT TRACH ==============
+function calcBatTrach(){
+  const y=parseInt(document.getElementById('ownerYear').value);
+  const g=document.getElementById('ownerGender').value;
+  if(!y){alert('Nhập năm sinh');return}
+  const info=fullPersonInfo(y,g==='nam'?'GIA CHỦ NAM':'GIA CHỦ NỮ');
+  const phi=cungPhi(y,g);
+  const dirs=BAT_TRACH_DIR[phi.name];
+  const tHopChi=TAM_HOP_GROUP[info.tamHop];
+
+  let html='<div class="card"><h2>KẾT QUẢ CUNG PHI &amp; HƯỚNG NHÀ</h2>';
+  html+=`<div class="lakinh-mini">
+    <div class="lk-card">
+      <div class="lk-title">THÔNG TIN GIA CHỦ</div>
+      <div class="lk-row"><span>Năm sinh:</span><span>${y}</span></div>
+      <div class="lk-row"><span>Can-Chi:</span><span>${info.can} ${info.chi}</span></div>
+      <div class="lk-row"><span>Nạp Âm:</span><span>${info.napAm} (${info.napAmEl})</span></div>
+      <div class="lk-row"><span>Tam Hợp:</span><span>${tHopChi.join('-')}</span></div>
+    </div>
+    <div class="lk-card">
+      <div class="lk-title">CUNG PHI BÁT TRẠCH</div>
+      <div class="lk-row"><span>Cung phi số:</span><span>${phi.num}</span></div>
+      <div class="lk-row"><span>Quái:</span><span>${phi.name} (${phi.el})</span></div>
+      <div class="lk-row"><span>Mệnh:</span><span>${phi.trach}</span></div>
+      <div class="lk-row"><span>Hợp nhóm:</span><span>${phi.trach==='Đông tứ mệnh'?'Khảm-Chấn-Tốn-Ly (1-3-4-9)':'Khôn-Càn-Đoài-Cấn (2-6-7-8)'}</span></div>
+    </div>
+  </div>`;
+
+  html+='<h3 style="margin-top:14px;color:#ffd700">🧭 8 HƯỚNG NHÀ THEO BÁT TRẠCH</h3>';
+  html+='<div class="direction-grid">';
+  const dirOrder=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
+  for(const d of dirOrder){
+    const meaning=dirs[d];
+    const cls=DIR_CLASS[meaning];
+    const desc={
+      'Sinh Khí':'Tài lộc, thăng tiến',
+      'Diên Niên':'Hòa hợp, sống lâu',
+      'Thiên Y':'Bình an, hết bệnh',
+      'Phục Vị':'An cư, lập nghiệp',
+      'Họa Hại':'Cãi vã, kiện tụng',
+      'Lục Sát':'Tai họa, ly tán',
+      'Ngũ Quỷ':'Mất trộm, hỏa hoạn',
+      'Tuyệt Mệnh':'Đại bệnh, suy bại'
+    }[meaning];
+    html+=`<div class="dir-cell ${cls}">
+      <span class="dn">${d}</span>
+      <b>${meaning}</b><br>
+      <small>${desc}</small>
+    </div>`;
+  }
+  html+='</div>';
+
+  // 24 Sơn hợp tuổi
+  html+='<h3 style="margin-top:14px;color:#ffd700">🏯 GỢI Ý TỌA SƠN (theo La Kinh 24 Sơn)</h3>';
+  const cardinalToSon={
+    'Bắc':['Nhâm','Tý','Quý'],'Đông Bắc':['Sửu','Cấn','Dần'],'Đông':['Giáp','Mão','Ất'],
+    'Đông Nam':['Thìn','Tốn','Tỵ'],'Nam':['Bính','Ngọ','Đinh'],'Tây Nam':['Mùi','Khôn','Thân'],
+    'Tây':['Canh','Dậu','Tân'],'Tây Bắc':['Tuất','Càn','Hợi']
+  };
+  // Hướng cát theo Bát Trạch
+  const catDirs=Object.entries(dirs).filter(([d,m])=>['Sinh Khí','Diên Niên','Thiên Y','Phục Vị'].includes(m));
+  html+='<div class="principle-list" style="margin-top:8px">';
+  for(const [d,m] of catDirs){
+    const sons=cardinalToSon[d];
+    html+=`<p>🟢 <b>Hướng ${d}</b> (${m}): tọa sơn <b>${sons.join(', ')}</b></p>`;
+  }
+  html+='</div>';
+
+  // Năm xung khắc gia chủ
+  html+='<h3 style="margin-top:14px;color:#ffd700">⚠ NĂM CẦN CẨN TRỌNG</h3>';
+  const xungChi=LUC_XUNG_FULL[info.chi];
+  const tamTaiChi=TAM_TAI[info.tamHop];
+  html+=`<div class="principle-list">
+    <p>🔴 Năm xung tuổi (Lục Xung): năm <b>${xungChi}</b></p>
+    <p>🟠 Năm Tam Tai: <b>${tamTaiChi.join(', ')}</b></p>
+    <p>🟡 Năm hạn Lục Hại: năm <b>${LUC_HAI_FULL[info.chi]}</b></p>
+  </div>`;
+
+  html+='</div>';
+  document.getElementById('batTrachResult').innerHTML=html;
+}
+
+// ============== INIT ==============
+buildHoaGiapTable();
+// Pre-fill example
+addChild();
+addChild();
+</script>
+</body>
+</html>
