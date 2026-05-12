@@ -1,0 +1,902 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>La Kinh Thấu Giải - Bản Đầy Đủ 36 Tầng</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Times New Roman',serif;background:linear-gradient(135deg,#1a1a2e 0%,#16213e 50%,#0f3460 100%);min-height:100vh;color:#fff;padding:14px;display:flex;flex-direction:column;align-items:center}
+  h1{font-size:26px;margin-bottom:4px;text-align:center;color:#ffd700;text-shadow:2px 2px 4px rgba(0,0,0,.5);letter-spacing:2px}
+  .subtitle{font-size:13px;color:#ccc;margin-bottom:12px;text-align:center;max-width:800px}
+  .layout{display:grid;grid-template-columns:1fr;gap:18px;width:100%;max-width:1600px}
+  @media(min-width:1100px){.layout{grid-template-columns:minmax(0,1.7fr) minmax(320px,1fr)}}
+  .compass-section{display:flex;flex-direction:column;align-items:center}
+  .info-panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;width:100%;max-width:800px;text-align:center}
+  .info-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
+  .info-value{font-size:17px;font-weight:bold;color:#ffd700}
+  .compass-container{position:relative;width:100%;max-width:880px;aspect-ratio:1}
+  .compass-svg{width:100%;height:100%;transition:transform .1s linear;filter:drop-shadow(0 6px 24px rgba(0,0,0,.5))}
+  .pointer{position:absolute;top:50%;left:50%;width:4px;height:49%;background:linear-gradient(to top,transparent 0%,transparent 50%,#ff2222 50%,#ff2222 100%);transform-origin:bottom center;transform:translate(-50%,-100%);z-index:10;pointer-events:none}
+  .pointer::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:13px solid #ff2222}
+  .center-dot{position:absolute;top:50%;left:50%;width:10px;height:10px;background:#ffd700;border-radius:50%;transform:translate(-50%,-50%);box-shadow:0 0 8px rgba(255,215,0,.8);z-index:11;pointer-events:none}
+  .controls{margin-top:14px;display:flex;flex-direction:column;align-items:center;gap:10px;width:100%;max-width:600px}
+  button{background:linear-gradient(135deg,#ffd700 0%,#ff8c00 100%);color:#1a1a2e;border:none;padding:10px 24px;font-size:14px;font-weight:bold;border-radius:25px;cursor:pointer;box-shadow:0 4px 12px rgba(255,215,0,.3);letter-spacing:1px}
+  button.secondary{background:linear-gradient(135deg,#4a90e2 0%,#357abd 100%);color:#fff}
+  .manual-control{display:flex;align-items:center;gap:10px;background:rgba(255,255,255,.08);padding:8px 14px;border-radius:12px;width:100%;max-width:500px}
+  .manual-control label{font-size:12px;color:#ccc;white-space:nowrap}
+  .manual-control input[type=range]{flex:1;accent-color:#ffd700}
+  .status{padding:8px 14px;background:rgba(255,215,0,.1);border-radius:8px;font-size:12px;text-align:center;max-width:600px;color:#ffd700}
+  .zoom-controls{display:flex;gap:8px}
+  .zoom-controls button{padding:6px 14px;font-size:12px}
+  .side-panel{display:flex;flex-direction:column;gap:12px;max-height:90vh;overflow-y:auto;padding-right:6px}
+  .side-panel::-webkit-scrollbar{width:6px}
+  .side-panel::-webkit-scrollbar-thumb{background:#ffd700;border-radius:3px}
+  .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.2);border-radius:12px;padding:12px 14px;font-size:12.5px;line-height:1.55}
+  .card h3{color:#ffd700;margin-bottom:8px;font-size:13px;letter-spacing:1px;border-bottom:1px solid rgba(255,215,0,.25);padding-bottom:5px}
+  .row{display:flex;justify-content:space-between;padding:3px 0;border-bottom:1px dashed rgba(255,255,255,.07);font-size:12px}
+  .row:last-child{border-bottom:none}
+  .lbl{color:#aaa}
+  .val{color:#fff;font-weight:bold;text-align:right;max-width:62%}
+  .warn{background:rgba(200,32,42,.2);border:1px solid #c8202a;padding:7px 12px;border-radius:8px;margin-top:5px;font-size:11.5px;color:#ffcccc;display:none}
+  .warn.active{display:block}
+  details summary{cursor:pointer;color:#ffd700;font-size:11.5px;padding:3px 0}
+  details p{font-size:11.5px;color:#ccc;padding:5px 0;line-height:1.55}
+  .tang-list{font-size:11px;line-height:1.5;color:#ccc}
+  .tang-list b{color:#ffd700}
+  .compass-wrap{position:relative;width:100%;overflow:auto;display:flex;justify-content:center}
+  @media(max-width:600px){h1{font-size:19px}.info-value{font-size:14px}}
+</style>
+</head>
+<body>
+  <h1>LA KINH THẤU GIẢI · BẢN ĐẦY ĐỦ 36 TẦNG</h1>
+  <div class="subtitle">Đầy đủ theo bộ "La Kinh Thấu Giải" của Vương Đạo Hạnh (1823) — Tam Tài Thiên-Địa-Nhân hợp nhất</div>
+
+  <div class="layout">
+    <div class="compass-section">
+      <div class="info-panel">
+        <div><div class="info-label">Độ</div><div class="info-value" id="degDisp">0°</div></div>
+        <div><div class="info-label">Hướng</div><div class="info-value" id="dirDisp">BẮC</div></div>
+        <div><div class="info-label">Sơn</div><div class="info-value" id="sonDisp">TÝ</div></div>
+        <div><div class="info-label">Quái</div><div class="info-value" id="qDisp">KHẢM</div></div>
+        <div><div class="info-label">Nạp Âm</div><div class="info-value" id="napamDisp" style="font-size:13px">Hải Trung Kim</div></div>
+      </div>
+
+      <div class="compass-wrap">
+        <div class="compass-container">
+          <svg class="compass-svg" id="compassSvg" viewBox="0 0 1500 1500" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#fdfaf0"/>
+                <stop offset="60%" stop-color="#f5efd9"/>
+                <stop offset="100%" stop-color="#e0d4a8"/>
+              </radialGradient>
+            </defs>
+            <circle cx="750" cy="750" r="745" fill="url(#bgGrad)" stroke="#1a1a1a" stroke-width="4"/>
+            <g id="rings"></g>
+            <g id="yinYang" transform="translate(750,750)">
+              <circle r="48" fill="#fff" stroke="#000" stroke-width="2"/>
+              <path d="M 0,-48 A 48,48 0 0,1 0,48 A 24,24 0 0,1 0,0 A 24,24 0 0,0 0,-48 Z" fill="#000"/>
+              <circle cy="-24" r="7" fill="#fff"/>
+              <circle cy="24" r="7" fill="#000"/>
+            </g>
+          </svg>
+          <div class="pointer"></div>
+          <div class="center-dot"></div>
+        </div>
+      </div>
+
+      <div class="controls">
+        <div class="zoom-controls">
+          <button id="zoomIn">+ Phóng to</button>
+          <button id="zoomOut" class="secondary">- Thu nhỏ</button>
+          <button id="zoomReset" class="secondary">↺ Reset</button>
+        </div>
+        <button id="startBtn">BẬT LA BÀN (Cảm biến)</button>
+        <div class="manual-control">
+          <label>Xoay tay:</label>
+          <input type="range" id="manualSlider" min="0" max="360" value="0" step="0.1">
+          <span id="manualValue" style="min-width:54px;color:#ffd700;font-weight:bold">0°</span>
+        </div>
+        <div class="status" id="status">36 tầng đầy đủ — bấm "+ Phóng to" để xem rõ chi tiết. Cuộn bảng bên phải để đọc giải nghĩa.</div>
+      </div>
+    </div>
+
+    <div class="side-panel">
+      <div class="card">
+        <h3>◆ THÔNG TIN TỌA SƠN ◆</h3>
+        <div class="row"><span class="lbl">Sơn Địa Bàn (T6):</span><span class="val" id="dSon">TÝ</span></div>
+        <div class="row"><span class="lbl">Sơn Nhân Bàn (T12):</span><span class="val" id="nSon">-</span></div>
+        <div class="row"><span class="lbl">Sơn Thiên Bàn (T18):</span><span class="val" id="tSon">-</span></div>
+        <div class="row"><span class="lbl">Âm/Dương Long (T7):</span><span class="val" id="yyVal">Dương</span></div>
+        <div class="row"><span class="lbl">Chính Ngũ Hành (T8):</span><span class="val" id="elVal">Thủy</span></div>
+        <div class="row"><span class="lbl">Phân Kim:</span><span class="val" id="phanKimVal">Bính Tý</span></div>
+        <div class="row"><span class="lbl">Nạp Âm (T24):</span><span class="val" id="napamVal">Giản Hạ Thủy</span></div>
+        <div class="row"><span class="lbl">Vượng/Tướng/Cô:</span><span class="val" id="vtcVal">Vượng</span></div>
+      </div>
+
+      <div class="card">
+        <h3>◆ TINH TÚ &amp; QUÁI ◆</h3>
+        <div class="row"><span class="lbl">Quái Hậu Thiên (T2):</span><span class="val" id="qVal">KHẢM ☵</span></div>
+        <div class="row"><span class="lbl">Số Lạc Thư:</span><span class="val" id="lacShuVal">1</span></div>
+        <div class="row"><span class="lbl">Cửu Tinh (T5):</span><span class="val" id="starVal">Phá Quân</span></div>
+        <div class="row"><span class="lbl">24 Thiên Tinh (T31):</span><span class="val" id="hsVal">Thiên Lũy</span></div>
+        <div class="row"><span class="lbl">28 Tú (T26):</span><span class="val" id="xiuVal">Hư</span></div>
+        <div class="row"><span class="lbl">24 Tiết Khí (T27):</span><span class="val" id="qiVal">Đông Chí</span></div>
+        <div class="row"><span class="lbl">12 Cung (T25):</span><span class="val" id="cungVal">Tý (Chuột)</span></div>
+        <div class="row"><span class="lbl">12 Tướng (T28):</span><span class="val" id="tuongVal">Thần Hậu</span></div>
+      </div>
+
+      <div class="card">
+        <h3>◆ CÁT HUNG ◆</h3>
+        <div class="row"><span class="lbl">Tam Hợp cục:</span><span class="val" id="tamHopVal">Thân-Tý-Thìn (Thủy)</span></div>
+        <div class="row"><span class="lbl">Tứ Cát phương vị:</span><span class="val" id="tucVal">-</span></div>
+        <div class="row"><span class="lbl">Kiếp Sát (T9):</span><span class="val" id="kiepSatVal">-</span></div>
+        <div class="warn" id="batSatWarn">⚠ <strong>Bát Sát Hoàng Tuyền (T3):</strong> <span id="batSatTxt"></span></div>
+        <div class="warn" id="batLoWarn">⚠ <strong>Bát Lộ Hoàng Tuyền (T4):</strong> <span id="batLoTxt"></span></div>
+        <div class="warn" id="khongVongWarn">⚠ <strong>Không Vong / Sai Thác (T35):</strong> <span id="khongVongTxt"></span></div>
+      </div>
+
+      <div class="card">
+        <h3>◆ 36 TẦNG ĐẦY ĐỦ ◆</h3>
+        <div class="tang-list">
+          <p><b>T1</b> Tiên Thiên Bát Quái · <b>T2</b> Hậu Thiên Bát Quái + Lạc Thư</p>
+          <p><b>T3</b> Bát Sát Hoàng Tuyền · <b>T4</b> Bát Lộ Hoàng Tuyền</p>
+          <p><b>T5</b> Cửu Tinh (9 sao) · <b>T6</b> Địa Bàn Chính Châm 24 Sơn</p>
+          <p><b>T7</b> Âm Dương Long · <b>T8</b> Chính Ngũ Hành · <b>T9</b> Kiếp Sát</p>
+          <p><b>T10</b> 72 Long Xuyên Sơn · <b>T11</b> Xuyên Sơn 64 Quái</p>
+          <p><b>T12</b> Trung Châm Nhân Bàn (+7,5°)</p>
+          <p><b>T13</b> 60 Long Thấu Địa · <b>T14</b> Thấu Địa Kỳ Môn · <b>T15</b> Thấu Địa Quái</p>
+          <p><b>T16</b> 60 Long + 28 Tú · <b>T17</b> Tứ Cát phương vị</p>
+          <p><b>T18</b> Phùng Châm Thiên Bàn (-7,5°)</p>
+          <p><b>T19</b> 240 Phân Số · <b>T20</b> Địa Bàn Phân Kim · <b>T21</b> Thiên Bàn Phân Kim</p>
+          <p><b>T22</b> Vượng/Tướng/Cô/Hư · <b>T23</b> Phân Kim Địa Nguyên · <b>T24</b> Nạp Âm 60 Hoa Giáp</p>
+          <p><b>T25</b> 12 Cung phương vị · <b>T26</b> 28 Tú phương vị · <b>T27</b> 24 Tiết Khí</p>
+          <p><b>T28</b> 12 Tướng Đăng Minh · <b>T29</b> 12 Tinh Thể · <b>T30</b> Cung Xá Quán Dịch</p>
+          <p><b>T31</b> 24 Thiên Tinh · <b>T32</b> Hỗn Thiên Ngũ Hành Tinh Độ</p>
+          <p><b>T33</b> Bình Phân 60 Long · <b>T34</b> 365° của 28 Tú</p>
+          <p><b>T35</b> Sai Thác / Không Vong · <b>T36</b> 28 Tú phối 24 Sơn (Ai Tinh)</p>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>◆ HƯỚNG DẪN ĐỌC ◆</h3>
+        <details open><summary>Tam Tài: Địa-Nhân-Thiên Bàn</summary><p>3 vòng 24 Sơn (T6, T12, T18) là tinh hoa của La Kinh. <b>Địa Bàn</b> định hướng nhà. <b>Nhân Bàn</b> (lệch +7,5°) xét cát hung của núi xung quanh (tiêu sa). <b>Thiên Bàn</b> (lệch -7,5°) xét đường nước, hồ ao (nạp thủy).</p></details>
+        <details><summary>Cách dùng cảnh báo</summary><p>Khi hướng rơi vào Bát Sát, Bát Lộ Hoàng Tuyền, hoặc Không Vong - bảng sẽ hiện cảnh báo đỏ. Đây là những hướng đại kỵ trong phong thủy.</p></details>
+        <details><summary>60 Long Thấu Địa</summary><p>60 Hoa Giáp chia đều 360° (mỗi giáp 6°), đánh dấu Vượng (đỏ), Tướng (vàng), Cô/Hư (đen). Dùng để chọn tọa sơn hợp tuổi gia chủ.</p></details>
+        <details><summary>Phân Kim 5 vị</summary><p>Mỗi sơn (15°) chia 5 phân kim (3° mỗi vị): Giáp-Bính-Mậu-Canh-Nhâm. Vượng nhất là Bính/Canh phân kim, kỵ nhất là Mậu/Kỷ (sát diệu).</p></details>
+      </div>
+    </div>
+  </div>
+
+<script>
+const svg=document.getElementById('compassSvg');
+const CX=750,CY=750;
+const ringsG=document.getElementById('rings');
+
+// ===== Color palette =====
+const elColor={Thủy:'#1a3a8a',Mộc:'#1e7a3a',Hỏa:'#c8202a',Thổ:'#a07020',Kim:'#5a5a5a'};
+const elBg={Thủy:'#dde4f5',Mộc:'#dff0d8',Hỏa:'#f8d7da',Thổ:'#f4e4c1',Kim:'#e8e8e8'};
+
+// ===== 24 Sơn data =====
+const son24=[
+ {name:'TÝ',   yy:'Dương', el:'Thủy', star:'Phá Quân',  starEl:'Kim', heavenStar:'Thiên Lũy',  xiu:'Hư',     kiepSat:'Tỵ'},
+ {name:'QUÝ',  yy:'Âm',    el:'Thủy', star:'Phá Quân',  starEl:'Kim', heavenStar:'Âm Quang',   xiu:'Nữ',     kiepSat:'Tỵ'},
+ {name:'SỬU',  yy:'Âm',    el:'Thổ',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Thiên Trù',  xiu:'Ngưu',   kiepSat:'Dần'},
+ {name:'CẤN',  yy:'Dương', el:'Thổ',  star:'Tham Lang', starEl:'Mộc', heavenStar:'Thiên Thị',  xiu:'Đẩu',    kiepSat:'Dần'},
+ {name:'DẦN',  yy:'Dương', el:'Mộc',  star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Thiên Bồi',  xiu:'Cơ',     kiepSat:'Hợi'},
+ {name:'GIÁP', yy:'Dương', el:'Mộc',  star:'Lộc Tồn',   starEl:'Thổ', heavenStar:'Âm Cơ',      xiu:'Vỹ',     kiepSat:'Hợi'},
+ {name:'MÃO',  yy:'Âm',    el:'Mộc',  star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Mạnh', xiu:'Phòng', kiepSat:'Thân'},
+ {name:'ẤT',   yy:'Âm',    el:'Mộc',  star:'Phụ Bật',   starEl:'Mộc', heavenStar:'Thiên Quan', xiu:'Chi',    kiepSat:'Thân'},
+ {name:'THÌN', yy:'Dương', el:'Thổ',  star:'Phá Quân',  starEl:'Kim', heavenStar:'Thiên Cương',xiu:'Cang',   kiepSat:'Tỵ'},
+ {name:'TỐN',  yy:'Âm',    el:'Mộc',  star:'Cự Môn',    starEl:'Thổ', heavenStar:'Thiên Ất',   xiu:'Giốc',   kiepSat:'Tỵ'},
+ {name:'TỴ',   yy:'Âm',    el:'Hỏa',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Thiên Hình', xiu:'Chẩn',   kiepSat:'Dần'},
+ {name:'BÍNH', yy:'Dương', el:'Hỏa',  star:'Tham Lang', starEl:'Mộc', heavenStar:'Thái Vi',    xiu:'Dực',    kiepSat:'Dần'},
+ {name:'NGỌ',  yy:'Dương', el:'Hỏa',  star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Cương Quyền',xiu:'Trương', kiepSat:'Hợi'},
+ {name:'ĐINH', yy:'Âm',    el:'Hỏa',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Nam Cực',    xiu:'Tinh',   kiepSat:'Hợi'},
+ {name:'MÙI',  yy:'Âm',    el:'Thổ',  star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Thường',xiu:'Liễu',  kiepSat:'Thân'},
+ {name:'KHÔN', yy:'Âm',    el:'Thổ',  star:'Phụ Bật',   starEl:'Mộc', heavenStar:'Thiên Kính', xiu:'Quỷ',    kiepSat:'Thân'},
+ {name:'THÂN', yy:'Dương', el:'Kim',  star:'Phá Quân',  starEl:'Kim', heavenStar:'Thiên Quan', xiu:'Tỉnh',   kiepSat:'Tỵ'},
+ {name:'CANH', yy:'Dương', el:'Kim',  star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Hán',  xiu:'Sâm',    kiepSat:'Tỵ'},
+ {name:'DẬU',  yy:'Âm',    el:'Kim',  star:'Vũ Khúc',   starEl:'Kim', heavenStar:'Thiếu Vi',   xiu:'Mão',    kiepSat:'Dần'},
+ {name:'TÂN',  yy:'Âm',    el:'Kim',  star:'Cự Môn',    starEl:'Thổ', heavenStar:'Thiên Ất',   xiu:'Vị',     kiepSat:'Dần'},
+ {name:'TUẤT', yy:'Dương', el:'Thổ',  star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Thiên Khôi', xiu:'Lâu',    kiepSat:'Hợi'},
+ {name:'CÀN',  yy:'Dương', el:'Kim',  star:'Lộc Tồn',   starEl:'Thổ', heavenStar:'Thiên Cứu',  xiu:'Khuê',   kiepSat:'Hợi'},
+ {name:'HỢI',  yy:'Âm',    el:'Thủy', star:'Liêm Trinh',starEl:'Hỏa', heavenStar:'Thiên Hoàng',xiu:'Bích',   kiepSat:'Thân'},
+ {name:'NHÂM', yy:'Dương', el:'Thủy', star:'Văn Khúc',  starEl:'Thủy',heavenStar:'Thiên Phụ',  xiu:'Thất',   kiepSat:'Thân'}
+];
+
+// ===== 24 Tiết Khí (Đông Chí ở Tý) =====
+const tietKhi=['Đông Chí','Tiểu Hàn','Đại Hàn','Lập Xuân','Vũ Thủy','Kinh Trập','Xuân Phân','Thanh Minh','Cốc Vũ','Lập Hạ','Tiểu Mãn','Mang Chủng','Hạ Chí','Tiểu Thử','Đại Thử','Lập Thu','Xử Thử','Bạch Lộ','Thu Phân','Hàn Lộ','Sương Giáng','Lập Đông','Tiểu Tuyết','Đại Tuyết'];
+
+// ===== Hậu Thiên Bát Quái =====
+const hauThien=[
+ {name:'KHẢM',sym:'☵',lines:[0,1,0],angle:0,  el:'Thủy',lacshu:1,nature:'Hiểm, thông tuệ'},
+ {name:'CẤN', sym:'☶',lines:[0,0,1],angle:45, el:'Thổ', lacshu:8,nature:'Trầm tĩnh, bền vững'},
+ {name:'CHẤN',sym:'☳',lines:[1,0,0],angle:90, el:'Mộc', lacshu:3,nature:'Động, khởi đầu'},
+ {name:'TỐN', sym:'☴',lines:[0,1,1],angle:135,el:'Mộc', lacshu:4,nature:'Nhập, thuận'},
+ {name:'LY',  sym:'☲',lines:[1,0,1],angle:180,el:'Hỏa', lacshu:9,nature:'Sáng, văn minh'},
+ {name:'KHÔN',sym:'☷',lines:[0,0,0],angle:225,el:'Thổ', lacshu:2,nature:'Nhu thuận, sinh dưỡng'},
+ {name:'ĐOÀI',sym:'☱',lines:[1,1,0],angle:270,el:'Kim', lacshu:7,nature:'Hỷ duyệt, thu hoạch'},
+ {name:'CÀN', sym:'☰',lines:[1,1,1],angle:315,el:'Kim', lacshu:6,nature:'Cương kiện, lãnh đạo'}
+];
+
+// ===== Tiên Thiên Bát Quái (rotated to fit modern North-up) =====
+const tienThien=[
+ {name:'KHÔN',sym:'☷',lines:[0,0,0],angle:0,  num:8},
+ {name:'TỐN', sym:'☴',lines:[0,1,1],angle:45, num:5},
+ {name:'KHẢM',sym:'☵',lines:[0,1,0],angle:90, num:6},
+ {name:'CẤN', sym:'☶',lines:[0,0,1],angle:135,num:7},
+ {name:'CÀN', sym:'☰',lines:[1,1,1],angle:180,num:1},
+ {name:'CHẤN',sym:'☳',lines:[1,0,0],angle:225,num:4},
+ {name:'LY',  sym:'☲',lines:[1,0,1],angle:270,num:3},
+ {name:'ĐOÀI',sym:'☱',lines:[1,1,0],angle:315,num:2}
+];
+
+// ===== 12 Cung (12 Địa Chi as zodiac, 30° each) =====
+const cung12=[
+ {name:'Tý',animal:'Chuột',angle:0},{name:'Sửu',animal:'Trâu',angle:30},
+ {name:'Dần',animal:'Hổ',angle:60},{name:'Mão',animal:'Mèo',angle:90},
+ {name:'Thìn',animal:'Rồng',angle:120},{name:'Tỵ',animal:'Rắn',angle:150},
+ {name:'Ngọ',animal:'Ngựa',angle:180},{name:'Mùi',animal:'Dê',angle:210},
+ {name:'Thân',animal:'Khỉ',angle:240},{name:'Dậu',animal:'Gà',angle:270},
+ {name:'Tuất',animal:'Chó',angle:300},{name:'Hợi',animal:'Heo',angle:330}
+];
+
+// ===== 12 Tướng Đăng Minh =====
+const tuong12=['Thần Hậu','Đại Cát','Công Tào','Thái Xung','Thiên Cương','Thái Ất','Thắng Quang','Tiểu Cát','Truyền Tống','Tòng Khôi','Hà Khôi','Đăng Minh'];
+// Each at 30° starting Tý=Thần Hậu
+
+// ===== 28 Tú with degrees =====
+const xiu28=[
+ // Bắc - Huyền Vũ (centered around Tý area)
+ {name:'Đẩu',deg:26,group:'N'},{name:'Ngưu',deg:8,group:'N'},{name:'Nữ',deg:12,group:'N'},
+ {name:'Hư',deg:10,group:'N'},{name:'Nguy',deg:17,group:'N'},{name:'Thất',deg:16,group:'N'},{name:'Bích',deg:9,group:'N'},
+ // Tây - Bạch Hổ
+ {name:'Khuê',deg:16,group:'W'},{name:'Lâu',deg:12,group:'W'},{name:'Vị',deg:14,group:'W'},
+ {name:'Mão',deg:11,group:'W'},{name:'Tất',deg:16,group:'W'},{name:'Chủy',deg:2,group:'W'},{name:'Sâm',deg:9,group:'W'},
+ // Nam - Chu Tước
+ {name:'Tỉnh',deg:33,group:'S'},{name:'Quỷ',deg:4,group:'S'},{name:'Liễu',deg:15,group:'S'},
+ {name:'Tinh',deg:7,group:'S'},{name:'Trương',deg:18,group:'S'},{name:'Dực',deg:18,group:'S'},{name:'Chẩn',deg:17,group:'S'},
+ // Đông - Thanh Long
+ {name:'Giốc',deg:12,group:'E'},{name:'Cang',deg:9,group:'E'},{name:'Chi',deg:15,group:'E'},
+ {name:'Phòng',deg:5,group:'E'},{name:'Tâm',deg:5,group:'E'},{name:'Vỹ',deg:18,group:'E'},{name:'Cơ',deg:11,group:'E'}
+];
+
+// ===== 60 Hoa Giáp + Nạp Âm =====
+const heavenlyStems=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
+const earthlyBranches=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+const napAm60=[
+ 'Hải Trung Kim','Hải Trung Kim','Lư Trung Hỏa','Lư Trung Hỏa','Đại Lâm Mộc','Đại Lâm Mộc',
+ 'Lộ Bàng Thổ','Lộ Bàng Thổ','Kiếm Phong Kim','Kiếm Phong Kim','Sơn Đầu Hỏa','Sơn Đầu Hỏa',
+ 'Giản Hạ Thủy','Giản Hạ Thủy','Thành Đầu Thổ','Thành Đầu Thổ','Bạch Lạp Kim','Bạch Lạp Kim',
+ 'Dương Liễu Mộc','Dương Liễu Mộc','Tuyền Trung Thủy','Tuyền Trung Thủy','Ốc Thượng Thổ','Ốc Thượng Thổ',
+ 'Tích Lịch Hỏa','Tích Lịch Hỏa','Tùng Bách Mộc','Tùng Bách Mộc','Trường Lưu Thủy','Trường Lưu Thủy',
+ 'Sa Trung Kim','Sa Trung Kim','Sơn Hạ Hỏa','Sơn Hạ Hỏa','Bình Địa Mộc','Bình Địa Mộc',
+ 'Bích Thượng Thổ','Bích Thượng Thổ','Kim Bạc Kim','Kim Bạc Kim','Phú Đăng Hỏa','Phú Đăng Hỏa',
+ 'Thiên Hà Thủy','Thiên Hà Thủy','Đại Trạch Thổ','Đại Trạch Thổ','Thoa Xuyến Kim','Thoa Xuyến Kim',
+ 'Tang Đố Mộc','Tang Đố Mộc','Đại Khê Thủy','Đại Khê Thủy','Sa Trung Thổ','Sa Trung Thổ',
+ 'Thiên Thượng Hỏa','Thiên Thượng Hỏa','Thạch Lựu Mộc','Thạch Lựu Mộc','Đại Hải Thủy','Đại Hải Thủy'
+];
+function hoaGiap(i){
+  const s=heavenlyStems[i%10];
+  const b=earthlyBranches[i%12];
+  return s+' '+b;
+}
+function napAmEl(name){
+  if(name.includes('Kim'))return'Kim';
+  if(name.includes('Mộc'))return'Mộc';
+  if(name.includes('Thủy'))return'Thủy';
+  if(name.includes('Hỏa'))return'Hỏa';
+  if(name.includes('Thổ'))return'Thổ';
+  return'Kim';
+}
+
+// ===== Phân Kim (5 per son: Giáp/Bính/Mậu/Canh/Nhâm) =====
+const phanKimNames=['Giáp','Bính','Mậu','Canh','Nhâm'];
+const phanKimClass=['Cô','Vượng','Sát','Tướng','Hư'];
+
+// ===== Cardinals =====
+const cardinals=[
+ {name:'BẮC',angle:0},{name:'ĐÔNG BẮC',angle:45},{name:'ĐÔNG',angle:90},{name:'ĐÔNG NAM',angle:135},
+ {name:'NAM',angle:180},{name:'TÂY NAM',angle:225},{name:'TÂY',angle:270},{name:'TÂY BẮC',angle:315}
+];
+
+// ===== Bát Sát / Bát Lộ =====
+const batSat={'KHẢM':['THÌN','TUẤT'],'KHÔN':['MÃO'],'CHẤN':['THÂN'],'TỐN':['DẬU'],'CÀN':['NGỌ'],'ĐOÀI':['TỴ'],'CẤN':['DẦN'],'LY':['HỢI']};
+const batLo={
+ 'CANH':'KHÔN','ĐINH':'KHÔN','KHÔN':'CANH/ĐINH',
+ 'TỐN':'ẤT/BÍNH','ẤT':'TỐN','BÍNH':'TỐN',
+ 'GIÁP':'CẤN','QUÝ':'CẤN','CẤN':'GIÁP/QUÝ',
+ 'TÂN':'CÀN','NHÂM':'CÀN','CÀN':'TÂN/NHÂM'
+};
+
+const tamHopMap={Thủy:'Thân-Tý-Thìn (Thủy cục)',Mộc:'Hợi-Mão-Mùi (Mộc cục)',Hỏa:'Dần-Ngọ-Tuất (Hỏa cục)',Kim:'Tỵ-Dậu-Sửu (Kim cục)',Thổ:'4 mộ Thìn-Tuất-Sửu-Mùi'};
+
+// Tứ Cát (8 mountains)
+const tuCat=['HỢI','MÃO','CANH','CẤN','BÍNH','TỐN','TÂN','ĐINH'];
+
+// ===== SVG Helpers =====
+function polar(deg,r){const rad=(deg-90)*Math.PI/180;return{x:CX+r*Math.cos(rad),y:CY+r*Math.sin(rad)}}
+function arc(a1,a2,r1,r2){
+  const p1=polar(a1,r2),p2=polar(a2,r2),p3=polar(a2,r1),p4=polar(a1,r1);
+  const large=(a2-a1)%360>180?1:0;
+  return `M ${p1.x},${p1.y} A ${r2},${r2} 0 ${large},1 ${p2.x},${p2.y} L ${p3.x},${p3.y} A ${r1},${r1} 0 ${large},0 ${p4.x},${p4.y} Z`;
+}
+function txt(deg,r,t,fs,color,fw='normal'){
+  const p=polar(deg,r);
+  return `<text x="${p.x}" y="${p.y}" font-size="${fs}" fill="${color}" font-weight="${fw}" text-anchor="middle" dominant-baseline="middle" transform="rotate(${deg}, ${p.x}, ${p.y})" font-family="Times New Roman, serif">${t}</text>`;
+}
+function bagua(lines,angle,centerR,size,color){
+  let h='';const lineLen=size*0.95;
+  for(let j=0;j<3;j++){
+    const offset=(j-1)*size*0.35;
+    const lc=polar(angle,centerR+offset);
+    const aRad=(angle-90)*Math.PI/180;
+    const px=-Math.sin(aRad),py=Math.cos(aRad);
+    if(lines[j]===1){
+      const x1=lc.x-px*lineLen/2,y1=lc.y-py*lineLen/2,x2=lc.x+px*lineLen/2,y2=lc.y+py*lineLen/2;
+      h+=`<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" stroke="${color}" stroke-width="${size*0.16}" stroke-linecap="round"/>`;
+    }else{
+      const gap=size*0.18,seg=(lineLen-gap)/2;
+      const x1a=lc.x-px*lineLen/2,y1a=lc.y-py*lineLen/2;
+      const x1b=x1a+px*seg,y1b=y1a+py*seg;
+      const x2a=lc.x+px*(gap/2),y2a=lc.y+py*(gap/2);
+      const x2b=lc.x+px*lineLen/2,y2b=lc.y+py*lineLen/2;
+      h+=`<line x1="${x1a}" y1="${y1a}" x2="${x1b}" y2="${y1b}" stroke="${color}" stroke-width="${size*0.16}" stroke-linecap="round"/>`;
+      h+=`<line x1="${x2a}" y1="${y2a}" x2="${x2b}" y2="${y2b}" stroke="${color}" stroke-width="${size*0.16}" stroke-linecap="round"/>`;
+    }
+  }
+  return h;
+}
+
+// ===== Ring radii (36 layers) =====
+const R={
+  t1_in:48,  t1_out:90,    // Tiên Thiên Bát Quái
+  t2_in:90,  t2_out:135,   // Hậu Thiên + Lạc Thư
+  t3_in:135, t3_out:152,   // Bát Sát Hoàng Tuyền
+  t4_in:152, t4_out:168,   // Bát Lộ Hoàng Tuyền
+  t5_in:168, t5_out:202,   // Cửu Tinh
+  t6_in:202, t6_out:255,   // Địa Bàn Chính Châm (MAIN)
+  t7_in:255, t7_out:272,   // Âm Dương Long
+  t8_in:272, t8_out:294,   // Chính Ngũ Hành
+  t9_in:294, t9_out:310,   // Kiếp Sát
+  t10_in:310,t10_out:332,  // 72 Long Xuyên Sơn
+  t11_in:332,t11_out:352,  // Xuyên Sơn 64 Quái
+  t12_in:352,t12_out:388,  // Nhân Bàn Trung Châm
+  t13_in:388,t13_out:412,  // 60 Long Thấu Địa
+  t14_in:412,t14_out:425,  // Thấu Địa Kỳ Môn
+  t15_in:425,t15_out:438,  // Thấu Địa Quái
+  t16_in:438,t16_out:452,  // 60 Long + 28 Tú
+  t17_in:452,t17_out:466,  // Tứ Cát phương vị
+  t18_in:466,t18_out:500,  // Thiên Bàn Phùng Châm
+  t19_in:500,t19_out:512,  // 240 Phân Số
+  t20_in:512,t20_out:526,  // Địa Bàn Phân Kim
+  t21_in:526,t21_out:540,  // Thiên Bàn Phân Kim
+  t22_in:540,t22_out:552,  // Vượng/Tướng/Cô/Hư
+  t23_in:552,t23_out:566,  // Phân Kim Địa Nguyên
+  t24_in:566,t24_out:592,  // Nạp Âm 60 Hoa Giáp
+  t25_in:592,t25_out:610,  // 12 Cung
+  t26_in:610,t26_out:626,  // 28 Tú phương vị
+  t27_in:626,t27_out:650,  // 24 Tiết Khí
+  t28_in:650,t28_out:666,  // 12 Tướng Đăng Minh
+  t29_in:666,t29_out:678,  // 12 Tinh Thể
+  t30_in:678,t30_out:690,  // Cung Xá Quán Dịch
+  t31_in:690,t31_out:708,  // 24 Thiên Tinh
+  t32_in:708,t32_out:718,  // Hỗn Thiên Tinh Độ
+  t33_in:718,t33_out:726,  // Bình Phân 60 Long
+  t34_in:726,t34_out:732,  // 365° của 28 Tú
+  t35_in:732,t35_out:738,  // Sai Thác / Không Vong
+  t36_in:738,t36_out:745   // Outer ring (28 Tú phối 24 Sơn / hướng)
+};
+
+let H='';
+
+// ===== T1: Tiên Thiên Bát Quái =====
+tienThien.forEach(t=>{
+  const a1=t.angle-22.5,a2=t.angle+22.5;
+  H+=`<path d="${arc(a1,a2,R.t1_in,R.t1_out)}" fill="#f0e8c8" stroke="#2a2a2a" stroke-width="1.2"/>`;
+  H+=bagua(t.lines,t.angle,(R.t1_in+R.t1_out)/2+2,18,'#1a1a1a');
+  H+=txt(t.angle,R.t1_in+9,t.num,11,'#666','normal');
+});
+
+// ===== T2: Hậu Thiên Bát Quái + Lạc Thư =====
+hauThien.forEach(t=>{
+  const a1=t.angle-22.5,a2=t.angle+22.5;
+  const isKhon=t.name==='KHÔN';
+  const fill=isKhon?'#c8202a':'#fafafa';
+  const c=isKhon?'#fff':'#1a1a1a';
+  H+=`<path d="${arc(a1,a2,R.t2_in,R.t2_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="1.3"/>`;
+  H+=bagua(t.lines,t.angle,(R.t2_in+R.t2_out)/2-3,20,c);
+  H+=txt(t.angle,R.t2_out-10,t.name,12,c,'bold');
+  H+=txt(t.angle,R.t2_in+9,t.lacshu,12,isKhon?'#fff':'#c8202a','bold');
+});
+
+// ===== T3: Bát Sát Hoàng Tuyền =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  // Determine if this son is a bát sát direction (relative to any trigram)
+  const isSat=Object.values(batSat).flat().includes(s.name);
+  const fill=isSat?'#ffd5d5':'#fff';
+  H+=`<path d="${arc(a1,a2,R.t3_in,R.t3_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.6"/>`;
+  if(isSat)H+=txt(center,(R.t3_in+R.t3_out)/2,'煞',8,'#c8202a','bold');
+});
+
+// ===== T4: Bát Lộ Hoàng Tuyền =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const isLo=batLo[s.name]!==undefined;
+  const fill=isLo?'#ffe5cc':'#fff';
+  H+=`<path d="${arc(a1,a2,R.t4_in,R.t4_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.6"/>`;
+  if(isLo)H+=txt(center,(R.t4_in+R.t4_out)/2,'路',9,'#aa5500','bold');
+});
+
+// ===== T5: Cửu Tinh =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const bg=elBg[s.starEl]||'#fafafa';
+  H+=`<path d="${arc(a1,a2,R.t5_in,R.t5_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  const short=s.star.replace('Tham Lang','Tham').replace('Cự Môn','Cự').replace('Lộc Tồn','Lộc').replace('Văn Khúc','Văn').replace('Liêm Trinh','Liêm').replace('Vũ Khúc','Vũ').replace('Phá Quân','Phá').replace('Phụ Bật','Phụ');
+  H+=txt(center,(R.t5_in+R.t5_out)/2,short,11,elColor[s.starEl]||'#222','bold');
+});
+
+// ===== T6: Địa Bàn Chính Châm (MAIN) =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const bg=elBg[s.el];
+  const isCardinal=['TÝ','MÃO','NGỌ','DẬU'].includes(s.name);
+  H+=`<path d="${arc(a1,a2,R.t6_in,R.t6_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="${isCardinal?1.6:1}"/>`;
+  H+=txt(center,(R.t6_in+R.t6_out)/2,s.name,20,elColor[s.el],'bold');
+});
+
+// ===== T7: Âm Dương Long =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const fill=s.yy==='Dương'?'#fff':'#222';
+  H+=`<path d="${arc(a1,a2,R.t7_in,R.t7_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.5"/>`;
+  const dot=polar(center,(R.t7_in+R.t7_out)/2);
+  const dotFill=s.yy==='Dương'?'#000':'#fff';
+  H+=`<circle cx="${dot.x}" cy="${dot.y}" r="3" fill="${dotFill}"/>`;
+});
+
+// ===== T8: Chính Ngũ Hành =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.t8_in,R.t8_out)}" fill="${elColor[s.el]}" stroke="#2a2a2a" stroke-width="0.6"/>`;
+  H+=txt(center,(R.t8_in+R.t8_out)/2,s.el,11,'#fff','bold');
+});
+
+// ===== T9: Kiếp Sát =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.t9_in,R.t9_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.5"/>`;
+  H+=txt(center,(R.t9_in+R.t9_out)/2,s.kiepSat,10,'#666','normal');
+});
+
+// ===== T10: 72 Long Xuyên Sơn (60 Hoa Giáp + 12 marks) =====
+// 360°/72 = 5° per division. 60 are named, 12 are gaps (marked red between segments).
+for(let i=0;i<72;i++){
+  const center=i*5,a1=center-2.5,a2=center+2.5;
+  // Every 6th is a "red mark" gap (between 5 sons there's a gap)
+  const isMark=i%6===5;
+  if(isMark){
+    H+=`<path d="${arc(a1,a2,R.t10_in,R.t10_out)}" fill="#c8202a" stroke="#2a2a2a" stroke-width="0.3"/>`;
+  }else{
+    // Calculate Hoa Giáp index for non-mark positions
+    const hgIdx=i-Math.floor(i/6); // approximate
+    const hg=hoaGiap(hgIdx%60);
+    H+=`<path d="${arc(a1,a2,R.t10_in,R.t10_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.3"/>`;
+    H+=txt(center,(R.t10_in+R.t10_out)/2,hg.substring(0,1)+hg.split(' ')[1].substring(0,1),7,'#333','normal');
+  }
+}
+
+// ===== T11: Xuyên Sơn 64 Quái =====
+// 64 hexagrams - simplified as small marks
+for(let i=0;i<64;i++){
+  const center=i*(360/64),a1=center-(360/128),a2=center+(360/128);
+  H+=`<path d="${arc(a1,a2,R.t11_in,R.t11_out)}" fill="${i%2===0?'#f5efd9':'#e8dfc0'}" stroke="#2a2a2a" stroke-width="0.3"/>`;
+  // Use unicode hexagram symbols or generic mark
+  H+=txt(center,(R.t11_in+R.t11_out)/2,'卦',7,'#444','normal');
+}
+
+// ===== T12: Nhân Bàn Trung Châm (+7.5°) =====
+son24.forEach((s,i)=>{
+  const center=i*15+7.5,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.t12_in,R.t12_out)}" fill="#fff8e7" stroke="#2a2a2a" stroke-width="0.8"/>`;
+  H+=txt(center,(R.t12_in+R.t12_out)/2,s.name,14,'#5a3a10','bold');
+});
+
+// ===== T13: 60 Long Thấu Địa =====
+for(let i=0;i<60;i++){
+  const center=i*6,a1=center-3,a2=center+3;
+  const hg=hoaGiap(i);
+  const na=napAm60[i];
+  const naEl=napAmEl(na);
+  // Color code by Vượng/Sát: every 5th is Vượng (red), 5th+2 is Sát (X), etc.
+  let bg=elBg[naEl];
+  let mark='';
+  const pos=i%5;
+  if(pos===1){bg='#ffcccc';mark='●'} // Vượng
+  else if(pos===2){bg='#444';mark='✕'} // Sát Diệu
+  else if(pos===3){bg='#fff0a0';mark='○'} // Tướng
+  else if(pos===0||pos===4){bg='#ddd';mark='·'} // Cô/Hư
+  H+=`<path d="${arc(a1,a2,R.t13_in,R.t13_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.4"/>`;
+  H+=txt(center,(R.t13_in+R.t13_out)/2-3,hg.split(' ')[0].substring(0,1)+hg.split(' ')[1].substring(0,1),8,'#222','bold');
+  H+=txt(center,(R.t13_in+R.t13_out)/2+5,mark,7,pos===2?'#fff':'#a00000','bold');
+}
+
+// ===== T14: Thấu Địa Kỳ Môn =====
+for(let i=0;i<24;i++){
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.t14_in,R.t14_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.4"/>`;
+  const kymon=['Tử Phụ','Tài Quan','Lộc Mã','Quý Nhân'][i%4];
+  H+=txt(center,(R.t14_in+R.t14_out)/2,kymon,7,'#553300','normal');
+}
+
+// ===== T15: Thấu Địa Quái =====
+for(let i=0;i<60;i++){
+  const center=i*6,a1=center-3,a2=center+3;
+  H+=`<path d="${arc(a1,a2,R.t15_in,R.t15_out)}" fill="${i%2===0?'#f0e8c8':'#e8dfc0'}" stroke="#2a2a2a" stroke-width="0.3"/>`;
+}
+
+// ===== T16: 60 Long + 28 Tú =====
+for(let i=0;i<60;i++){
+  const center=i*6,a1=center-3,a2=center+3;
+  const xiuIdx=Math.floor(i*28/60);
+  H+=`<path d="${arc(a1,a2,R.t16_in,R.t16_out)}" fill="${i%2===0?'#fafafa':'#f0f0f0'}" stroke="#2a2a2a" stroke-width="0.3"/>`;
+  H+=txt(center,(R.t16_in+R.t16_out)/2,xiu28[xiuIdx].name.substring(0,1),7,'#333','normal');
+}
+
+// ===== T17: Tứ Cát phương vị =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const isCat=tuCat.includes(s.name);
+  const fill=isCat?'#ffeb99':'#fafafa';
+  H+=`<path d="${arc(a1,a2,R.t17_in,R.t17_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.5"/>`;
+  if(isCat)H+=txt(center,(R.t17_in+R.t17_out)/2,'吉',10,'#b8860b','bold');
+});
+
+// ===== T18: Thiên Bàn Phùng Châm (-7.5°) =====
+son24.forEach((s,i)=>{
+  const center=i*15-7.5,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.t18_in,R.t18_out)}" fill="#e7f1ff" stroke="#2a2a2a" stroke-width="0.8"/>`;
+  H+=txt(center,(R.t18_in+R.t18_out)/2,s.name,14,'#102a5a','bold');
+});
+
+// ===== T19: 240 Phân Số =====
+for(let i=0;i<240;i++){
+  const center=i*1.5,a1=center-0.75,a2=center+0.75;
+  H+=`<path d="${arc(a1,a2,R.t19_in,R.t19_out)}" fill="${i%10===0?'#c8202a':(i%5===0?'#aaa':'#fff')}" stroke="#2a2a2a" stroke-width="0.2"/>`;
+}
+
+// ===== T20: Địa Bàn Phân Kim (120) =====
+for(let i=0;i<120;i++){
+  const center=i*3,a1=center-1.5,a2=center+1.5;
+  const sonIdx=Math.floor(i/5);
+  const pkIdx=i%5;
+  const pkName=phanKimNames[pkIdx];
+  const pkCl=phanKimClass[pkIdx];
+  let bg='#fff';
+  if(pkCl==='Vượng')bg='#ffcccc';
+  else if(pkCl==='Tướng')bg='#fff0a0';
+  else if(pkCl==='Sát')bg='#444';
+  H+=`<path d="${arc(a1,a2,R.t20_in,R.t20_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.25"/>`;
+  if(R.t20_out-R.t20_in>10){
+    H+=txt(center,(R.t20_in+R.t20_out)/2,pkName.substring(0,1),6,pkCl==='Sát'?'#fff':'#333','normal');
+  }
+}
+
+// ===== T21: Thiên Bàn Phân Kim (offset 7.5°) =====
+for(let i=0;i<120;i++){
+  const center=i*3+7.5,a1=center-1.5,a2=center+1.5;
+  const pkIdx=i%5;
+  const pkCl=phanKimClass[pkIdx];
+  let bg='#e7f1ff';
+  if(pkCl==='Vượng')bg='#ffcccc';
+  else if(pkCl==='Tướng')bg='#fff0a0';
+  else if(pkCl==='Sát')bg='#444';
+  H+=`<path d="${arc(a1,a2,R.t21_in,R.t21_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.25"/>`;
+}
+
+// ===== T22: Vượng/Tướng/Cô/Hư =====
+for(let i=0;i<120;i++){
+  const center=i*3,a1=center-1.5,a2=center+1.5;
+  const pkIdx=i%5;
+  const pkCl=phanKimClass[pkIdx];
+  let sym='';let color='#333';
+  if(pkCl==='Vượng'){sym='●';color='#c8202a'}
+  else if(pkCl==='Tướng'){sym='○';color='#b8860b'}
+  else if(pkCl==='Sát'){sym='✕';color='#000'}
+  else{sym='·';color='#666'}
+  H+=`<path d="${arc(a1,a2,R.t22_in,R.t22_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.2"/>`;
+  H+=txt(center,(R.t22_in+R.t22_out)/2,sym,7,color,'bold');
+}
+
+// ===== T23: Phân Kim Địa Nguyên (60 hexagrams) =====
+for(let i=0;i<60;i++){
+  const center=i*6,a1=center-3,a2=center+3;
+  const hg=hoaGiap(i);
+  H+=`<path d="${arc(a1,a2,R.t23_in,R.t23_out)}" fill="${i%2===0?'#f5efd9':'#e8dfc0'}" stroke="#2a2a2a" stroke-width="0.3"/>`;
+  H+=txt(center,(R.t23_in+R.t23_out)/2,hg.split(' ')[0].substring(0,1)+hg.split(' ')[1].substring(0,1),6,'#333','normal');
+}
+
+// ===== T24: Nạp Âm 60 Hoa Giáp =====
+for(let i=0;i<60;i++){
+  const center=i*6,a1=center-3,a2=center+3;
+  const na=napAm60[i];
+  const el=napAmEl(na);
+  H+=`<path d="${arc(a1,a2,R.t24_in,R.t24_out)}" fill="${elBg[el]}" stroke="#2a2a2a" stroke-width="0.3"/>`;
+  // Show abbreviated nạp âm name
+  const short=na.length>6?na.substring(0,4):na;
+  H+=txt(center,(R.t24_in+R.t24_out)/2,short,6,elColor[el],'bold');
+}
+
+// ===== T25: 12 Cung =====
+cung12.forEach(c=>{
+  const a1=c.angle-15,a2=c.angle+15;
+  H+=`<path d="${arc(a1,a2,R.t25_in,R.t25_out)}" fill="#fff5d6" stroke="#2a2a2a" stroke-width="0.8"/>`;
+  H+=txt(c.angle,(R.t25_in+R.t25_out)/2-3,c.name,11,'#5a3a10','bold');
+  H+=txt(c.angle,(R.t25_in+R.t25_out)/2+5,c.animal,8,'#8a6a30','normal');
+});
+
+// ===== T26: 28 Tú phương vị =====
+// Distribute 28 stars across 360° (not equal — by their actual celestial degrees, but here equal for simplicity)
+{
+  let acc=0;
+  const total=xiu28.reduce((s,x)=>s+x.deg,0);
+  // Start xiu1 (Hư) at top (north), distribute by xiu.deg
+  // First reorder so Hư is at North
+  const xiuOrder=[...xiu28];
+  // Actually use index where xiu corresponds to son
+  // Simpler: 28 equal slots
+  for(let i=0;i<28;i++){
+    const span=360/28;
+    const center=i*span,a1=center-span/2,a2=center+span/2;
+    const x=xiu28[i];
+    let bg='#fff';
+    if(x.group==='N')bg='#dde4f5';
+    else if(x.group==='E')bg='#dff0d8';
+    else if(x.group==='S')bg='#f8d7da';
+    else bg='#f4e4c1';
+    H+=`<path d="${arc(a1,a2,R.t26_in,R.t26_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.5"/>`;
+    H+=txt(center,(R.t26_in+R.t26_out)/2,x.name,9,'#1a1a1a','bold');
+  }
+}
+
+// ===== T27: 24 Tiết Khí =====
+tietKhi.forEach((tk,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  const bg=i%2===0?'#fff3d6':'#ffe9b8';
+  H+=`<path d="${arc(a1,a2,R.t27_in,R.t27_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.7"/>`;
+  H+=txt(center,(R.t27_in+R.t27_out)/2,tk,10,'#5a3a10','bold');
+});
+
+// ===== T28: 12 Tướng Đăng Minh =====
+tuong12.forEach((name,i)=>{
+  const center=i*30,a1=center-15,a2=center+15;
+  H+=`<path d="${arc(a1,a2,R.t28_in,R.t28_out)}" fill="${i%2===0?'#e6e6fa':'#d8d8e8'}" stroke="#2a2a2a" stroke-width="0.5"/>`;
+  H+=txt(center,(R.t28_in+R.t28_out)/2,name,9,'#2a2a5a','bold');
+});
+
+// ===== T29: 12 Tinh Thể =====
+const tinhThe=['Huyền Hiêu','Tinh Kỷ','Chiết Mộc','Đại Hỏa','Thọ Tinh','Thuần Vỹ','Thuần Hỏa','Thuần Thủ','Thực Trầm','Đại Lương','Giáng Lâu','Đăng Minh'];
+tinhThe.forEach((name,i)=>{
+  const center=i*30,a1=center-15,a2=center+15;
+  H+=`<path d="${arc(a1,a2,R.t29_in,R.t29_out)}" fill="${i%2===0?'#fafafa':'#eeeeee'}" stroke="#2a2a2a" stroke-width="0.4"/>`;
+  H+=txt(center,(R.t29_in+R.t29_out)/2,name.split(' ')[0],7,'#333','normal');
+});
+
+// ===== T30: Cung Xá Quán Dịch (12 lunar palaces) =====
+for(let i=0;i<12;i++){
+  const center=i*30,a1=center-15,a2=center+15;
+  H+=`<path d="${arc(a1,a2,R.t30_in,R.t30_out)}" fill="${i%2===0?'#f5f5e0':'#e8e8d0'}" stroke="#2a2a2a" stroke-width="0.4"/>`;
+}
+
+// ===== T31: 24 Thiên Tinh =====
+son24.forEach((s,i)=>{
+  const center=i*15,a1=center-7.5,a2=center+7.5;
+  H+=`<path d="${arc(a1,a2,R.t31_in,R.t31_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.6"/>`;
+  H+=txt(center,(R.t31_in+R.t31_out)/2,s.heavenStar,9,'#222','normal');
+});
+
+// ===== T32: Hỗn Thiên Ngũ Hành Tinh Độ =====
+// 61 segments (simplified)
+for(let i=0;i<61;i++){
+  const center=i*(360/61),a1=center-(360/122),a2=center+(360/122);
+  const el=['Thủy','Mộc','Hỏa','Thổ','Kim'][i%5];
+  H+=`<path d="${arc(a1,a2,R.t32_in,R.t32_out)}" fill="${elBg[el]}" stroke="#2a2a2a" stroke-width="0.2"/>`;
+}
+
+// ===== T33: Bình Phân 60 Long =====
+for(let i=0;i<60;i++){
+  const center=i*6,a1=center-3,a2=center+3;
+  H+=`<path d="${arc(a1,a2,R.t33_in,R.t33_out)}" fill="${i%2===0?'#fafafa':'#eeeeee'}" stroke="#2a2a2a" stroke-width="0.2"/>`;
+}
+
+// ===== T34: 365° của 28 Tú =====
+// Distribute 28 stars by their actual degree widths
+{
+  let cumDeg=0;
+  const totalDeg=xiu28.reduce((s,x)=>s+x.deg,0);
+  for(let i=0;i<28;i++){
+    const x=xiu28[i];
+    const a1=cumDeg*360/totalDeg;
+    cumDeg+=x.deg;
+    const a2=cumDeg*360/totalDeg;
+    let bg='#fff';
+    if(x.group==='N')bg='#dde4f5';
+    else if(x.group==='E')bg='#dff0d8';
+    else if(x.group==='S')bg='#f8d7da';
+    else bg='#f4e4c1';
+    H+=`<path d="${arc(a1,a2,R.t34_in,R.t34_out)}" fill="${bg}" stroke="#2a2a2a" stroke-width="0.3"/>`;
+  }
+}
+
+// ===== T35: Sai Thác / Không Vong =====
+for(let i=0;i<120;i++){
+  const center=i*3,a1=center-1.5,a2=center+1.5;
+  const pkIdx=i%5;
+  // Mậu (idx 2) = Sát Diệu = Không Vong
+  if(pkIdx===2){
+    H+=`<path d="${arc(a1,a2,R.t35_in,R.t35_out)}" fill="#000" stroke="#000" stroke-width="0.2"/>`;
+    H+=txt(center,(R.t35_in+R.t35_out)/2,'✕',5,'#fff','bold');
+  }else if(pkIdx===1||pkIdx===3){
+    H+=`<path d="${arc(a1,a2,R.t35_in,R.t35_out)}" fill="#c8202a" stroke="#2a2a2a" stroke-width="0.2"/>`;
+  }else{
+    H+=`<path d="${arc(a1,a2,R.t35_in,R.t35_out)}" fill="#fafafa" stroke="#2a2a2a" stroke-width="0.2"/>`;
+  }
+}
+
+// ===== T36: Outer - 8 Cardinal directions =====
+cardinals.forEach(c=>{
+  const a1=c.angle-22.5,a2=c.angle+22.5;
+  H+=`<path d="${arc(a1,a2,R.t36_in,R.t36_out)}" fill="#1a1a2e" stroke="#ffd700" stroke-width="0.8"/>`;
+  H+=txt(c.angle,(R.t36_in+R.t36_out)/2,c.name,8,'#ffd700','bold');
+});
+
+// Degree ticks (very outer)
+for(let d=0;d<360;d+=5){
+  const p1=polar(d,R.t36_out),p2=polar(d,R.t36_out+(d%30===0?6:(d%10===0?4:2)));
+  H+=`<line x1="${p1.x}" y1="${p1.y}" x2="${p2.x}" y2="${p2.y}" stroke="#1a1a1a" stroke-width="${d%30===0?1:0.4}"/>`;
+}
+for(let d=0;d<360;d+=30){
+  H+=txt(d,R.t36_out+12,d+'°',9,'#1a1a1a','bold');
+}
+
+// Boundary circles
+[R.t1_out,R.t2_out,R.t3_out,R.t4_out,R.t5_out,R.t6_out,R.t7_out,R.t8_out,R.t9_out,R.t10_out,R.t11_out,R.t12_out,R.t13_out,R.t14_out,R.t15_out,R.t16_out,R.t17_out,R.t18_out,R.t19_out,R.t20_out,R.t21_out,R.t22_out,R.t23_out,R.t24_out,R.t25_out,R.t26_out,R.t27_out,R.t28_out,R.t29_out,R.t30_out,R.t31_out,R.t32_out,R.t33_out,R.t34_out,R.t35_out,R.t36_out].forEach(r=>{
+  H+=`<circle cx="${CX}" cy="${CY}" r="${r}" fill="none" stroke="#2a2a2a" stroke-width="0.5"/>`;
+});
+H+=`<circle cx="${CX}" cy="${CY}" r="${R.t1_in}" fill="none" stroke="#2a2a2a" stroke-width="1.5"/>`;
+H+=`<circle cx="${CX}" cy="${CY}" r="${R.t6_out}" fill="none" stroke="#c8202a" stroke-width="1.2"/>`; // Highlight T6
+H+=`<circle cx="${CX}" cy="${CY}" r="${R.t6_in}" fill="none" stroke="#c8202a" stroke-width="1.2"/>`;
+
+ringsG.innerHTML=H;
+
+// ===== Compass logic =====
+let curH=0;
+function dirName(d){
+  const dirs=[{n:'BẮC',min:337.5,max:22.5},{n:'ĐÔNG BẮC',min:22.5,max:67.5},{n:'ĐÔNG',min:67.5,max:112.5},{n:'ĐÔNG NAM',min:112.5,max:157.5},{n:'NAM',min:157.5,max:202.5},{n:'TÂY NAM',min:202.5,max:247.5},{n:'TÂY',min:247.5,max:292.5},{n:'TÂY BẮC',min:292.5,max:337.5}];
+  for(const x of dirs){if(x.min>x.max){if(d>=x.min||d<x.max)return x.n}else if(d>=x.min&&d<x.max)return x.n}
+  return'BẮC';
+}
+function getSonIdx(d){let i=Math.floor(((d+7.5)%360)/15);if(i<0)i+=24;return i}
+function getTrigIdx(d){let i=Math.floor(((d+22.5)%360)/45);if(i<0)i+=8;return i}
+function getCungIdx(d){let i=Math.floor(((d+15)%360)/30);if(i<0)i+=12;return i}
+function getHoaGiapIdx(d){return Math.floor((d%360)/6)}
+function getPhanKim(d){
+  const sonIdx=getSonIdx(d);
+  const son=son24[sonIdx];
+  const sonCenter=sonIdx*15;
+  const offset=((d-sonCenter+360+7.5)%15)-7.5; // -7.5 to +7.5
+  const pkIdx=Math.floor((offset+7.5)/3); // 0-4
+  return{son:son.name,pkName:phanKimNames[Math.min(4,pkIdx)],pkClass:phanKimClass[Math.min(4,pkIdx)]};
+}
+
+function update(h){
+  curH=((h%360)+360)%360;
+  svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`;
+  document.getElementById('degDisp').textContent=curH.toFixed(1)+'°';
+  document.getElementById('dirDisp').textContent=dirName(curH);
+  const sIdx=getSonIdx(curH);
+  const s=son24[sIdx];
+  const t=hauThien[getTrigIdx(curH)];
+  const tk=tietKhi[sIdx];
+  const cIdx=getCungIdx(curH);
+  const cung=cung12[cIdx];
+  const hgIdx=getHoaGiapIdx(curH);
+  const hg=hoaGiap(hgIdx);
+  const na=napAm60[hgIdx];
+  const pk=getPhanKim(curH);
+  const tuong=tuong12[cIdx];
+
+  document.getElementById('sonDisp').textContent=s.name;
+  document.getElementById('qDisp').textContent=t.name;
+  document.getElementById('napamDisp').textContent=na;
+
+  document.getElementById('dSon').textContent=s.name+' ('+s.yy+', '+s.el+')';
+  let nIdx=Math.floor((((curH-7.5)+7.5+360)%360)/15);nIdx=((nIdx%24)+24)%24;
+  document.getElementById('nSon').textContent=son24[nIdx].name+' ('+son24[nIdx].el+')';
+  let tIdx=Math.floor((((curH+7.5)+7.5+360)%360)/15);tIdx=((tIdx%24)+24)%24;
+  document.getElementById('tSon').textContent=son24[tIdx].name+' ('+son24[tIdx].el+')';
+
+  document.getElementById('yyVal').textContent=s.yy;
+  document.getElementById('elVal').textContent=s.el;
+  document.getElementById('phanKimVal').textContent=pk.pkName+' '+s.name;
+  document.getElementById('napamVal').textContent=na+' ('+napAmEl(na)+')';
+  document.getElementById('vtcVal').textContent=pk.pkClass;
+  document.getElementById('qVal').textContent=t.name+' '+t.sym;
+  document.getElementById('lacShuVal').textContent=t.lacshu;
+  document.getElementById('starVal').textContent=s.star+' ('+s.starEl+')';
+  document.getElementById('hsVal').textContent=s.heavenStar;
+  document.getElementById('xiuVal').textContent=s.xiu;
+  document.getElementById('qiVal').textContent=tk;
+  document.getElementById('cungVal').textContent=cung.name+' ('+cung.animal+')';
+  document.getElementById('tuongVal').textContent=tuong;
+  document.getElementById('tamHopVal').textContent=tamHopMap[s.el]||'-';
+  document.getElementById('tucVal').textContent=tuCat.includes(s.name)?'✓ Là Tứ Cát (cát địa)':'Không thuộc Tứ Cát';
+  document.getElementById('kiepSatVal').textContent=s.kiepSat;
+
+  // Bát Sát
+  const killing=batSat[t.name]||[];
+  const w1=document.getElementById('batSatWarn');
+  if(killing.includes(s.name)){
+    w1.classList.add('active');
+    document.getElementById('batSatTxt').textContent='Sơn '+s.name+' là sát phương của quái '+t.name;
+  }else w1.classList.remove('active');
+
+  // Bát Lộ
+  const w2=document.getElementById('batLoWarn');
+  if(batLo[s.name]){
+    w2.classList.add('active');
+    document.getElementById('batLoTxt').textContent='Sơn '+s.name+' kỵ với '+batLo[s.name];
+  }else w2.classList.remove('active');
+
+  // Không Vong / Sai Thác
+  const w3=document.getElementById('khongVongWarn');
+  if(pk.pkClass==='Sát'){
+    w3.classList.add('active');
+    document.getElementById('khongVongTxt').textContent='Rơi vào "Sát Diệu - Không Vong" phân kim '+pk.pkName+' '+s.name+'. Đại kỵ.';
+  }else if(pk.pkClass==='Cô'||pk.pkClass==='Hư'){
+    w3.classList.add('active');
+    document.getElementById('khongVongTxt').textContent='Rơi vào phân kim '+pk.pkClass+' ('+pk.pkName+' '+s.name+'). Cô độc, kém vượng.';
+  }else w3.classList.remove('active');
+
+  document.getElementById('manualSlider').value=curH;
+  document.getElementById('manualValue').textContent=curH.toFixed(1)+'°';
+}
+
+// ===== Zoom =====
+let zoom=1;
+document.getElementById('zoomIn').addEventListener('click',()=>{zoom=Math.min(zoom+0.25,3);svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`});
+document.getElementById('zoomOut').addEventListener('click',()=>{zoom=Math.max(zoom-0.25,0.5);svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`});
+document.getElementById('zoomReset').addEventListener('click',()=>{zoom=1;svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`});
+
+// ===== Sensor =====
+let sensorActive=false;
+function handleOrient(e){
+  let h=null;
+  if(e.webkitCompassHeading!==undefined)h=e.webkitCompassHeading;
+  else if(e.alpha!==null)h=360-e.alpha;
+  if(h!==null&&!isNaN(h))update(h);
+}
+document.getElementById('startBtn').addEventListener('click',async()=>{
+  const st=document.getElementById('status');
+  try{
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){
+      const p=await DeviceOrientationEvent.requestPermission();
+      if(p==='granted'){window.addEventListener('deviceorientation',handleOrient,true);sensorActive=true;st.textContent='✓ Cảm biến đã bật.'}
+      else st.textContent='✗ Quyền cảm biến bị từ chối.';
+    }else if('DeviceOrientationEvent' in window){
+      window.addEventListener('deviceorientationabsolute',handleOrient,true);
+      window.addEventListener('deviceorientation',handleOrient,true);
+      sensorActive=true;st.textContent='✓ Cảm biến đã bật.';
+    }else st.textContent='✗ Không có cảm biến. Dùng thanh trượt.';
+  }catch(err){st.textContent='✗ Lỗi: '+err.message}
+});
+document.getElementById('manualSlider').addEventListener('input',e=>{if(!sensorActive)update(parseFloat(e.target.value))});
+
+update(0);
+</script>
+</body>
+</html>
