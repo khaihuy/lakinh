@@ -238,8 +238,8 @@
           </select>
         </div>
         <div class="form-row">
-          <label>Hướng nhà (cửa chính)</label>
-          <select id="dlHuong">
+          <label>Hướng nhà (chọn nhanh 8 hướng)</label>
+          <select id="dlHuong" onchange="dlSyncHuongToPrecise()">
             <option value="0">Bắc (Tý)</option>
             <option value="45">Đông Bắc (Cấn)</option>
             <option value="90">Đông (Mão)</option>
@@ -253,8 +253,18 @@
         <div class="form-row">
           <label>Sơn (24 sơn cụ thể)</label>
           <select id="dlSon">
-            <option value="">Chọn sơn cụ thể (tùy chọn)</option>
+            <option value="">-- Tự xác định từ góc --</option>
           </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row" style="grid-column:span 2">
+          <label>🎯 Góc chính xác đo bằng la bàn (0-359.9°) - <b style="color:#ffd700">ƯU TIÊN cao nhất, dùng để xác định sơn chính xác</b></label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="number" id="dlPreciseAng" min="0" max="359.9" step="0.1" placeholder="VD: 178.5 (đo bằng la bàn)" oninput="dlUpdatePrecise()" style="flex:1">
+            <input type="range" id="dlPreciseSlider" min="0" max="3599" step="1" value="0" oninput="dlSliderChange()" style="flex:2;accent-color:#ffd700">
+          </div>
+          <div id="dlPreciseInfo" style="font-size:12px;color:#aaa;margin-top:4px;line-height:1.6">→ Để trống = dùng dropdown 8 hướng phía trên</div>
         </div>
         <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
           <button class="action" onclick="dlAnalyze()">PHÂN TÍCH ĐỊA LÝ</button>
@@ -1222,11 +1232,92 @@ function updateSonDropdown(){
 }
 document.getElementById('dlHuong').addEventListener('change',updateSonDropdown);
 
+// 24 Sơn full list theo thứ tự góc, Tý ở 0° (Lạc Việt: Khôn ở 135°, Tốn ở 225°)
+const SON24_FULL=['Tý','Quý','Sửu','Cấn','Dần','Giáp','Mão','Ất','Thìn','Khôn','Tỵ','Bính','Ngọ','Đinh','Mùi','Tốn','Thân','Canh','Dậu','Tân','Tuất','Càn','Hợi','Nhâm'];
+
+function angleToSon(angle){
+  // Tý centered at 0°. Mỗi sơn = 15°. Sơn idx = floor((angle+7.5)/15) % 24
+  const a=((angle+7.5)%360+360)%360;
+  const idx=Math.floor(a/15)%24;
+  return{name:SON24_FULL[idx],idx,centerAng:idx*15};
+}
+
+function angleToHuong(angle){
+  // 8 hướng. Bắc centered at 0°. Mỗi hướng = 45°.
+  const a=((angle+22.5)%360+360)%360;
+  const idx=Math.floor(a/45)%8;
+  const names=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
+  return{name:names[idx],idx,code:idx*45};
+}
+
+function checkKhongVong(angle){
+  // Boundaries: every 7.5°+15n. Cardinal trigram boundaries: 22.5°+45n
+  const a=((angle%360)+360)%360;
+  for(let i=0;i<24;i++){
+    const b=7.5+i*15;
+    let diff=Math.abs(a-b);
+    if(diff>180)diff=360-diff;
+    if(diff<1){
+      // Cardinal/trigram boundary check (mod luôn dương)
+      const mod=(((b-22.5)%45)+45)%45;
+      const isCardinal=mod<0.1||mod>44.9;
+      return{khe:true,type:isCardinal?'Đại Không Vong (giữa 2 Quái)':'Tiểu Không Vong (giữa 2 Sơn trong cùng Quái)',boundary:b};
+    }
+  }
+  return{khe:false};
+}
+
+function getEffectivePreciseAng(){
+  const p=parseFloat(document.getElementById('dlPreciseAng').value);
+  if(!isNaN(p)&&p>=0&&p<360)return p;
+  return parseInt(document.getElementById('dlHuong').value)||0;
+}
+
+function dlUpdatePrecise(){
+  const v=parseFloat(document.getElementById('dlPreciseAng').value);
+  if(isNaN(v)||v<0||v>=360){
+    document.getElementById('dlPreciseInfo').innerHTML='→ Để trống = dùng dropdown 8 hướng phía trên';
+    return;
+  }
+  document.getElementById('dlPreciseSlider').value=Math.round(v*10);
+  const h=angleToHuong(v);
+  const s=angleToSon(v);
+  const k=checkKhongVong(v);
+  let info=`🎯 Góc ${v.toFixed(1)}° → <b style="color:#8bc34a">Hướng: ${h.name}</b> · <b style="color:#ffd700">Sơn: ${s.name}</b> (tâm ${s.centerAng}°)`;
+  if(k.khe){
+    info+=`<br><b style="color:#e74c3c">⚠ ${k.type}</b> - Cận biên ${k.boundary}°. Theo phong thủy, đây là tọa hướng <b>rất xấu</b>, nên xoay nhà lệch ±2° để tránh.`;
+  }
+  document.getElementById('dlPreciseInfo').innerHTML=info;
+}
+
+function dlSliderChange(){
+  const v=parseInt(document.getElementById('dlPreciseSlider').value)/10;
+  document.getElementById('dlPreciseAng').value=v.toFixed(1);
+  dlUpdatePrecise();
+}
+
+function dlSyncHuongToPrecise(){
+  // Nếu chưa nhập precise, tự động đồng bộ với dropdown
+  const cur=document.getElementById('dlPreciseAng').value;
+  if(!cur||cur===''){
+    return; // Don't auto-fill, just leave empty
+  }
+}
+
 function dlAnalyze(){
   const y=parseInt(document.getElementById('dlYear').value);
   const g=document.getElementById('dlGender').value;
-  const huongAng=parseInt(document.getElementById('dlHuong').value);
-  const sonName=document.getElementById('dlSon').value;
+  const preciseAng=parseFloat(document.getElementById('dlPreciseAng').value);
+  const usePrecise=!isNaN(preciseAng)&&preciseAng>=0&&preciseAng<360;
+  let huongAng,sonName,preciseDeg=null;
+  if(usePrecise){
+    preciseDeg=preciseAng;
+    huongAng=angleToHuong(preciseAng).code;
+    sonName=angleToSon(preciseAng).name;
+  }else{
+    huongAng=parseInt(document.getElementById('dlHuong').value);
+    sonName=document.getElementById('dlSon').value;
+  }
   if(!y){alert('Nhập năm sinh gia chủ');return}
 
   const info=fullPersonInfo(y,g==='nam'?'GIA CHỦ NAM':'GIA CHỦ NỮ');
@@ -1236,6 +1327,9 @@ function dlAnalyze(){
   // Tọa = hướng đối diện
   const toaAng=(huongAng+180)%360;
   const toaName=huongNames[toaAng/45];
+  const toaDeg=preciseDeg!==null?((preciseDeg+180)%360):null;
+  const toaSon=toaDeg!==null?angleToSon(toaDeg).name:null;
+  const khongVong=preciseDeg!==null?checkKhongVong(preciseDeg):{khe:false};
 
   // Phân tích Bát Trạch tại hướng nhà
   const dirs=BAT_TRACH_DIR[phi.name];
@@ -1249,6 +1343,15 @@ function dlAnalyze(){
   const sonToa=SON24_LV[toaAng];
 
   let html='<div class="card"><h2>KẾT QUẢ PHÂN TÍCH ĐỊA LÝ</h2>';
+  if(usePrecise){
+    html+=`<div style="background:rgba(255,215,0,.1);padding:8px 12px;border-left:3px solid #ffd700;border-radius:4px;margin-bottom:10px;font-size:13px">🎯 <b>Dùng góc chính xác ${preciseDeg.toFixed(1)}°</b> (đo bằng la bàn)</div>`;
+  }
+  if(khongVong.khe){
+    html+=`<div class="verdict bad" style="margin-bottom:10px"><div class="verdict-title">⚠ CẢNH BÁO ${khongVong.type.toUpperCase()}</div>
+      Góc ${preciseDeg.toFixed(1)}° rất gần biên giới ${khongVong.boundary}° giữa 2 sơn.
+      ${khongVong.type.includes('Đại')?'<b>Đại Không Vong</b>: rơi vào ranh giới 2 Quái khác hành - khí trường rối loạn, nhà cửa gặp họa, bệnh tật, suy bại.':'<b>Tiểu Không Vong</b>: rơi vào ranh giới 2 Sơn cùng Quái - không nặng bằng Đại Không Vong nhưng vẫn không ổn định.'}
+      <br><b>Khuyến nghị:</b> xoay nhà lệch ±2° để không nằm trên ranh giới.</div>`;
+  }
   html+=`<div class="lakinh-mini">
     <div class="lk-card">
       <div class="lk-title">GIA CHỦ</div>
@@ -1259,16 +1362,19 @@ function dlAnalyze(){
     </div>
     <div class="lk-card">
       <div class="lk-title">HƯỚNG NHÀ (mặt tiền)</div>
-      <div class="lk-row"><span>Hướng:</span><span>${huongName} (${huongAng}°)</span></div>
+      ${usePrecise?`<div class="lk-row"><span>Góc chính xác:</span><span><b style="color:#ffd700">${preciseDeg.toFixed(1)}°</b></span></div>`:''}
+      <div class="lk-row"><span>Hướng (8 cung):</span><span>${huongName} (${huongAng}°)</span></div>
       <div class="lk-row"><span>3 Sơn của cung:</span><span>${sonHuong.join(' / ')}</span></div>
-      ${sonName?`<div class="lk-row"><span>Sơn cụ thể:</span><span><b style="color:#ffd700">${sonName}</b></span></div>`:''}
+      ${sonName?`<div class="lk-row"><span>Sơn cụ thể:</span><span><b style="color:#ffd700">${sonName}</b>${usePrecise?` (tâm sơn: ${angleToSon(preciseDeg).centerAng}°)`:''}</span></div>`:''}
       <div class="lk-row"><span>Bát Trạch:</span><span><b style="color:${DIR_CLASS[huongMeaning].includes('cat')?'#8bc34a':'#e74c3c'}">${huongMeaning}</b></span></div>
       <div class="lk-row"><span>Cửu Tinh:</span><span>${ctH.star} (${ctH.el})</span></div>
       <div class="lk-row"><span>Năm ứng:</span><span>${ctH.months}</span></div>
     </div>
     <div class="lk-card">
       <div class="lk-title">TỌA NHÀ (lưng)</div>
+      ${toaDeg!==null?`<div class="lk-row"><span>Góc tọa chính xác:</span><span><b style="color:#ffd700">${toaDeg.toFixed(1)}°</b></span></div>`:''}
       <div class="lk-row"><span>Hướng tọa:</span><span>${toaName} (${toaAng}°)</span></div>
+      ${toaSon?`<div class="lk-row"><span>Sơn tọa:</span><span><b style="color:#ffd700">${toaSon}</b></span></div>`:''}
       <div class="lk-row"><span>3 Sơn của cung:</span><span>${sonToa.join(' / ')}</span></div>
       <div class="lk-row"><span>Bát Trạch:</span><span><b style="color:${DIR_CLASS[toaMeaning].includes('cat')?'#8bc34a':'#e74c3c'}">${toaMeaning}</b></span></div>
       <div class="lk-row"><span>Cửu Tinh:</span><span>${ctT.star} (${ctT.el})</span></div>
@@ -1887,13 +1993,18 @@ function drawHousePlan(){
   const doorPct=parseFloat(document.getElementById('hpDoorPos').value)||50;
   const y=parseInt(document.getElementById('dlYear').value);
   const g=document.getElementById('dlGender').value;
-  const huongAng=parseInt(document.getElementById('dlHuong').value);
+  // Ưu tiên góc chính xác nếu có
+  const preciseAng=parseFloat(document.getElementById('dlPreciseAng').value);
+  const usePrecise=!isNaN(preciseAng)&&preciseAng>=0&&preciseAng<360;
+  const huongAng=usePrecise?preciseAng:parseInt(document.getElementById('dlHuong').value);
   if(!y){alert('Vui lòng nhập năm sinh gia chủ ở mục Sơn-Hướng-Tọa phía trên');return}
 
   const phi=cungPhi(y,g);
   const dirs=BAT_TRACH_DIR[phi.name];
   const huongNames=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
-  const huongName=huongNames[huongAng/45];
+  const huongInfo=angleToHuong(huongAng);
+  const huongName=huongInfo.name;
+  const sonInfo=usePrecise?angleToSon(huongAng):null;
 
   // SVG canvas - fit house with margins
   const SW=560,SH=900,M=90;
@@ -1986,7 +2097,8 @@ function drawHousePlan(){
   svg+=`<text x="${nx}" y="${ny<compY?ny-3:ny+12}" font-size="11" font-weight="bold" fill="#c8202a" text-anchor="middle">B</text>`;
 
   // 8. Hướng label above house
-  svg+=`<text x="${CX}" y="${HY-35}" font-size="14" font-weight="bold" fill="#1a1a1a" text-anchor="middle">HƯỚNG NHÀ: ${huongName.toUpperCase()} (${huongAng}°)</text>`;
+  const huongLabel=usePrecise?`HƯỚNG NHÀ: ${huongName.toUpperCase()} - SƠN ${sonInfo.name.toUpperCase()} (${huongAng.toFixed(1)}°)`:`HƯỚNG NHÀ: ${huongName.toUpperCase()} (${huongAng}°)`;
+  svg+=`<text x="${CX}" y="${HY-35}" font-size="14" font-weight="bold" fill="#1a1a1a" text-anchor="middle">${huongLabel}</text>`;
   svg+=`<text x="${CX}" y="${HY+HL+30}" font-size="11" fill="#666" text-anchor="middle">Gia chủ: ${phi.name} (${phi.trach}) - Năm sinh ${y}</text>`;
   svg+=`<text x="${CX}" y="${HY+HL+44}" font-size="10" fill="#888" text-anchor="middle">Kích thước: ${w}m × ${l}m</text>`;
 
@@ -2052,7 +2164,9 @@ function loadFloorPlan(){
       hpImgW=img.width;hpImgH=img.height;
       hpCenterX=0.5;hpCenterY=0.5;
       // Default fine angle from dropdown
-      hpFineAng=parseInt(document.getElementById('dlHuong').value)||0;
+      // Ưu tiên góc chính xác nếu có, fallback dropdown
+      const precAng=parseFloat(document.getElementById('dlPreciseAng').value);
+      hpFineAng=!isNaN(precAng)&&precAng>=0&&precAng<360?precAng:(parseInt(document.getElementById('dlHuong').value)||0);
       document.getElementById('hpFineAng').value=hpFineAng;
       document.getElementById('hpFineAngLabel').textContent=hpFineAng+'°';
       drawFloorPlanWithImage();
