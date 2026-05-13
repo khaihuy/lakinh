@@ -102,6 +102,32 @@
   .cal-legend span{padding:2px 8px;border-radius:4px}
   .external-link{display:inline-block;padding:10px 20px;background:rgba(255,215,0,.15);border:1px solid #ffd700;border-radius:8px;color:#ffd700;text-decoration:none;font-weight:bold;margin-top:10px}
   .external-link:hover{background:rgba(255,215,0,.25)}
+  /* ===== Tử Vi tab ===== */
+  .tuvi-form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px 20px}
+  @media(max-width:600px){.tuvi-form-grid{grid-template-columns:1fr}}
+  .tuvi-section{margin-bottom:14px}
+  .tuvi-section h3{color:#ffd700;font-size:14px;letter-spacing:1px;margin-bottom:8px;border-bottom:1px solid rgba(255,215,0,.2);padding-bottom:4px}
+  .tuvi-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .tuvi-row label{min-width:120px;font-size:13px;color:#ccc}
+  .tuvi-row input,.tuvi-row select{background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.25);border-radius:6px;color:#f0e8d0;padding:7px 10px;font-family:inherit;font-size:13px}
+  .tuvi-row input:focus,.tuvi-row select:focus{outline:none;border-color:#ffd700}
+  .tuvi-row input[type=text]{width:100px}
+  .tuvi-row input[type=text].wide{width:180px}
+  .tuvi-row select{min-width:90px}
+  .tuvi-gender{display:flex;gap:16px;align-items:center}
+  .tuvi-gender label{min-width:unset;display:flex;align-items:center;gap:5px;cursor:pointer;color:#f0e8d0}
+  .tuvi-divider{text-align:center;color:#888;font-size:13px;margin:10px 0;position:relative}
+  .tuvi-divider::before,.tuvi-divider::after{content:'';position:absolute;top:50%;width:42%;height:1px;background:rgba(255,255,255,.12)}
+  .tuvi-divider::before{left:0}.tuvi-divider::after{right:0}
+  .tuvi-btn-row{display:flex;gap:10px;margin-top:14px;flex-wrap:wrap}
+  #tuvi-frame-wrap{display:none;margin-top:16px;border-radius:10px;overflow:hidden;border:1px solid rgba(255,215,0,.2)}
+  #tuvi-frame-wrap.visible{display:block}
+  #tuvi-loading{display:none;text-align:center;padding:20px;color:#aaa;font-size:14px}
+  #tuvi-frame{width:100%;min-height:600px;border:none;background:#d0d0d0}
+  .tuvi-note{font-size:11px;color:#888;margin-top:6px;line-height:1.5}
+  .tuvi-tab-switch{display:flex;gap:0;margin-bottom:12px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,215,0,.25);width:fit-content}
+  .tuvi-tab-switch button{padding:7px 18px;background:transparent;border:none;color:#aaa;font-size:13px;cursor:pointer;font-family:inherit;transition:all .2s}
+  .tuvi-tab-switch button.active{background:rgba(255,215,0,.15);color:#ffd700}
   .empty{text-align:center;color:#888;padding:30px;font-style:italic}
   details{margin:6px 0}
   details summary{cursor:pointer;color:#ffd700;font-size:13px;padding:6px 0}
@@ -127,6 +153,7 @@
     <button class="tab" data-tab="ngay">📅 XEM NGÀY</button>
     <button class="tab" data-tab="docton">🔮 ĐỘN TOÁN</button>
     <button class="tab" data-tab="guide">📖 NGUYÊN LÝ</button>
+    <button class="tab" data-tab="tuvi">⭐ TỬ VI LẠC VIỆT</button>
   </nav>
 
   <!-- ==================== TAB 1: CALCULATOR ==================== -->
@@ -584,6 +611,120 @@
       </div>
     </div>
   </div>
+
+  <!-- ==================== TAB 9: TỬ VI LẠC VIỆT ==================== -->
+  <div class="panel" id="panel-tuvi">
+    <div class="card">
+      <h2>⭐ LÁ SỐ TỬ VI LẠC VIỆT</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:14px">Theo hệ thống <b>Tử Vi Lạc Việt</b> của Thiên Sứ Nguyễn Vũ Tuấn Anh — phục hồi từ văn minh Lạc Việt.</p>
+
+      <form id="tuvi-form" action="https://congcu.dialylacviet.com/apps/LaSoTuVi.php" method="post" target="tuvi-frame" onsubmit="onTuViSubmit()">
+
+        <!-- Name & Gender -->
+        <div class="tuvi-section">
+          <h3>THÔNG TIN</h3>
+          <div class="tuvi-row">
+            <label>Họ và tên:</label>
+            <input type="text" name="name" class="wide" placeholder="(tùy chọn)">
+          </div>
+          <div class="tuvi-row">
+            <label>Giới tính:</label>
+            <div class="tuvi-gender">
+              <label><input type="radio" name="gender" value="M" checked> Nam</label>
+              <label><input type="radio" name="gender" value="F"> Nữ</label>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dương lịch -->
+        <div class="tuvi-section">
+          <h3>DƯƠNG LỊCH</h3>
+          <div class="tuvi-row">
+            <label>Giờ (HH:MM):</label>
+            <input type="text" name="hhmi" placeholder="VD: 08:30" id="tuvi-hhmi">
+          </div>
+          <div class="tuvi-row">
+            <label>Ngày / Tháng / Năm:</label>
+            <input type="text" name="dd" placeholder="Ngày" style="width:56px">
+            <input type="text" name="mm" placeholder="Tháng" style="width:64px">
+            <input type="text" name="yyyy" placeholder="Năm" style="width:76px">
+          </div>
+        </div>
+
+        <div class="tuvi-divider">hoặc nhập Âm lịch</div>
+
+        <!-- Âm lịch -->
+        <div class="tuvi-section">
+          <h3>ÂM LỊCH</h3>
+          <div class="tuvi-row">
+            <label>Giờ:</label>
+            <select name="gio">
+              <option value="1">Tý (23-1h)</option>
+              <option value="2">Sửu (1-3h)</option>
+              <option value="3">Dần (3-5h)</option>
+              <option value="4">Mão (5-7h)</option>
+              <option value="5">Thìn (7-9h)</option>
+              <option value="6">Tỵ (9-11h)</option>
+              <option value="7">Ngọ (11-13h)</option>
+              <option value="8">Mùi (13-15h)</option>
+              <option value="9">Thân (15-17h)</option>
+              <option value="10">Dậu (17-19h)</option>
+              <option value="11">Tuất (19-21h)</option>
+              <option value="12">Hợi (21-23h)</option>
+            </select>
+          </div>
+          <div class="tuvi-row">
+            <label>Ngày / Tháng:</label>
+            <input type="text" name="lday" placeholder="Ngày" style="width:56px">
+            <input type="text" name="lmon" placeholder="Tháng" style="width:64px">
+          </div>
+          <div class="tuvi-row">
+            <label>Năm (âm lịch):</label>
+            <select name="lcan">
+              <option value="1">Giáp</option><option value="2">Ất</option>
+              <option value="3">Bính</option><option value="4">Đinh</option>
+              <option value="5">Mậu</option><option value="6">Kỷ</option>
+              <option value="7">Canh</option><option value="8">Tân</option>
+              <option value="9">Nhâm</option><option value="10">Quý</option>
+            </select>
+            <select name="lnam">
+              <option value="1">Tý</option><option value="2">Sửu</option>
+              <option value="3">Dần</option><option value="4">Mão</option>
+              <option value="5">Thìn</option><option value="6">Tỵ</option>
+              <option value="7">Ngọ</option><option value="8">Mùi</option>
+              <option value="9">Thân</option><option value="10">Dậu</option>
+              <option value="11">Tuất</option><option value="12">Hợi</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Năm in sao -->
+        <div class="tuvi-section">
+          <h3>NĂM IN SAO LƯU NIÊN</h3>
+          <div class="tuvi-row">
+            <label>Năm dương lịch:</label>
+            <input type="text" name="year" id="tuvi-year" placeholder="VD: 2026" style="width:80px">
+            <span style="font-size:12px;color:#888">(để trống nếu không cần)</span>
+          </div>
+        </div>
+
+        <div class="tuvi-btn-row">
+          <button type="submit" class="action">⭐ XEM LÁ SỐ TỬ VI</button>
+          <button type="reset" class="action secondary" onclick="document.getElementById('tuvi-frame-wrap').classList.remove('visible')">↺ Làm lại</button>
+        </div>
+        <div class="tuvi-note">Lá số được tính theo thuật toán Tử Vi Lạc Việt chính thức (dialylacviet.com).<br>Nhập Dương lịch hoặc Âm lịch — hệ thống sẽ dùng dữ liệu bạn điền.</div>
+      </form>
+    </div>
+
+    <div id="tuvi-loading">⏳ Đang tải lá số...</div>
+    <div id="tuvi-frame-wrap">
+      <div style="background:rgba(255,215,0,.08);padding:8px 12px;font-size:12px;color:#ffd700;border-bottom:1px solid rgba(255,215,0,.2)">
+        📜 KẾT QUẢ LÁ SỐ TỬ VI — Nguồn: Tử Vi Lạc Việt / dialylacviet.com
+      </div>
+      <iframe name="tuvi-frame" id="tuvi-frame"></iframe>
+    </div>
+  </div>
+
 </div>
 
 <script>
@@ -2752,6 +2893,30 @@ function selectCalDay(d,m,y){
   // Scroll to result
   document.getElementById('ngayResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
+
+// ============== TỬ VI LẠC VIỆT ==============
+function onTuViSubmit(){
+  const wrap=document.getElementById('tuvi-frame-wrap');
+  const loading=document.getElementById('tuvi-loading');
+  wrap.classList.remove('visible');
+  loading.style.display='block';
+  // After iframe loads, hide loading and show result
+  const frame=document.getElementById('tuvi-frame');
+  const done=()=>{loading.style.display='none';wrap.classList.add('visible');frame.removeEventListener('load',done);};
+  frame.addEventListener('load',done);
+}
+
+// Pre-fill Tử Vi year with current year
+(function(){
+  const el=document.getElementById('tuvi-year');
+  if(el)el.value=new Date().getFullYear();
+  // Auto-detect current time for dương lịch hour field
+  const hh=document.getElementById('tuvi-hhmi');
+  if(hh){
+    const n=new Date();
+    hh.value=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
+  }
+})();
 
 // ============== INIT ==============
 buildHoaGiapTable();
