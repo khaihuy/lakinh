@@ -80,6 +80,26 @@
   .dir-cell.cat{background:rgba(139,195,74,.18);border:1px solid #8bc34a}
   .dir-cell.hung{background:rgba(255,152,0,.18);border:1px solid #ff9800}
   .dir-cell.hung-dai{background:rgba(231,76,60,.25);border:1px solid #e74c3c}
+  table.cal-table{width:100%;border-collapse:collapse;font-size:12px;table-layout:fixed;margin-top:8px}
+  table.cal-table th{background:rgba(255,215,0,.15);color:#ffd700;padding:6px;border:1px solid rgba(255,255,255,.1);text-align:center;font-size:12px}
+  table.cal-table td{border:1px solid rgba(255,255,255,.08);padding:6px 4px;text-align:center;cursor:pointer;vertical-align:top;height:54px}
+  table.cal-table td:hover{outline:2px solid #ffd700}
+  table.cal-table td.d-good{background:rgba(76,175,80,.3)}
+  table.cal-table td.d-good-light{background:rgba(139,195,74,.15)}
+  table.cal-table td.d-neutral{background:rgba(255,193,7,.12)}
+  table.cal-table td.d-bad-light{background:rgba(255,152,0,.18)}
+  table.cal-table td.d-bad{background:rgba(231,76,60,.28)}
+  table.cal-table td.today{outline:3px solid #ffd700;outline-offset:-2px;font-weight:bold}
+  table.cal-table td.empty{background:transparent;cursor:default;border:none}
+  table.cal-table td.empty:hover{outline:none}
+  .cal-d{font-size:16px;font-weight:bold;color:#fff;line-height:1.1}
+  .cal-l{font-size:10px;color:#aaa;margin-top:2px}
+  .cal-cc{font-size:9px;color:#ffd700;margin-top:1px}
+  .cal-nav{display:flex;align-items:center;gap:10px;margin-bottom:10px;flex-wrap:wrap}
+  .cal-nav button{padding:6px 14px;font-size:13px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.3);border-radius:6px;color:#ffd700;cursor:pointer;font-family:inherit}
+  .cal-nav button:hover{background:rgba(255,215,0,.2)}
+  .cal-legend{display:flex;flex-wrap:wrap;gap:8px;font-size:11px;color:#aaa;margin:8px 0}
+  .cal-legend span{padding:2px 8px;border-radius:4px}
   .external-link{display:inline-block;padding:10px 20px;background:rgba(255,215,0,.15);border:1px solid #ffd700;border-radius:8px;color:#ffd700;text-decoration:none;font-weight:bold;margin-top:10px}
   .external-link:hover{background:rgba(255,215,0,.25)}
   .empty{text-align:center;color:#888;padding:30px;font-style:italic}
@@ -95,21 +115,22 @@
 <div class="container">
   <header>
     <h1>LUẬN TUỔI LẠC VIỆT &middot; HOA GIÁP &middot; LA KINH</h1>
-    <div class="subtitle">Công cụ 7-trong-1 · <b style="color:#ffcc66">Luận Tuổi</b> · <b style="color:#ffcc66">Hoa Giáp</b> · <b style="color:#ffcc66">La Kinh 36 tầng</b> · <b style="color:#ffcc66">Địa Lý Nhà Ở</b> · <b style="color:#ffcc66">Thước Lạc Việt</b> · <b style="color:#ffcc66">Xem Ngày</b> - theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức</div>
+    <div class="subtitle">Công cụ 8-trong-1 · <b style="color:#ffcc66">Luận Tuổi</b> · <b style="color:#ffcc66">Hoa Giáp</b> · <b style="color:#ffcc66">La Kinh 36 tầng</b> · <b style="color:#ffcc66">Địa Lý Nhà Ở</b> · <b style="color:#ffcc66">Thước Lạc Việt</b> · <b style="color:#ffcc66">Xem Ngày</b> · <b style="color:#ffcc66">Độn Toán</b> - theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức</div>
   </header>
 
   <nav class="tabs">
-    <button class="tab active" data-tab="calc">⚖ LUẬN TUỔI</button>
-    <button class="tab" data-tab="hoagiap">📜 LẠC THƯ HOA GIÁP</button>
-    <button class="tab" data-tab="lakinh">🧭 LA KINH &amp; HƯỚNG NHÀ</button>
-    <button class="tab" data-tab="dialy">🏠 ĐỊA LÝ NHÀ Ở</button>
+    <button class="tab active" data-tab="lakinh">🧭 LA KINH &amp; HƯỚNG NHÀ</button>
     <button class="tab" data-tab="thuoc">📏 THƯỚC LẠC VIỆT</button>
+    <button class="tab" data-tab="dialy">🏠 ĐỊA LÝ NHÀ Ở</button>
+    <button class="tab" data-tab="calc">⚖ LUẬN TUỔI</button>
+    <button class="tab" data-tab="hoagiap">📜 LẠC THƯ HOA GIÁP</button>
     <button class="tab" data-tab="ngay">📅 XEM NGÀY</button>
+    <button class="tab" data-tab="docton">🔮 ĐỘN TOÁN</button>
     <button class="tab" data-tab="guide">📖 NGUYÊN LÝ</button>
   </nav>
 
   <!-- ==================== TAB 1: CALCULATOR ==================== -->
-  <div class="panel active" id="panel-calc">
+  <div class="panel" id="panel-calc">
     <div class="card">
       <h2>NHẬP THÔNG TIN GIA ĐÌNH</h2>
       <div class="form-grid">
@@ -168,7 +189,7 @@
   </div>
 
   <!-- ==================== TAB 3: LA KINH ==================== -->
-  <div class="panel" id="panel-lakinh">
+  <div class="panel active" id="panel-lakinh">
     <div class="card">
       <h2>LA KINH &amp; HƯỚNG NHÀ HỢP TUỔI</h2>
       <p style="font-size:13px;color:#ccc;margin-bottom:12px">Sau khi nhập tuổi gia chủ, công cụ sẽ tính <b>Cung Phi Bát Trạch</b> và 8 hướng cát-hung theo trường phái Bát Trạch.</p>
@@ -193,8 +214,8 @@
       <div id="batTrachResult"></div>
 
       <h3>Liên kết La Kinh đầy đủ:</h3>
-      <a class="external-link" href="la-kinh-day-du-36-tang.html" target="_blank">🧭 Mở La Kinh 36 tầng (full)</a>
-      <a class="external-link" href="la-kinh-la-ban.html" target="_blank">🧭 Mở La Kinh 12 tầng (gọn)</a>
+      <a class="external-link" href="36.html" target="_blank">🧭 Mở La Kinh 36 tầng (full)</a>
+      <a class="external-link" href="12.html" target="_blank">🧭 Mở La Kinh 12 tầng (gọn)</a>
     </div>
   </div>
 
@@ -331,10 +352,127 @@
       </div>
 
       <div id="ngayResult"></div>
+
+      <h3 style="margin-top:18px;color:#ffd700">📆 LỊCH THÁNG - NGÀY TỐT XẤU</h3>
+      <div class="cal-nav">
+        <button onclick="navMonth(-12)">◀◀ Năm trước</button>
+        <button onclick="navMonth(-1)">◀ Tháng trước</button>
+        <span id="calLabel" style="color:#ffd700;font-weight:bold;font-size:15px;letter-spacing:1px">-</span>
+        <button onclick="navMonth(1)">Tháng sau ▶</button>
+        <button onclick="navMonth(12)">Năm sau ▶▶</button>
+      </div>
+      <div class="cal-legend">
+        Chú thích:
+        <span style="background:rgba(76,175,80,.3)">Cát đại</span>
+        <span style="background:rgba(139,195,74,.15)">Cát</span>
+        <span style="background:rgba(255,193,7,.12)">Trung bình</span>
+        <span style="background:rgba(255,152,0,.18)">Hung nhẹ</span>
+        <span style="background:rgba(231,76,60,.28)">Đại hung</span>
+      </div>
+      <div id="calContainer"></div>
+      <p style="font-size:11.5px;color:#aaa;margin-top:6px">💡 Nhấp vào ngày bất kỳ trong lịch để xem chi tiết. Đánh giá dựa trên Sao 28 Tú + Trực 12 + Hoàng Đạo trong ngày.</p>
     </div>
   </div>
 
-  <!-- ==================== TAB 7: GUIDE ==================== -->
+  <!-- ==================== TAB 7: LẠC VIỆT ĐỘN TOÁN ==================== -->
+  <div class="panel" id="panel-docton">
+    <div class="card">
+      <h2>🔮 LẠC VIỆT ĐỘN TOÁN</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Phương pháp tiên tri thuần Lạc Việt của <b>Thiên Sứ Nguyễn Vũ Tuấn Anh</b>, kết hợp <b>Bát Môn Độn Giáp</b> + <b>Lục Nhâm Đại Độn</b>. 48 quẻ phân Âm/Dương theo năm (24 quẻ Dương + 24 quẻ Âm).</p>
+
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Năm Âm lịch (tự chọn)</label>
+          <select id="dtYear">
+            <option value="">-- Hôm nay --</option>
+            <option value="Giáp Tý">Giáp Tý (Dương)</option>
+            <option value="Ất Sửu">Ất Sửu (Âm)</option>
+            <option value="Bính Dần">Bính Dần (Dương)</option>
+            <option value="Đinh Mão">Đinh Mão (Âm)</option>
+            <option value="Mậu Thìn">Mậu Thìn (Dương)</option>
+            <option value="Kỷ Tỵ">Kỷ Tỵ (Âm)</option>
+            <option value="Canh Ngọ">Canh Ngọ (Dương)</option>
+            <option value="Tân Mùi">Tân Mùi (Âm)</option>
+            <option value="Nhâm Thân">Nhâm Thân (Dương)</option>
+            <option value="Quý Dậu">Quý Dậu (Âm)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Tháng Âm lịch (1-12)</label>
+          <input type="number" id="dtMonth" min="1" max="12" placeholder="Hôm nay">
+        </div>
+        <div class="form-row">
+          <label>Ngày Âm lịch (1-30)</label>
+          <input type="number" id="dtDay" min="1" max="30" placeholder="Hôm nay">
+        </div>
+        <div class="form-row">
+          <label>Giờ (chi)</label>
+          <select id="dtHour">
+            <option value="">-- Bây giờ --</option>
+            <option value="1">Tý (23h-1h)</option>
+            <option value="2">Sửu (1h-3h)</option>
+            <option value="3">Dần (3h-5h)</option>
+            <option value="4">Mão (5h-7h)</option>
+            <option value="5">Thìn (7h-9h)</option>
+            <option value="6">Tỵ (9h-11h)</option>
+            <option value="7">Ngọ (11h-13h)</option>
+            <option value="8">Mùi (13h-15h)</option>
+            <option value="9">Thân (15h-17h)</option>
+            <option value="10">Dậu (17h-19h)</option>
+            <option value="11">Tuất (19h-21h)</option>
+            <option value="12">Hợi (21h-23h)</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="form-row" style="grid-column:1/-1">
+          <label>Câu hỏi (tùy chọn - giúp định hướng luận quẻ)</label>
+          <input type="text" id="dtQuestion" placeholder="VD: Tôi có nên đầu tư không? / Năm nay làm ăn thế nào? / Đi xa có thuận lợi?">
+        </div>
+      </div>
+      <div>
+        <button class="action" onclick="doDocToan()">ĐỘN QUẺ</button>
+        <button class="action secondary" onclick="doDocToanNow()">ĐỘN BÂY GIỜ</button>
+      </div>
+
+      <div id="docToanResult"></div>
+
+      <h3 style="margin-top:18px;color:#ffd700">📋 ĐỒ HÌNH BÁT MÔN &amp; LỤC NHÂM</h3>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px">
+        <div class="lk-card">
+          <div class="lk-title">8 CỬA BÁT MÔN (Hà Đồ - Hậu Thiên Lạc Việt)</div>
+          <div class="lk-row"><span>Sinh ☘ (Đông Bắc)</span><span>Mộc 3/8 - Tốt</span></div>
+          <div class="lk-row"><span>Thương 💔 (Đông)</span><span>Mộc 3/8 - Xấu</span></div>
+          <div class="lk-row"><span>Đỗ 🎓 (Đông Nam-Khôn)</span><span>Hỏa 2/7 - Tốt</span></div>
+          <div class="lk-row"><span>Cảnh 🌅 (Nam)</span><span>Hỏa 2/7 - Trung</span></div>
+          <div class="lk-row"><span>Tử ☠ (Tây Nam-Tốn)</span><span>Kim 4/9 - Xấu</span></div>
+          <div class="lk-row"><span>Kinh ⚡ (Tây)</span><span>Kim 4/9 - Xấu</span></div>
+          <div class="lk-row"><span>Khai 🚪 (Tây Bắc)</span><span>Thủy 1/6 - Tốt</span></div>
+          <div class="lk-row"><span>Hưu 😴 (Bắc)</span><span>Thủy 1/6 - Xấu</span></div>
+        </div>
+        <div class="lk-card">
+          <div class="lk-title">6 CUNG LỤC NHÂM</div>
+          <div class="lk-row"><span>Đại An 💰</span><span>Dương Thổ 5 - TỐT</span></div>
+          <div class="lk-row"><span>Lưu Niên 🌊</span><span>Thủy 1/6 - XẤU</span></div>
+          <div class="lk-row"><span>Tốc Hỷ 🎉</span><span>Hỏa 2/7 - TỐT</span></div>
+          <div class="lk-row"><span>Xích Khẩu ⚔</span><span>Kim 4/9 - XẤU</span></div>
+          <div class="lk-row"><span>Tiểu Cát 💕</span><span>Mộc 3/8 - TỐT</span></div>
+          <div class="lk-row"><span>Vô Vong 🕳</span><span>Âm Thổ 10 - XẤU</span></div>
+          <div style="margin-top:8px;font-size:11px;color:#aaa;line-height:1.5"><b>Cách độn (Ninh Thuận):</b><br>Bát Môn = (T+N+G) mod 8<br>Lục Nhâm = (Năm+T+N+G-3) mod 6<br>(Năm tính theo chi: Tý=1...Hợi=12)</div>
+        </div>
+      </div>
+
+      <h3 style="margin-top:14px;color:#ffd700">📜 4 CẤP ĐỘ DỰ BÁO</h3>
+      <div class="principle-list">
+        <p><b>Cấp I:</b> Thông thạo độn quẻ, dùng tri thức luận giải. Cảm ứng bắt đầu xuất hiện.</p>
+        <p><b>Cấp II:</b> Cảm ứng nhạy bén tự độn quẻ. Quẻ phụ trợ phân tích sâu, dự đoán thiên tai, nhân họa.</p>
+        <p><b>Cấp III:</b> Dùng <i>tượng</i> để luận quẻ (không cần giờ). Nhìn thấy hiện tượng → biết ngay quẻ.</p>
+        <p><b>Cấp IV:</b> "Thiên Nhân tương ứng". Thấy là biết, không cần quẻ.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB 8: GUIDE ==================== -->
   <div class="panel" id="panel-guide">
     <div class="card">
       <h2>NGUYÊN LÝ "LUẬN TUỔI LẠC VIỆT"</h2>
@@ -1371,7 +1509,10 @@ function xemNgay(today){
     const vt=VITHAN12[(vtShift+i)%12];
     const isHD=pat[i]==='1';
     const start=(i*2+23)%24,end=(i*2+1)%24;
-    giobl.push({chi,vt,isHD,desc:VITHAN_DESC[vt]||'',hours:`${start}h-${end}h`,cat:VITHAN_CAT[vt]});
+    // Tính quẻ Lạc Việt Độn Toán cho giờ này
+    const gioIdx=i+1; // 1=Tý, 2=Sửu, ..., 12=Hợi
+    const q=donQue(canNa,chiNa,lunar.month,lunar.day,gioIdx);
+    giobl.push({chi,vt,isHD,desc:VITHAN_DESC[vt]||'',hours:`${start}h-${end}h`,cat:VITHAN_CAT[vt],que:q.bm.name+' '+q.ln.name,queBm:q.bm.name,queLn:q.ln.name,queBmEl:q.bm.el,queLnEl:q.ln.el});
   }
 
   let html='<div class="card"><h2>KẾT QUẢ XEM NGÀY '+d+'/'+m+'/'+y+'</h2>';
@@ -1413,9 +1554,9 @@ function xemNgay(today){
     ${trucMeaning[truc]||''}<br>
     <small style="color:#aaa">12 Trực luân chuyển theo tiết khí. Trực Kiến tại chi ngày trùng kiến tháng (${CHI_AL[kienChi]}).</small></div>`;
 
-  // 12 Hoàng Đạo
-  html+='<h3 style="margin-top:14px;color:#ffd700">⏰ 12 GIỜ HOÀNG ĐẠO TRONG NGÀY</h3>';
-  html+='<div class="direction-grid" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">';
+  // 12 Hoàng Đạo + Quẻ Lạc Việt Độn Toán
+  html+='<h3 style="margin-top:14px;color:#ffd700">⏰ 12 GIỜ HOÀNG ĐẠO &amp; QUẺ LẠC VIỆT ĐỘN TOÁN</h3>';
+  html+='<div class="direction-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">';
   giobl.forEach(g=>{
     const cls=g.cat?'cat-dai':g.isHD?'cat':'hung';
     const icon=g.cat?'🟢':g.isHD?'🟡':'🔴';
@@ -1423,13 +1564,358 @@ function xemNgay(today){
       <span class="dn">${icon} Giờ ${g.chi}</span>
       <small>${g.hours}</small><br>
       <b>${g.vt}</b><br>
-      <small style="font-size:10px">${g.desc}</small>
+      <small style="font-size:10px;color:#888">${g.desc}</small>
+      <hr style="border:none;border-top:1px dashed rgba(255,215,0,.3);margin:5px 0">
+      <b style="color:#ffd700;font-size:12.5px">${g.queBm} ${g.queLn}</b><br>
+      <small style="font-size:10px;color:#aaa">${g.queBmEl}-${g.queLnEl}</small>
     </div>`;
   });
   html+='</div>';
 
   html+='</div>';
   document.getElementById('ngayResult').innerHTML=html;
+}
+
+// ============== LẠC VIỆT ĐỘN TOÁN ==============
+// 8 cửa Bát Môn theo Hà Đồ - Hậu Thiên Lạc Việt
+const BATMON=[
+ {idx:1,name:'Sinh',  el:'Mộc',  yy:'Dương', cat:'Tốt',    icon:'☘',desc:'Sống, bắt đầu, ý tưởng mới, mầm cây, mùa xuân, hứa hẹn, hy vọng'},
+ {idx:2,name:'Thương',el:'Mộc',  yy:'Âm',    cat:'Xấu',    icon:'💔',desc:'Buồn, trạng thái tình cảm, cây lớn, sự phát triển sung mãn sắp chuyển sang suy vi'},
+ {idx:3,name:'Đỗ',    el:'Hỏa',  yy:'Dương', cat:'Tốt',    icon:'🎓',desc:'Đạt, thành đạt, kết quả tốt đẹp, quý nhân phù trợ'},
+ {idx:4,name:'Cảnh',  el:'Hỏa',  yy:'Âm',    cat:'Trung',  icon:'🌅',desc:'Đi chơi, du lịch, đi xa, vẻ đẹp, nhà đẹp cao rộng'},
+ {idx:5,name:'Tử',    el:'Kim',  yy:'Dương', cat:'Xấu',    icon:'☠',desc:'Chết, chấm dứt, cản trở, sát phạt, kim khí, võ nghiệp, con cái'},
+ {idx:6,name:'Kinh',  el:'Kim',  yy:'Âm',    cat:'Xấu',    icon:'⚡',desc:'Kinh sợ, đột ngột, bất ngờ, giật gân, việc táo bạo mạo hiểm'},
+ {idx:7,name:'Khai',  el:'Thủy', yy:'Dương', cat:'Tốt',    icon:'🚪',desc:'Dòng nước chảy, khai thông, trôi đi, thoát bế tắc, đi xa thuận lợi'},
+ {idx:8,name:'Hưu',   el:'Thủy', yy:'Âm',    cat:'Xấu',    icon:'😴',desc:'Nghỉ, ngưng trệ, nghỉ ngơi do bất lực, bế tắc, vô dụng'}
+];
+// 6 cung Lục Nhâm
+const LUCNHAM=[
+ {idx:1,name:'Đại An',    el:'Thổ',  yy:'Dương', cat:'Tốt', icon:'💰',desc:'Bình yên lớn, tài sản nhà đất, ổn định chắc chắn, quân tử/nữ hiền'},
+ {idx:2,name:'Lưu Niên',  el:'Thủy', yy:'Âm',    cat:'Xấu', icon:'🌊',desc:'Giữ lại thời gian, hiểm độc, lừa dối, âm mưu, do dự, thất thoát, trì trệ'},
+ {idx:3,name:'Tốc Hỷ',    el:'Hỏa',  yy:'Dương', cat:'Tốt', icon:'🎉',desc:'Vui vẻ, may mắn, nhanh chóng, quý nhân, học vấn, văn hóa, thông minh'},
+ {idx:4,name:'Xích Khẩu', el:'Kim',  yy:'Âm',    cat:'Xấu', icon:'⚔',desc:'Tranh luận, cãi nhau, tiếng ồn, kiện tụng, nghề liên quan miệng/kim khí'},
+ {idx:5,name:'Tiểu Cát',  el:'Mộc',  yy:'Dương', cat:'Tốt', icon:'💕',desc:'Niềm vui nhỏ, tin vui, tình cảm tình yêu, tri thức, tiểu lợi'},
+ {idx:6,name:'Vô Vong',   el:'Thổ',  yy:'Âm',    cat:'Xấu', icon:'🕳',desc:'Không được việc gì, đất bỏ hoang, vô tích sự, thất nghiệp, hóa giải hạn'}
+];
+const CAN_DUONG=['Giáp','Bính','Mậu','Canh','Nhâm'];
+const CAN_AM_LIST=['Ất','Đinh','Kỷ','Tân','Quý'];
+
+// 48 quẻ ý nghĩa chi tiết
+const QUE_LVDT={
+ // Năm Dương
+ 'Sinh-Tiểu Cát':{cat:'good',title:'Lưỡng Mộc thành Lâm',text:'Quẻ tốt. Mọi việc tiệm tiến hanh thông (do tính Mộc phát chậm). Phải biết thuận thế phát triển.'},
+ 'Sinh-Đại An':{cat:'good',title:'Bãi cỏ xanh tốt rộng lớn',text:'Sinh Mộc khắc Đại An Thổ. Tốt, chậm chắc chắn sẽ thành công. Khó khăn không đáng kể.'},
+ 'Sinh-Tốc Hỷ':{cat:'neutral',title:'Cỏ khô đốt lửa',text:'Sinh Mộc sinh Tốc Hỷ Hỏa. Điều kiện thuận lợi nhưng không thỏa mãn nhu cầu. Nôn nóng thất bại.'},
+ 'Thương-Lưu Niên':{cat:'bad',title:'Lo lắng không yên',text:'Lưu Niên Thủy sinh Thương Mộc. Hoàn cảnh buồn bã, khiến lo lắng. Mưu sự thất bại. Phải chờ đợi.'},
+ 'Thương-Xích Khẩu':{cat:'bad',title:'Tranh chấp tổn hại',text:'Xích Khẩu Kim khắc Thương Mộc. Chủ tranh chấp tổn hại. Việc thành nhưng bất lợi về tình.'},
+ 'Thương-Vô Vong':{cat:'bad',title:'Nhà tranh xiêu vẹo',text:'Thương Mộc khắc Vô Vong Thổ. Việc buồn không thành.'},
+ 'Đỗ-Tiểu Cát':{cat:'good',title:'Nội sinh ngoại',text:'Tiểu Cát Mộc sinh Đỗ Hỏa. Việc thành đạt có cố gắng. Tiểu lợi.'},
+ 'Đỗ-Đại An':{cat:'good',title:'Công danh tài lợi',text:'Đỗ Hỏa sinh Đại An Thổ. Ngoại sinh nội. Thuận lợi, Tốt. Chủ Công danh tài lợi.'},
+ 'Đỗ-Tốc Hỷ':{cat:'good',title:'Hòa hợp đồng thuận',text:'Đỗ Hỏa ngang hòa Tốc Hỷ Hỏa. Mọi việc tốt đẹp. Chủ công danh, tiếng tăm, trí tuệ.'},
+ 'Cảnh-Xích Khẩu':{cat:'neutral',title:'Âm Hỏa đới Thổ',text:'Vừa khắc vừa sinh Xích Khẩu Kim. Bề ngoài có thể đẹp nhưng tranh chấp.'},
+ 'Cảnh-Vô Vong':{cat:'good',title:'Quý nhân phù trợ',text:'Âm Hỏa đới Thổ sinh Vô Vong Thổ. Điều kiện thuận lợi cho hoàn cảnh vốn không khả quan.'},
+ 'Cảnh-Lưu Niên':{cat:'bad',title:'Hình thức không thể hiện nội dung',text:'Âm Hỏa đới Thổ xung khắc Lưu Niên Thủy. Bề ngoài tốt đẹp nhưng bên trong đang xấu.'},
+ 'Tử-Tốc Hỷ':{cat:'neutral',title:'Vượt lên hoàn cảnh',text:'Tốc Hỷ Hỏa khắc Tử Kim. Nội lực mạnh khắc chế hoàn cảnh không thuận. Chủ sự cố gắng.'},
+ 'Tử-Tiểu Cát':{cat:'bad',title:'Hoàn cảnh không thuận',text:'Tử Kim khắc Tiểu Cát Mộc. Thiệt hại nhỏ. Chủ tình cảm suy.'},
+ 'Tử-Đại An':{cat:'bad',title:'Sinh xuất bất lợi',text:'Đại An Thổ sinh Tử Kim. Sự nghiệp hao tổn, nhưng không đáng kể.'},
+ 'Kinh-Lưu Niên':{cat:'bad',title:'⚠ Đại hung - Bất ngờ suy bại',text:'Kinh Kim sinh Lưu Niên Thủy. Đây là quẻ dự báo sóng thần Indonesia 2004 với hơn 250.000 người chết. Đại tai họa bất ngờ.'},
+ 'Kinh-Xích Khẩu':{cat:'bad',title:'Bất ngờ tranh chấp lớn',text:'Hai hành Kim ngang hòa. Chủ bất ngờ tranh chấp. Về tài lộc - có thể có lớn nhưng không dễ dàng.'},
+ 'Kinh-Vô Vong':{cat:'neutral',title:'Dâng hiến cho đời',text:'Vô Vong Âm Thổ sinh xuất Kinh Kim. Tượng vàng nổi trên mặt đất. Có tiếng vang nhưng việc không thành.'},
+ 'Khai-Đại An':{cat:'good',title:'Nước chảy thông trên mặt đất',text:'Đại An Thổ khắc Khai Thủy. Từ từ thận trọng việc thành. Tương ứng Thủy Địa Sư.'},
+ 'Khai-Tốc Hỷ':{cat:'good',title:'Suối đẹp chảy ào ạt',text:'Khai Thủy khắc Tốc Hỷ Hỏa. Mọi việc hanh thông. Nhưng thành việc phải biết dừng.'},
+ 'Khai-Tiểu Cát':{cat:'good',title:'Hoàn cảnh tốt cho bản thể',text:'Khai Thủy sinh Tiểu Cát Mộc. Phát chậm nhưng chắc chắn.'},
+ 'Hưu-Lưu Niên':{cat:'bad',title:'Lưỡng Thủy thủy triệt',text:'Quẻ xấu. Lo buồn thế cuộc, thời vận.'},
+ 'Hưu-Xích Khẩu':{cat:'bad',title:'Lưỡng lự, tranh chấp nội bộ',text:'Xích Khẩu Kim sinh Hưu Thủy tù. Không còn cơ hội.'},
+ 'Hưu-Vô Vong':{cat:'bad',title:'Nước chảy ngầm dưới đất',text:'Không dùng được việc gì.'},
+ // Năm Âm
+ 'Sinh-Lưu Niên':{cat:'neutral',title:'Hồ nghi, chuyện xấu mới đến',text:'Nội sinh ngoại. Hoàn cảnh thuận nhưng trong lòng nghi ngờ. Cần suy ngẫm chín chắn.'},
+ 'Sinh-Xích Khẩu':{cat:'neutral',title:'Quyết tâm sẽ thành',text:'Nội khắc ngoại. Cần bàn bạc kỹ. Lợi từ tiền bạc, quan hệ. Cẩn thận cãi cọ giấy tờ.'},
+ 'Sinh-Vô Vong':{cat:'neutral',title:'Lợi việc thổ mộc',text:'Ngoại khắc nội. Hy vọng đến nhưng việc không thành. Lợi cho sửa chữa nhà cửa.'},
+ 'Thương-Tốc Hỷ':{cat:'good',title:'Khó khăn được trí tuệ giải',text:'Ngoại sinh nội. Hoàn cảnh khó khăn nhưng nhờ trí tuệ vượt qua. Ứng xử vui vẻ.'},
+ 'Thương-Tiểu Cát':{cat:'neutral',title:'Buồn nhưng có hậu',text:'Nội ngoại ngang hòa. Hợp Hợi-Mão-Mùi, Thân-Tý-Thìn. Tình cảm buồn nhưng có hậu về sau.'},
+ 'Thương-Đại An':{cat:'neutral',title:'Tổn nhỏ vượt qua',text:'Ngoại khắc nội. Lợi xây dựng nhà cửa. Chuyện buồn thương tổn nhưng quẻ nội mạnh sẽ qua.'},
+ 'Đỗ-Lưu Niên':{cat:'bad',title:'Hình thức không phản ánh nội dung',text:'Lưu Niên Thủy khắc Đỗ Hỏa. Cẩn thận với hình thức bên ngoài của đối tượng.'},
+ 'Đỗ-Xích Khẩu':{cat:'neutral',title:'Tiệc tùng tranh luận',text:'Ngoại khắc nội. Bề ngoài nhiệt tình nhưng bên trong còn phân vân. Cuối cùng đạt.'},
+ 'Đỗ-Vô Vong':{cat:'bad',title:'Nội lực yếu',text:'Ngoại sinh nội. Được nâng đỡ nhiệt tình nhưng nội lực yếu. Việc không thành.'},
+ 'Cảnh-Tiểu Cát':{cat:'good',title:'Du lịch, đi chơi xa',text:'Nội sinh ngoại nếu Hỏa Vượng, nội khắc ngoại nếu Hỏa Mộ. Thích hợp du lịch. Làm ăn xa tiểu lợi.'},
+ 'Cảnh-Đại An':{cat:'good',title:'Lợi kiến Đại Nhân',text:'Ngoại sinh nội. Công việc thuận lợi, thăng quan tiến chức. Diễn tiến chậm nhưng chắc.'},
+ 'Cảnh-Tốc Hỷ':{cat:'good',title:'Đi xa vui vẻ',text:'Nội sinh Ngoại. Âm Dương tương hợp. Mọi chuyện tốt đẹp. Hại nhỏ lợi lớn. (Quẻ dự báo đảo chính Liên Xô 1991 thất bại)'},
+ 'Tử-Lưu Niên':{cat:'bad',title:'Bi đát, bế tắc',text:'Ngoại sinh nội. Kim sinh Thủy. Chủ chết chóc, đau buồn. Thích hợp việc không chính danh. Buôn lậu sẽ thoát nạn nhất thời nhưng hậu quả nặng nề.'},
+ 'Tử-Xích Khẩu':{cat:'bad',title:'Quẻ thuần kim - chiến tranh',text:'Nội ngoại ngang hòa. Kiện cáo, tranh chấp quyết liệt, chiến tranh tàn khốc. (Quẻ chiến tranh Afghanistan)'},
+ 'Tử-Vô Vong':{cat:'neutral',title:'Bế tắc rồi vượt qua',text:'Nội sinh ngoại. Hoàn cảnh bế tắc, hao tổn. Nhưng cuối cùng vượt qua được.'},
+ 'Kinh-Tiểu Cát':{cat:'neutral',title:'Bất ngờ tình cảm',text:'Ngoại khắc nội. Bất ngờ về học hành, giấy tờ, thi cử. Sẽ thất tình bất ngờ, hoặc có tình duyên bất ngờ.'},
+ 'Kinh-Đại An':{cat:'good',title:'Bề trên ưu ái bất ngờ',text:'Nội sinh ngoại. Bất ngờ tốt từ bề trên. Động đất nhưng không tác hại. Nhà cửa nguy nga.'},
+ 'Kinh-Tốc Hỷ':{cat:'neutral',title:'Tin vui bất ngờ',text:'Nội khắc ngoại. Chủ tin vui bất ngờ. Đang vui gặp quẻ này thì niềm vui không trọn vẹn.'},
+ 'Khai-Lưu Niên':{cat:'good',title:'Quẻ thuần thủy',text:'Tương đương Thuần Khảm trong Kinh Dịch. Thành đạt nhờ tư duy sâu sắc. Vượng vào Xuân-Thu.'},
+ 'Khai-Xích Khẩu':{cat:'good',title:'Tranh luận thành công',text:'Nội sinh Ngoại. Danh tiếng. Thuận quảng cáo, du lịch, hội thảo, nhà hàng. Hùn hạp thành công.'},
+ 'Khai-Vô Vong':{cat:'neutral',title:'Người quân tử ẩn dật',text:'Nội khắc ngoại nhưng Âm Thổ không khắc Dương Thủy. Việc hanh thông nhưng chủ thể không lợi. Tượng làm phúc, từ thiện. Kẻ tiểu nhân không dùng được.'},
+ 'Hưu-Tốc Hỷ':{cat:'neutral',title:'Quân tử ẩn dật',text:'Ngoại khắc nội. Quân tử được thời thì giáo hóa tiểu nhân. Thất thể thì giữ mình ẩn dật.'},
+ 'Hưu-Tiểu Cát':{cat:'good',title:'Bế tắc rồi tốt',text:'Ngoại sinh nội. Bế tắc nhất thời. Sau tốt. Kiên trì sẽ thành công.'},
+ 'Hưu-Đại An':{cat:'neutral',title:'Kiên trì thành công',text:'Nội khắc ngoại. Điều kiện bất lợi. Kiên trì sẽ thành công.'}
+};
+
+// Tính chi của năm âm lịch (1-indexed: Tý=1, Sửu=2... Hợi=12)
+function chiIdx1(chi){return CHI_AL.indexOf(chi)+1}
+
+// Độn quẻ theo công thức Ninh Thuận
+// Bát Môn: (Tháng + Ngày + Giờ) mod 8 → quẻ 1-8 (Sinh, Thương, Đỗ, Cảnh, Tử, Kinh, Khai, Hưu)
+// Lục Nhâm: (Năm + Tháng + Ngày + Giờ - 3) mod 6 → quẻ 1-6
+// Năm = chi index 1-based (Tý=1, ..., Hợi=12)
+function donQue(canNam,chiNam,thang,ngay,gioIdx){
+  const yChi=chiIdx1(chiNam);
+  let bmIdx=((thang+ngay+gioIdx)%8+8)%8;
+  if(bmIdx===0)bmIdx=8;
+  let lnIdx=((yChi+thang+ngay+gioIdx-3)%6+6)%6;
+  if(lnIdx===0)lnIdx=6;
+  const bm=BATMON[bmIdx-1];
+  const ln=LUCNHAM[lnIdx-1];
+  const isDuong=CAN_DUONG.includes(canNam);
+  return{bm,ln,isDuong,canNam,chiNam,thang,ngay,gioIdx};
+}
+
+function tuongSinhKhac(elA,elB){
+  if(elA===elB)return{type:'binhhoa',desc:'Bình hòa - cùng hành'};
+  if(NH_SINH[elA]===elB)return{type:'AsinhB',desc:'Nội sinh ngoại'};
+  if(NH_SINH[elB]===elA)return{type:'BsinhA',desc:'Ngoại sinh nội'};
+  if(NH_KHAC[elA]===elB)return{type:'AkhacB',desc:'Nội khắc ngoại'};
+  if(NH_KHAC[elB]===elA)return{type:'BkhacA',desc:'Ngoại khắc nội'};
+  return{type:'',desc:''};
+}
+
+function doDocToanNow(){
+  document.getElementById('dtYear').value='';
+  document.getElementById('dtMonth').value='';
+  document.getElementById('dtDay').value='';
+  document.getElementById('dtHour').value='';
+  doDocToan();
+}
+
+function doDocToan(){
+  let canNam=document.getElementById('dtYear').value;
+  let thang=parseInt(document.getElementById('dtMonth').value);
+  let ngay=parseInt(document.getElementById('dtDay').value);
+  let gioStr=document.getElementById('dtHour').value;
+  let gioIdx=gioStr?parseInt(gioStr):0;
+  const cau=document.getElementById('dtQuestion').value.trim();
+
+  // Mặc định: hôm nay
+  if(!canNam||!thang||!ngay||!gioIdx){
+    const now=new Date();
+    const lunar=getLunar(now.getDate(),now.getMonth()+1,now.getFullYear());
+    if(!canNam)canNam=CAN_AL[(lunar.year+6)%10];
+    const chiNam=CHI_AL[(lunar.year+8)%12];
+    canNam=canNam+' '+chiNam;
+    if(!thang)thang=lunar.month;
+    if(!ngay)ngay=lunar.day;
+    if(!gioIdx){
+      const h=now.getHours();
+      // h=23,0 →1 (Tý); 1,2 →2 (Sửu)...
+      gioIdx=Math.floor(((h+1)%24)/2)+1;
+    }
+  }else{
+    // canNam đã là "Giáp Tý" etc - lấy chi
+    if(canNam.includes(' ')){
+      // OK
+    }
+  }
+  // Tách canNam thành can + chi
+  const parts=canNam.split(' ');
+  const can=parts[0],chi=parts[1]||CHI_AL[0];
+
+  const q=donQue(can,chi,thang,ngay,gioIdx);
+  const key=q.bm.name+'-'+q.ln.name;
+  const meaning=QUE_LVDT[key]||{cat:'neutral',title:'Quẻ chưa có dữ liệu chi tiết',text:'Phân tích theo tương sinh-khắc Ngũ hành.'};
+  const tsk=tuongSinhKhac(q.bm.el,q.ln.el);
+
+  // Year Vượng-Tướng-Hưu-Tù
+  const elBase=NH_SINH[q.bm.el]; // hành quẻ chính
+  const seasonalEl=getSeasonalEl(thang);
+
+  let html='<div class="card"><h2>KẾT QUẢ ĐỘN QUẺ</h2>';
+  html+=`<div class="lakinh-mini">
+    <div class="lk-card">
+      <div class="lk-title">THỜI ĐIỂM ĐỘN</div>
+      <div class="lk-row"><span>Năm:</span><span><b>${can} ${chi}</b> (${q.isDuong?'Dương':'Âm'})</span></div>
+      <div class="lk-row"><span>Tháng âm:</span><span>${thang} (${getMonthChi(thang)})</span></div>
+      <div class="lk-row"><span>Ngày âm:</span><span>${ngay}</span></div>
+      <div class="lk-row"><span>Giờ:</span><span>${CHI_AL[gioIdx-1]} (${getHourRange(gioIdx)})</span></div>
+    </div>
+    <div class="lk-card">
+      <div class="lk-title">QUẺ BÁT MÔN ${q.bm.icon}</div>
+      <div class="lk-row"><span>Tên quẻ:</span><span><b style="color:${q.bm.cat==='Tốt'?'#8bc34a':q.bm.cat==='Xấu'?'#e74c3c':'#ffc107'}">${q.bm.name}</b></span></div>
+      <div class="lk-row"><span>Ngũ hành:</span><span>${q.bm.el} (${q.bm.yy})</span></div>
+      <div class="lk-row"><span>Cấp độ:</span><span>${q.bm.cat}</span></div>
+      <div style="font-size:11.5px;color:#ccc;margin-top:6px;line-height:1.5">${q.bm.desc}</div>
+    </div>
+    <div class="lk-card">
+      <div class="lk-title">QUẺ LỤC NHÂM ${q.ln.icon}</div>
+      <div class="lk-row"><span>Tên quẻ:</span><span><b style="color:${q.ln.cat==='Tốt'?'#8bc34a':'#e74c3c'}">${q.ln.name}</b></span></div>
+      <div class="lk-row"><span>Ngũ hành:</span><span>${q.ln.el} (${q.ln.yy})</span></div>
+      <div class="lk-row"><span>Cấp độ:</span><span>${q.ln.cat}</span></div>
+      <div style="font-size:11.5px;color:#ccc;margin-top:6px;line-height:1.5">${q.ln.desc}</div>
+    </div>
+  </div>`;
+
+  // Quẻ kết hợp
+  html+=`<div class="verdict ${meaning.cat==='good'?'good':meaning.cat==='bad'?'bad':'info'}" style="margin-top:14px">
+    <div class="verdict-title">🔮 QUẺ KẾT HỢP: <b>${q.bm.name} - ${q.ln.name}</b></div>
+    <b>${meaning.title}</b><br>${meaning.text}<br><br>
+    <b>Tương tác Ngũ hành:</b> ${q.bm.el} (${q.bm.name}) ↔ ${q.ln.el} (${q.ln.name}) — ${tsk.desc}
+  </div>`;
+
+  // Phân tích theo câu hỏi
+  if(cau){
+    html+=`<div class="verdict info" style="margin-top:8px"><div class="verdict-title">💭 ĐỊNH HƯỚNG THEO CÂU HỎI</div>
+      <i>"${cau}"</i><br><br>`;
+    let inter='';
+    const c=cau.toLowerCase();
+    if(c.includes('đầu tư')||c.includes('làm ăn')||c.includes('kinh doanh')||c.includes('buôn bán')){
+      inter='<b>Về làm ăn/đầu tư:</b> ';
+      if(meaning.cat==='good')inter+='Quẻ thuận lợi cho làm ăn. ';
+      else if(meaning.cat==='bad')inter+='Cẩn trọng, có thể gặp khó. ';
+      else inter+='Trung tính - tùy bối cảnh. ';
+      if(q.ln.name==='Đại An'||q.ln.name==='Tốc Hỷ')inter+='Lục Nhâm chỉ <b>tài lộc thuận lợi</b>.';
+      else if(q.ln.name==='Lưu Niên')inter+='Coi chừng <b>lừa đảo, trì trệ</b>.';
+      else if(q.ln.name==='Xích Khẩu')inter+='Coi chừng <b>tranh chấp, kiện tụng</b>.';
+    }else if(c.includes('tình')||c.includes('yêu')||c.includes('hôn nhân')||c.includes('cưới')){
+      inter='<b>Về tình cảm/hôn nhân:</b> ';
+      if(q.ln.name==='Tiểu Cát')inter+='Niềm vui tình cảm, tình yêu chớm nở/sâu đậm.';
+      else if(q.ln.name==='Tốc Hỷ')inter+='Hỷ sự đến nhanh.';
+      else if(q.ln.name==='Xích Khẩu')inter+='Cãi vã, tranh luận.';
+      else if(q.ln.name==='Lưu Niên')inter+='Có người thứ 3, lừa dối, không bền.';
+      else inter+='Bình hòa, không có biến động lớn.';
+    }else if(c.includes('sức khỏe')||c.includes('bệnh')){
+      inter='<b>Về sức khỏe:</b> ';
+      if(q.bm.name==='Tử')inter+='Tượng cản trở, cần khám kỹ.';
+      else if(q.bm.name==='Sinh')inter+='Sinh khí, hồi phục tốt.';
+      else if(q.bm.name==='Hưu')inter+='Mỏi mệt, cần nghỉ ngơi.';
+      else inter+='Bình thường, theo dõi định kỳ.';
+    }else if(c.includes('đi')||c.includes('xa')||c.includes('du lịch')||c.includes('xuất hành')){
+      inter='<b>Về đi lại/xuất hành:</b> ';
+      if(q.bm.name==='Cảnh'||q.bm.name==='Khai')inter+='Rất thuận lợi đi xa.';
+      else if(q.bm.name==='Hưu')inter+='Không nên đi.';
+      else if(q.ln.name==='Tốc Hỷ')inter+='Đi vui vẻ, nhanh chóng.';
+      else inter+='Bình thường, đi được nhưng không có gì nổi bật.';
+    }else if(c.includes('thi')||c.includes('học')){
+      inter='<b>Về thi cử/học hành:</b> ';
+      if(q.bm.name==='Đỗ')inter+='<b>Đỗ đạt!</b> Cực tốt cho thi cử.';
+      else if(q.ln.name==='Tốc Hỷ')inter+='Có tin vui về học vấn.';
+      else if(q.ln.name==='Tiểu Cát')inter+='Đạt kết quả nhỏ.';
+      else inter+='Cần thêm cố gắng.';
+    }else{
+      inter='Câu hỏi chung - tham khảo nghĩa quẻ kết hợp ở trên.';
+    }
+    html+=inter+'</div>';
+  }
+
+  html+='</div>';
+  document.getElementById('docToanResult').innerHTML=html;
+}
+
+function getMonthChi(m){
+  // Tháng Giêng=Dần, T2=Mão, T3=Thìn, T4=Tỵ, T5=Ngọ, T6=Mùi, T7=Thân, T8=Dậu, T9=Tuất, T10=Hợi, T11=Tý, T12=Sửu
+  const map=['','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi','Tý','Sửu'];
+  return map[m]||'?';
+}
+function getHourRange(idx){
+  // 1=Tý (23-1), 2=Sửu (1-3)...
+  const start=((idx-1)*2+23)%24;
+  const end=(start+2)%24;
+  return `${start}h-${end}h`;
+}
+function getSeasonalEl(m){
+  // m1-3: Mộc (xuân), 4-6: Hỏa (hạ), 7-9: Kim (thu), 10-12: Thủy (đông)
+  if(m<=3)return'Mộc';
+  if(m<=6)return'Hỏa';
+  if(m<=9)return'Kim';
+  return'Thủy';
+}
+
+// ============== LỊCH THÁNG NGÀY TỐT XẤU ==============
+let calCurY=new Date().getFullYear();
+let calCurM=new Date().getMonth()+1;
+
+// Score 1 ngày theo 28 Tú + Trực
+function scoreDay(d,m,y){
+  const lunar=getLunar(d,m,y);
+  const jd=lunar.jd;
+  const tuIdx=(jd+11)%28;
+  const tu=TU28[tuIdx];
+  // Tính kiến tháng để tính Trực (theo tiết khí, đơn giản hóa)
+  // Approximate: kiến = m if d>=6 else m-1, with wrap
+  let kien=m;
+  if(d<6){kien=m-1;if(kien<1)kien=12}
+  // map Western month → chi kiến: Jan=Sửu(1), Feb=Dần(2), Mar=Mão(3), Apr=Thìn(4), May=Tỵ(5), Jun=Ngọ(6), Jul=Mùi(7), Aug=Thân(8), Sep=Dậu(9), Oct=Tuất(10), Nov=Hợi(11), Dec=Tý(0)
+  const kienMap=[0,1,2,3,4,5,6,7,8,9,10,11,0]; // index 1-12 → chi index
+  const kienChi=kienMap[kien];
+  const chiDay=(jd+1)%12;
+  const trucIdx=((chiDay-kienChi)%12+12)%12;
+  const truc=TRUC12[trucIdx];
+  const trucCat=['Kiến','Trừ','Mãn','Định','Thành','Khai','Bình'].includes(truc);
+  // Hoàng Đạo cát hours
+  const pat=GIO_HD_PAT[chiDay%6];
+  let catH=0;
+  for(let i=0;i<12;i++)if(pat[i]==='1')catH++;
+  // Score
+  let score=0;
+  if(tu.cat==='Tốt')score+=2;
+  else if(tu.cat==='Xấu')score-=2;
+  score+=trucCat?1:-1;
+  if(catH>=6)score+=0;else score-=1;
+  return{score,tu,truc,trucCat,jd,lunar,chiDay,catH};
+}
+
+function buildCalendar(y,m){
+  document.getElementById('calLabel').textContent=`Tháng ${m}/${y}`;
+  const firstDay=new Date(y,m-1,1);
+  const daysInMonth=new Date(y,m,0).getDate();
+  const startDow=firstDay.getDay();
+  let html='<table class="cal-table"><thead><tr><th style="color:#e74c3c">CN</th><th>T2</th><th>T3</th><th>T4</th><th>T5</th><th>T6</th><th style="color:#4caf50">T7</th></tr></thead><tbody><tr>';
+  for(let i=0;i<startDow;i++)html+='<td class="empty"></td>';
+  const today=new Date();
+  for(let d=1;d<=daysInMonth;d++){
+    const s=scoreDay(d,m,y);
+    let cls='';
+    if(s.score>=3)cls='d-good';
+    else if(s.score>=1)cls='d-good-light';
+    else if(s.score>=-1)cls='d-neutral';
+    else if(s.score>=-3)cls='d-bad-light';
+    else cls='d-bad';
+    const isToday=(d===today.getDate()&&m===today.getMonth()+1&&y===today.getFullYear());
+    const canN=CAN_AL[(s.jd+9)%10],chiN=CHI_AL[(s.jd+1)%12];
+    const tip=`${canN} ${chiN} · Sao ${s.tu.name} (${s.tu.cat}) · Trực ${s.truc}${s.trucCat?' (cát)':' (hung)'} · ${s.catH}/12 giờ Hoàng Đạo`;
+    html+=`<td class="${cls} ${isToday?'today':''}" onclick="selectCalDay(${d},${m},${y})" title="${tip}">
+      <div class="cal-d">${d}</div>
+      <div class="cal-l">${s.lunar.day}/${s.lunar.month}</div>
+      <div class="cal-cc">${s.tu.name.substring(0,3)}</div>
+    </td>`;
+    if((d+startDow)%7===0&&d<daysInMonth)html+='</tr><tr>';
+  }
+  // pad end
+  const totalCells=startDow+daysInMonth;
+  const padEnd=(7-totalCells%7)%7;
+  for(let i=0;i<padEnd;i++)html+='<td class="empty"></td>';
+  html+='</tr></tbody></table>';
+  document.getElementById('calContainer').innerHTML=html;
+}
+
+function navMonth(delta){
+  if(Math.abs(delta)===12){
+    calCurY+=delta/12;
+  }else{
+    calCurM+=delta;
+    if(calCurM<1){calCurM=12;calCurY--}
+    else if(calCurM>12){calCurM=1;calCurY++}
+  }
+  buildCalendar(calCurY,calCurM);
+}
+
+function selectCalDay(d,m,y){
+  const dt=`${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+  document.getElementById('ngayDate').value=dt;
+  xemNgay();
+  // Scroll to result
+  document.getElementById('ngayResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ============== INIT ==============
@@ -1439,6 +1925,7 @@ buildThuocTable();
 updateSonDropdown();
 // Set today's date in xem ngày
 document.getElementById('ngayDate').valueAsDate=new Date();
+buildCalendar(calCurY,calCurM);
 // Pre-fill example
 addChild();
 addChild();
