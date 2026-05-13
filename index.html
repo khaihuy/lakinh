@@ -773,6 +773,46 @@ function resetForm(){
 }
 
 // ============== ANALYZE ==============
+// Thiên Can Hậu Thiên tương hợp theo Hà Đồ phối: cặp hỗ trợ nhau
+// Kỷ(6) trợ Giáp(1), Canh(7) trợ Ất(2), Bính(3) trợ Tân(8), Đinh(4) trợ Nhâm(9)
+// Ứng dụng: Kỷ hợp Giáp, Bính hợp Tân, Nhâm hợp Đinh, Canh hợp Ất
+const HAU_THIEN_HOP=[['Giáp','Kỷ'],['Ất','Canh'],['Bính','Tân'],['Đinh','Nhâm']];
+function isHauThienHop(a,b){return HAU_THIEN_HOP.some(p=>(p[0]===a&&p[1]===b)||(p[1]===a&&p[0]===b));}
+
+// Tượng hình Nạp Âm - ý nghĩa và đặc điểm
+const TUONG_HINH={
+  'Hải Trung Kim':'Vàng trong biển - ẩn tàng, cần Hỏa mạnh mới phát, khó hiển lộ sớm.',
+  'Lư Trung Thủy':'Nước trong lò (Lạc Việt: Lư Trung Hỏa → đổi thành Thủy). Nước trong không gian kín, cần Mộc dẫn dòng mới thông.',
+  'Đại Lâm Mộc':'Rừng đại thụ - mạnh mẽ, Kim khó khắc triệt để. Bền vững lâu dài.',
+  'Lộ Bàng Thổ':'Đất ven đường - nơi nhiều người qua lại, tụ tài từ nhiều nguồn.',
+  'Kiếm Phong Kim':'Kiếm sắc bén - oai phong nhưng cần kẻ sử dụng. Kim mạnh, dễ khắc Mộc.',
+  'Sơn Đầu Thủy':'Nước đầu núi - trong sáng, tinh khiết nhưng lượng ít.',
+  'Giản Hạ Hỏa':'Lửa khe núi (Lạc Việt: Giản Hạ Thủy → đổi thành Hỏa). Lửa ẩn trong khe núi, âm ỉ bền lâu.',
+  'Thành Đầu Thổ':'Đất đầu thành - kiên cố, vững chắc như thành lũy.',
+  'Bạch Lạp Kim':'Nến trắng - Kim mỏng manh, ánh sáng nhỏ nhoi. Sợ Hỏa mạnh.',
+  'Dương Liễu Mộc':'Cây liễu rủ - mềm mại, uyển chuyển. Kim dễ chặt nhưng không đứt hẳn.',
+  'Tuyền Trung Hỏa':'Lửa trong suối - hiếm gặp, quý hiếm. Khó dập tắt vì ở dưới nước.',
+  'Ốc Thượng Thổ':'Đất trên mái nhà - mỏng manh, không trồng trọt được nhiều.',
+  'Tích Lịch Thủy':'Nước sấm sét - bất ngờ, mạnh mẽ nhưng ngắn. Biến đổi nhanh.',
+  'Tùng Bách Mộc':'Thông bách - cây cao to, trường tồn. Dù Kim khắc vẫn bền vững.',
+  'Trường Lưu Hỏa':'Lửa lan dài (Lạc Việt: Trường Lưu Thủy → đổi thành Hỏa). Lửa cháy mãi, mãnh liệt và bền.',
+  'Sa Trung Kim':'Vàng trong cát - cần Hỏa luyện mới hữu dụng. Không sợ Hỏa khắc mà còn cần Hỏa.',
+  'Sơn Hạ Thủy':'Nước chân núi - tích tụ, dồi dào. Nuôi dưỡng vạn vật xung quanh.',
+  'Bình Địa Mộc':'Cỏ cây bình địa - rộng khắp, Kim khó khắc triệt để. Sinh sôi nhanh.',
+  'Bích Thượng Thổ':'Đất trên tường - cứng chắc nhưng cô lập. Ít tương tác với vạn vật.',
+  'Kim Bạc Kim':'Vàng lá mỏng - tinh tế nhưng mỏng manh. Sợ Hỏa mạnh làm tan chảy.',
+  'Phú Đăng Thủy':'Nước đèn sáng - nhỏ nhưng chiếu sáng. Ít nhưng quý.',
+  'Thiên Hà Hỏa':'Lửa ngân hà (Lạc Việt: Thiên Hà Thủy → đổi thành Hỏa). Lửa vũ trụ, không thể dập tắt, cực mạnh.',
+  'Đại Trạch Thổ':'Đất ao hồ lớn - màu mỡ, phì nhiêu. Dưỡng vạn vật.',
+  'Thoa Xuyến Kim':'Kim trang sức - tinh tế, đẹp đẽ. Không dùng việc nặng.',
+  'Tang Đố Mộc':'Gỗ dâu tằm - cứng rắn đặc biệt. Rất hữu dụng cho nhiều việc.',
+  'Đại Khê Hỏa':'Lửa khe lớn - mạnh và rộng. Khó kiểm soát nhưng sinh Thổ tốt.',
+  'Sa Trung Thổ':'Đất trong cát - mịn màng, linh hoạt. Dễ hình thành, dễ thay đổi.',
+  'Thiên Thượng Thủy':'Nước trên trời (Lạc Việt: vốn là Thiên Thượng Hỏa → đổi thành Thủy). Mưa từ trời - ban phát tự nhiên, nuôi dưỡng vạn vật.',
+  'Thạch Lựu Mộc':'Thạch lựu - cây cứng rắn trong điều kiện khô cằn. Kiên cường vươn lên.',
+  'Đại Hải Hỏa':'Lửa đại dương (Lạc Việt: vốn là Đại Hải Thủy → đổi thành Hỏa). Lửa mãnh liệt sâu rộng như biển cả, không thể dập tắt.'
+};
+
 function analyze(){
   const hY=parseInt(document.getElementById('husbandYear').value);
   const wY=parseInt(document.getElementById('wifeYear').value);
@@ -780,10 +820,15 @@ function analyze(){
   if(!hY||!wY){alert('Vui lòng nhập năm sinh chồng và vợ');return}
   const childInputs=document.querySelectorAll('#childrenList input');
   const childYears=Array.from(childInputs).map(i=>parseInt(i.value)).filter(y=>y);
+  childYears.sort((a,b)=>a-b);
 
   const H=fullPersonInfo(hY,'CHỒNG');
   const W=fullPersonInfo(wY,'VỢ');
-  const children=childYears.map((y,i)=>fullPersonInfo(y,`Con thứ ${i+1}${i===childYears.length-1&&childYears.length>1?' (ÚT)':''}`));
+  const children=childYears.map((y,i)=>{
+    const isLast=i===childYears.length-1;
+    const label=childYears.length===1?'Con':isLast?`Con thứ ${i+1} (ÚT)`:`Con thứ ${i+1}`;
+    return fullPersonInfo(y,label);
+  });
 
   let html='';
 
@@ -796,16 +841,19 @@ function analyze(){
 
   // ====== Thiên Can analysis ======
   html+='<div class="card"><h2>I. PHÂN TÍCH THIÊN CAN (Trọng số 55-65%)</h2>';
+  html+='<p style="font-size:12px;color:#aaa;margin-bottom:10px">Thiên Can thuần Dương - yếu tố chủ đạo của người chồng/cha. Chồng sinh vợ là THUẬN LÝ NHẤT. Dương sinh Dương mạnh hơn Dương sinh Âm.</p>';
   html+=analyzeThienCan(H,W,children);
   html+='</div>';
 
   // ====== Thân Mạng analysis ======
   html+='<div class="card"><h2>II. PHÂN TÍCH THÂN MẠNG / NẠP ÂM (Trọng số 30-40%)</h2>';
+  html+='<p style="font-size:12px;color:#aaa;margin-bottom:10px">Thân Mạng (Nạp Âm Lạc Thư Hoa Giáp) - yếu tố của vợ/mẹ. VỢ SINH CHỒNG là THUẬN LÝ (ngược Thiên Can). Dùng bảng Lạc Thư Hoa Giáp - đổi Thủy↔Hỏa so với Lục Thập Hoa Giáp cổ.</p>';
   html+=analyzeThanMang(H,W,children);
   html+='</div>';
 
   // ====== Địa Chi analysis ======
   html+='<div class="card"><h2>III. PHÂN TÍCH ĐỊA CHI (Trọng số 10-25%)</h2>';
+  html+='<p style="font-size:12px;color:#aaa;margin-bottom:10px">Địa Chi thuần Âm - yếu tố nhỏ nhất nhưng nếu HỢP CÁCH (Tam Hợp, Tứ Hành Xung đủ bộ, Đối Xứng) sẽ mang tính quyết định và tiên tri.</p>';
   html+=analyzeDiaChi(H,W,children,curY);
   html+='</div>';
 
@@ -814,8 +862,16 @@ function analyze(){
   html+=analyzeTamTai(H,W,children,curY);
   html+='</div>';
 
+  // ====== Hóa Giải ======
+  if(children.length){
+    html+='<div class="card"><h2>V. HÓA GIẢI - VAI TRÒ CON CÁI</h2>';
+    html+='<p style="font-size:12px;color:#aaa;margin-bottom:10px">"Giàu con út, khó con út" - tuổi con cái (đặc biệt con út) có thể HÓA GIẢI hoặc TĂNG NẶNG tương tác vợ chồng.</p>';
+    html+=analyzeHoaGiai(H,W,children);
+    html+='</div>';
+  }
+
   // ====== Conclusion ======
-  html+='<div class="card"><h2>V. KẾT LUẬN TỔNG HỢP</h2>';
+  html+='<div class="card"><h2>'+(children.length?'VI':'V')+'. KẾT LUẬN TỔNG HỢP</h2>';
   html+=conclude(H,W,children);
   html+='</div>';
 
@@ -848,90 +904,160 @@ function compareEl(elA,elB){
 
 function analyzeThienCan(H,W,children){
   let html='';
-  // Husband vs Wife
-  const cmp=compareEl(H.canEl,W.canEl);
-  let v={text:'',cls:'neutral',title:''};
-  if(cmp==='AsinhB'){v={cls:'good',title:'TƯƠNG SINH THUẬN LÝ (Tốt nhất)',text:`Thiên Can chồng ${H.can} (${H.canEl}) sinh vợ ${W.can} (${W.canEl}). "Dương sinh Âm" - chồng có trách nhiệm, yêu thương vợ con. Gia đình hòa thuận, phát triển bền vững.`};}
-  else if(cmp==='BsinhA'){v={cls:'neutral',title:'TƯƠNG SINH NGHỊCH LÝ',text:`Vợ ${W.can} (${W.canEl}) sinh chồng ${H.can} (${H.canEl}). Vợ làm kinh tế chính, chồng phụ. Nếu các yếu tố khác tốt thì vẫn ổn; nếu xấu thì vợ vất vả.`};}
-  else if(cmp==='AkhacB'){v={cls:'bad',title:'TƯƠNG KHẮC THUẬN LÝ',text:`Chồng ${H.can} (${H.canEl}) khắc vợ ${W.can} (${W.canEl}). "Dương khắc Âm tắc bế" - trì trệ phát triển, sức khỏe vợ yếu. Chồng bảo thủ. Cuộc sống tình cảm hạn chế.`};}
-  else if(cmp==='BkhacA'){v={cls:'bad',title:'TƯƠNG KHẮC NGHỊCH LÝ (Xấu nhất)',text:`Vợ ${W.can} khắc chồng ${H.can}. "Âm khắc Dương tắc loạn" - bất hòa, dễ chia ly nếu các yếu tố khác cũng xấu.`};}
-  else{v={cls:'info',title:'BÌNH HÒA',text:`Chồng và vợ cùng hành ${H.canEl}. ${H.canYY===W.canYY?'Cùng Âm/Dương: hợp tính, an hòa.':'Khác Âm/Dương: tương hợp tốt theo Tiên Thiên.'}`};}
-  html+=`<div class="verdict ${v.cls}"><div class="verdict-title">VỢ CHỒNG: ${v.title}</div>${v.text}</div>`;
 
-  // Special pairings (Hậu Thiên Lạc Việt)
-  const specialPairs=[['Kỷ','Giáp'],['Bính','Tân'],['Nhâm','Đinh'],['Canh','Ất']];
-  for(const [a,b] of specialPairs){
-    if((H.can===a&&W.can===b)||(H.can===b&&W.can===a)){
-      html+=`<div class="verdict good"><div class="verdict-title">HẬU THIÊN TƯƠNG HỢP ĐẶC BIỆT</div>Cặp ${a}-${b} tương hợp theo Hậu Thiên Lạc Việt phối Hà Đồ - đây là cặp Thiên Can hoàn hảo, vợ chồng hỗ trợ nhau mạnh mẽ.</div>`;
-      break;
+  // 1. Vợ chồng Thiên Can Tiên Thiên
+  const cmp=compareEl(H.canEl,W.canEl);
+  const sameEl=H.canEl===W.canEl;
+  const duongDuong=H.canYY==='Dương'&&W.canYY==='Dương';
+  const duongAm=H.canYY==='Dương'&&W.canYY==='Âm';
+  let v={text:'',cls:'neutral',title:''};
+  if(cmp==='AsinhB'){
+    const sinhNote=duongDuong?'Dương sinh Dương - đồng đẳng, tương sinh RẤT MẠNH.':duongAm?'Dương sinh Âm - thuận lý Âm Dương, mạnh.':'Cùng hành nên chỉ "trợ" nhau (Tiên Thiên Bình Hòa trong sinh).';
+    v={cls:'good',title:'TƯƠNG SINH THUẬN LÝ - TỐT NHẤT',text:`Thiên Can chồng ${H.can} (${H.canEl}) sinh vợ ${W.can} (${W.canEl}). ${sinhNote}<br>→ Chồng có trách nhiệm, yêu thương lo lắng cho gia đình. Gia đình hòa thuận, phát triển bền vững về kinh tế và sức khỏe.`};
+  }else if(cmp==='BsinhA'){
+    v={cls:'neutral',title:'TƯƠNG SINH NGHỊCH LÝ',text:`Vợ ${W.can} (${W.canEl}) sinh chồng ${H.can} (${H.canEl}). Âm sinh Dương - nghịch lý. Người vợ làm kinh tế chính, chồng đóng vai phụ.<br>→ Nếu Thân Mạng và Địa Chi thuận thì vợ chồng vẫn hòa thuận, vợ đảm đang. Nếu các yếu tố khác cũng xấu thì vợ rất vất vả, chồng ốm yếu hoặc gia đình chia ly.`};
+  }else if(cmp==='AkhacB'){
+    v={cls:'bad',title:'TƯƠNG KHẮC THUẬN LÝ - XẤU',text:`Chồng ${H.can} (${H.canEl}) khắc vợ ${W.can} (${W.canEl}). "Dương khắc Âm tắc bế" - chặn đứng sự phát triển.<br>→ Gia đình trì trệ kinh tế, sức khỏe vợ yếu. Chồng bảo thủ, ít lắng nghe. Cuộc sống tình cảm hạn chế. Dù chồng vẫn có trách nhiệm nhưng cuộc sống nặng nề.`};
+  }else if(cmp==='BkhacA'){
+    v={cls:'bad',title:'TƯƠNG KHẮC NGHỊCH LÝ - XẤU NHẤT',text:`Vợ ${W.can} (${W.canEl}) khắc chồng ${H.can} (${H.canEl}). "Âm khắc Dương tắc loạn" - rối loạn trật tự.<br>→ Vợ vất vả bon chen lo kinh tế. Chồng chỉ phụ vợ. Nếu các yếu tố khác cũng xấu: chồng bệnh, bất lực, hoặc gia đình ly tán. Trường hợp xấu nhất trong Thiên Can.`};
+  }else{
+    const amduong=sameEl?H.canYY===W.canYY?`Cùng hành ${H.canEl} và cùng ${H.canYY}: chồng nể vợ hơn mức cần.`:`Chồng ${H.canYY} - vợ ${W.canYY} cùng hành ${H.canEl}: Dương trước Âm sau, thuận lý.`:'';
+    v={cls:'info',title:'BÌNH HÒA',text:`Chồng ${H.can} và vợ ${W.can} cùng hành ${H.canEl}. ${amduong} Không có tương tác sinh/khắc Tiên Thiên → tốt hơn tương khắc. Cần xem thêm Thân Mạng và Địa Chi để luận.`};
+  }
+  html+=`<div class="verdict ${v.cls}"><div class="verdict-title">1. VỢ CHỒNG THIÊN CAN (Tiên Thiên): ${v.title}</div>${v.text}</div>`;
+
+  // 2. Hậu Thiên Thiên Can
+  if(isHauThienHop(H.can,W.can)){
+    const pairName=HAU_THIEN_HOP.find(p=>(p[0]===H.can&&p[1]===W.can)||(p[1]===H.can&&p[0]===W.can));
+    html+=`<div class="verdict good"><div class="verdict-title">2. HẬU THIÊN TƯƠNG HỢP (Hà Đồ phối Lạc Việt)</div>Cặp ${H.can}-${W.can} tương hợp đặc biệt theo Hậu Thiên Lạc Việt phối Hà Đồ (${pairName.join(' trợ ')}). Đây là cặp Thiên Can LÝ TƯỞNG - bổ trợ nhau ở cả Tiên Thiên lẫn Hậu Thiên. Vợ chồng hỗ trợ nhau rất mạnh mẽ về mọi mặt.</div>`;
+  }else if(cmp!=='binhhoa'){
+    // Check if Hậu Thiên has opposite effect
+    const htHopChong=HAU_THIEN_HOP.some(p=>p.includes(H.can));
+    const htHopVo=HAU_THIEN_HOP.some(p=>p.includes(W.can));
+    if(htHopChong&&htHopVo){
+      html+=`<div class="verdict info"><div class="verdict-title">2. HẬU THIÊN (Hà Đồ phối Lạc Việt)</div>Chồng ${H.can} và vợ ${W.can} không hợp nhau ở Hậu Thiên. Mỗi người có cặp Hậu Thiên riêng. Tương tác Tiên Thiên là chủ yếu.</div>`;
     }
   }
 
-  // Children
+  // 3. All children analysis
   if(children.length){
+    html+=`<div style="margin-top:8px"><b style="color:#ffe066">3. TƯƠNG TÁC THIÊN CAN VỢ-CHỒNG VỚI CON CÁI</b></div>`;
+    html+=`<p style="font-size:12px;color:#aaa;margin:4px 0 8px">Nguyên lý: Cha là Dương, Con trai cũng Dương → tương tác mạnh hơn. Mẹ sinh con = thuận. "Giàu con út, khó con út".</p>`;
+    for(const c of children){
+      const isLast=c===children[children.length-1];
+      const cmpHC=compareEl(H.canEl,c.canEl);
+      const cmpWC=compareEl(W.canEl,c.canEl);
+      const conTrai=c.canYY==='Dương';
+      let kid={text:'',cls:'info',title:''};
+      if(cmpHC==='AsinhB'&&cmpWC==='AsinhB'){
+        kid={cls:'good',title:'CHA MẸ ĐỀU SINH CON - CỰC TỐT',text:`Cha ${H.can}(${H.canEl}) và mẹ ${W.can}(${W.canEl}) đều sinh ${c.can}(${c.canEl}). ${conTrai?'Con trai - Dương sinh Dương ở cha: đặc biệt phát.':'Con gái - Dương sinh Âm thuận lý.'} Gia đình đại phát.`};
+      }else if(cmpHC==='AsinhB'){
+        kid={cls:'good',title:'CHA SINH CON',text:`Cha ${H.can}(${H.canEl}) sinh con ${c.can}(${c.canEl}). ${conTrai?'Dương sinh Dương - tương sinh đồng đẳng, CỰC TỐT cho con trai.':'Dương sinh Âm - tốt cho con gái, nhưng yếu hơn.'} ${cmpWC==='AkhacB'?'⚠ Mẹ khắc con - cần chú ý sức khỏe con.':cmpWC==='BkhacA'?'Chú ý: con khắc mẹ - mẹ vất vả.':''}`};
+      }else if(cmpWC==='AsinhB'){
+        kid={cls:'good',title:'MẸ SINH CON',text:`Mẹ ${W.can}(${W.canEl}) sinh con ${c.can}(${c.canEl}). ${conTrai?'"Con trai nhờ đức mẹ" - mẹ sinh con trai là rất tốt, con trai nương nhờ mẹ mà lớn.':'Mẹ sinh con gái - hòa thuận.'} Tăng sự ấm cúng gia đình.`};
+      }else if(cmpHC==='BkhacA'){
+        kid={cls:'bad',title:'CON KHẮC CHA - RẤT XẤU',text:`Con ${c.can}(${c.canEl}) khắc cha ${H.can}(${H.canEl}). "Âm khắc Dương tắc loạn" - ${conTrai?'Con trai khắc cha: NGUY HIỂM NHẤT - cha khó bảo con, kinh tế sa sút, gia đạo rối loạn.':'Con gái khắc cha: xấu nhưng nhẹ hơn do con gái là Âm.'} Đặc biệt nghiêm trọng nếu vợ cũng khắc chồng.`};
+      }else if(cmpHC==='AkhacB'){
+        const chain=cmpWC==='AsinhB'?'Lưu ý: Cha→Mẹ→Con theo chuỗi sinh (Mộc sinh Hỏa, Hỏa sinh Thổ) → hành thứ 3 bị hành đầu khắc.':``;
+        kid={cls:'bad',title:'CHA KHẮC CON',text:`Cha ${H.can}(${H.canEl}) khắc con ${c.can}(${c.canEl}). ${conTrai?'Cha khắc con trai: trì trệ danh vọng, phát triển trí tuệ chậm.':'Cha khắc con gái: kinh tế chậm phát.'} ${chain}`};
+      }else if(cmpWC==='BkhacA'){
+        kid={cls:'bad',title:'CON KHẮC MẸ',text:`Con ${c.can}(${c.canEl}) khắc mẹ ${W.can}(${W.canEl}). ${conTrai?'Con trai khắc mẹ: mẹ vất vả, sức khỏe mẹ kém.':'Con gái khắc mẹ: ít tác hại hơn do cùng Âm, mẹ vẫn vất vả nhưng nhẹ.'}`};
+      }else if(cmpWC==='AkhacB'){
+        kid={cls:'bad',title:'MẸ KHẮC CON',text:`Mẹ ${W.can}(${W.canEl}) khắc con ${c.can}(${c.canEl}). ${conTrai?'Mẹ khắc con trai: nhẹ hơn cha khắc con (khác Dương Âm), nhưng vẫn không tốt cho phát triển con.':'Mẹ khắc con gái: Dương khắc Âm - trì trệ.'}`};
+      }else{
+        const htHop=isHauThienHop(H.can,c.can)?`Lại có Hậu Thiên tương hợp ${H.can}-${c.can}.`:'';
+        kid={cls:'info',title:'BÌNH HÒA',text:`Không có tương khắc mạnh giữa ${c.role}(${c.can}) với cha mẹ. ${htHop} Xem thêm Thân Mạng và Địa Chi.`};
+      }
+      html+=`<div class="verdict ${kid.cls}" style="margin-left:8px"><div class="verdict-title">${c.role}(${c.can} ${c.chi})${isLast&&children.length>1?' ⭐':''}: ${kid.title}</div>${kid.text}</div>`;
+    }
+
+    // Check for 3-element chain (cha→mẹ→con being sequential sinh = bad: hành đầu khắc hành thứ 3)
+    const cmpHW=compareEl(H.canEl,W.canEl);
     const youngest=children[children.length-1];
-    const cmpHC=compareEl(H.canEl,youngest.canEl);
-    const cmpWC=compareEl(W.canEl,youngest.canEl);
-    let kid={text:'',cls:'neutral',title:''};
-    if(cmpHC==='AsinhB'&&cmpWC==='AsinhB'){kid={cls:'good',title:'CHA MẸ ĐỀU SINH CON ÚT - CỰC TỐT',text:`Cha ${H.can} và mẹ ${W.can} đều sinh Thiên Can con út ${youngest.can}. Gia đình đại phát.`};}
-    else if(cmpHC==='AsinhB'){kid={cls:'good',title:'CHA SINH CON ÚT',text:`Cha ${H.can} (${H.canEl}) sinh con út ${youngest.can} (${youngest.canEl}). ${youngest.canYY==='Dương'?'Đặc biệt tốt với con trai - Dương sinh Dương.':'Tốt với con gái.'}`};}
-    else if(cmpWC==='AsinhB'){kid={cls:'good',title:'MẸ SINH CON ÚT',text:`Mẹ ${W.can} sinh con út ${youngest.can}. Tốt - tăng hòa thuận gia đình.`};}
-    else if(cmpHC==='BkhacA'){kid={cls:'bad',title:'CON ÚT KHẮC CHA',text:`Con út ${youngest.can} khắc cha ${H.can}. "Âm khắc Dương" - rất xấu, đặc biệt với con trai. Cha-con khó hòa hợp.`};}
-    else if(cmpHC==='AkhacB'){kid={cls:'bad',title:'CHA KHẮC CON ÚT',text:`Cha ${H.can} khắc con út ${youngest.can}. Trì trệ về phát triển con, gia đình kinh tế chậm phát.`};}
-    else if(cmpWC==='BkhacA'){kid={cls:'bad',title:'CON ÚT KHẮC MẸ',text:`Con út khắc mẹ ${W.can}. Mẹ vất vả vì con.`};}
-    else{kid={cls:'info',title:'TƯƠNG TÁC TRUNG TÍNH',text:`Thiên Can con út không có tương tác sinh-khắc mạnh với cha mẹ.`};}
-    html+=`<div class="verdict ${kid.cls}"><div class="verdict-title">CON ÚT (${youngest.role}, ${youngest.can} ${youngest.chi}): ${kid.title}</div>${kid.text}</div>`;
+    const cmpWC_last=compareEl(W.canEl,youngest.canEl);
+    if(cmpHW==='AsinhB'&&cmpWC_last==='AsinhB'){
+      const khacCon=NH_KHAC[H.canEl]===youngest.canEl;
+      if(khacCon){
+        html+=`<div class="verdict bad"><div class="verdict-title">⚠ CHUỖI TAM ĐẠI SINH BỊ KHẮC</div>Cha(${H.canEl}) sinh Mẹ(${W.canEl}) sinh Con(${youngest.canEl}): ba hành liên tiếp → hành đầu (${H.canEl}) khắc hành thứ ba (${youngest.canEl}). Đây là hiện tượng "tam đại sinh" gây ra mâu thuẫn tiềm ẩn cha-con: kinh tế và sự phát triển con bị hạn chế. Cần xem Thân Mạng và Địa Chi để đánh giá tổng thể.</div>`;
+      }
+    }
+  }else{
+    html+=`<div class="verdict neutral"><div class="verdict-title">CHƯA CÓ CON</div>Chưa nhập tuổi con. Theo "Giàu con út, khó con út" - hãy nhập tuổi con (đặc biệt con út) để có phân tích đầy đủ.</div>`;
   }
   return html;
 }
 
 function analyzeThanMang(H,W,children){
   let html='';
+
+  // 1. Tượng Hình Nạp Âm cho tất cả thành viên
+  html+=`<div class="verdict info" style="margin-bottom:10px"><div class="verdict-title">TƯỢNG HÌNH NẠP ÂM (Lạc Thư Hoa Giáp)</div>`;
+  for(const p of[H,W,...children]){
+    const th=TUONG_HINH[p.napAm];
+    html+=`<div style="margin:4px 0;font-size:13px"><b style="color:#ffe066">${p.role} - ${p.napAm} (${p.napAmEl}):</b> ${th||'Xem trong bảng Lạc Thư Hoa Giáp.'}</div>`;
+  }
+  html+=`</div>`;
+
+  // 2. Vợ chồng Thân Mạng
+  // QUAN TRỌNG: Ở Thân Mạng, vợ sinh chồng = THUẬN LÝ (ngược Thiên Can)
   const cmp=compareEl(H.napAmEl,W.napAmEl);
   let v={cls:'info',title:'',text:''};
-  // Theo Luận Tuổi Lạc Việt: Vợ sinh chồng là THUẬN
-  if(cmp==='BsinhA'){v={cls:'good',title:'VỢ SINH CHỒNG (THUẬN LÝ Thân Mạng)',text:`Mạng vợ ${W.napAm} (${W.napAmEl}) sinh chồng ${H.napAm} (${H.napAmEl}). Tốt theo nguyên lý "Cân bằng Âm Dương" - vợ là Âm so Thiên Can Dương. Người vợ có trách nhiệm, yêu thương chồng con, lo lắng gia đình.`};}
-  else if(cmp==='AsinhB'){v={cls:'neutral',title:'CHỒNG SINH VỢ (NGHỊCH LÝ Thân Mạng)',text:`Mạng chồng ${H.napAm} sinh vợ ${W.napAm}. Không thuận về Thân Mạng - chồng phải gánh vác nhiều, vợ thụ hưởng.`};}
-  else if(cmp==='AkhacB'){v={cls:'bad',title:'CHỒNG KHẮC VỢ (về Mạng)',text:`Mạng chồng khắc vợ. Vợ dễ ốm đau, gia đình trì trệ.`};}
-  else if(cmp==='BkhacA'){v={cls:'bad',title:'VỢ KHẮC CHỒNG (về Mạng)',text:`Mạng vợ khắc chồng. Cần xét tượng hình nạp âm chi tiết - vd: Sa Trung Kim (vàng trong cát) cần Hỏa luyện thì không sợ Hỏa khắc.`};}
-  else{v={cls:'info',title:'BÌNH HÒA',text:`Vợ chồng cùng hành ${H.napAmEl}. Xét thêm Địa Chi.`};}
-  html+=`<div class="verdict ${v.cls}"><div class="verdict-title">VỢ CHỒNG: ${v.title}</div>${v.text}</div>`;
+  if(cmp==='BsinhA'){
+    v={cls:'good',title:'VỢ SINH CHỒNG - THUẬN LÝ THÂN MẠNG (TỐT NHẤT)',text:`Mạng vợ ${W.napAm}(${W.napAmEl}) sinh mạng chồng ${H.napAm}(${H.napAmEl}). Thân Mạng là Âm → vợ sinh chồng mới là thuận lý (đối nghịch Thiên Can).<br>→ Người vợ có trách nhiệm, yêu thương chồng con, đảm đang lo lắng gia đình. Cân bằng Âm Dương tốt với Thiên Can.`};
+  }else if(cmp==='AsinhB'){
+    v={cls:'neutral',title:'CHỒNG SINH VỢ - NGHỊCH LÝ THÂN MẠNG',text:`Mạng chồng ${H.napAm}(${H.napAmEl}) sinh mạng vợ ${W.napAm}(${W.napAmEl}). Thân Mạng nghịch lý - lúc mới lấy nhau vất vả, tài sản gần như tay trắng.<br>→ Nếu Thiên Can và Địa Chi tốt thì vợ chồng hòa thuận, chồng chiều vợ, cùng xây dựng gia đình. Nếu các yếu tố khác cũng xấu thì vợ vất vả, ốm đau.`};
+  }else if(cmp==='AkhacB'){
+    v={cls:'bad',title:'CHỒNG KHẮC VỢ (về Mạng) - XẤU',text:`Mạng chồng ${H.napAm}(${H.napAmEl}) khắc mạng vợ ${W.napAm}(${W.napAmEl}). "Dương khắc Âm tắc bế" trong Thân Mạng.<br>→ Vợ vất vả lo kinh tế giai đoạn đầu. Gia đình đi lên nhưng chậm. Cần kiểm tra Tượng Hình (vd: Sa Trung Kim cần Hỏa luyện nên không sợ Hỏa khắc).`};
+  }else if(cmp==='BkhacA'){
+    v={cls:'bad',title:'VỢ KHẮC CHỒNG (về Mạng) - XẤU',text:`Mạng vợ ${W.napAm}(${W.napAmEl}) khắc mạng chồng ${H.napAm}(${H.napAmEl}). "Âm khắc Dương tắc loạn" trong Thân Mạng.<br>→ Vợ điều hành gia đình, chồng phụ. Cần xem Tượng Hình chi tiết. Vd Sa Trung Kim cần Hỏa luyện → không sợ Hỏa. Nếu Thiên Can cũng xấu thì gia đình suy sụp.`};
+  }else{
+    // Bình hòa - cùng hành - xét Sinh/Vượng/Mộ
+    const svmNotes={Kim:'Sinh(Tỵ) → Vượng(Dậu) → Mộ(Sửu)',Mộc:'Sinh(Hợi) → Vượng(Mão) → Mộ(Mùi)',Hỏa:'Sinh(Dần) → Vượng(Ngọ) → Mộ(Tuất)',Thủy:'Sinh(Thân) → Vượng(Tý) → Mộ(Thìn)',Thổ:'Sinh/Vượng/Mộ tùy từng can chi'};
+    v={cls:'info',title:'BÌNH HÒA - CÙNG HÀNH THÂN MẠNG',text:`Vợ chồng cùng mạng ${H.napAmEl}. ${svmNotes[H.napAmEl]||''}<br>→ Khi vợ chồng cùng hành Thân Mạng, tuổi con cái là yếu tố QUYẾT ĐỊNH. Câu "Vợ chồng cùng tuổi nằm duỗi mà ăn" hay "manh chiếu rách không có mà nằm" phụ thuộc vào tuổi con, đặc biệt con út.`};
+  }
+  html+=`<div class="verdict ${v.cls}"><div class="verdict-title">1. VỢ CHỒNG THÂN MẠNG: ${v.title}</div>${v.text}</div>`;
 
-  // Special tượng hình notes
-  const tuongHinh={
-    'Sa Trung Kim':'Vàng trong cát - cần Hỏa để luyện thành hữu dụng. Không sợ Hỏa khắc.',
-    'Kim Bạc Kim':'Vàng lá mỏng - sợ Hỏa mạnh.',
-    'Bình Địa Mộc':'Cỏ dại - Kim khó khắc triệt để.',
-    'Đại Lâm Mộc':'Rừng già - cần Kim mạnh để chế ngự.',
-    'Thiên Hà Hỏa':'Lửa Ngân Hà (Lạc Việt: vốn là Thiên Hà Thủy) - không thể tưới cây bình thường.',
-    'Đại Hải Hỏa':'Lửa của Biển lớn (Lạc Việt: vốn là Đại Hải Thủy) - mãnh liệt và sâu rộng.',
-    'Lư Trung Thủy':'Nước trong lò (Lạc Việt: vốn là Lư Trung Hỏa) - cần Mộc dẫn dòng.',
-    'Thiên Thượng Thủy':'Nước trên trời / mưa (Lạc Việt: vốn là Thiên Thượng Hỏa) - tự nhiên ban phát.',
-    'Giản Hạ Hỏa':'Lửa khe núi (Lạc Việt: vốn là Giản Hạ Thủy).',
-    'Trường Lưu Hỏa':'Lửa lan dài (Lạc Việt: vốn là Trường Lưu Thủy) - cháy lâu, lan rộng.'
-  };
-  for(const p of[H,W,...children]){
-    if(tuongHinh[p.napAm]){
-      html+=`<div class="verdict info"><div class="verdict-title">TƯỢNG HÌNH NẠP ÂM (${p.role})</div><b>${p.napAm}:</b> ${tuongHinh[p.napAm]}</div>`;
+  // Đặc biệt: vợ chồng cùng mạng + xét con
+  const sameMang=H.napAmEl===W.napAmEl;
+  if(sameMang&&children.length){
+    const youngest=children[children.length-1];
+    const cmpYoung=compareEl(H.napAmEl,youngest.napAmEl);
+    if(cmpYoung==='AsinhB'){
+      html+=`<div class="verdict good"><div class="verdict-title">⭐ VỢ CHỒNG CÙNG MẠNG + CON ÚT DƯỠNG</div>Cha mẹ cùng mạng ${H.napAmEl} → sinh/dưỡng con út mạng ${youngest.napAmEl}. Đây là cách "Vợ chồng cùng tuổi nằm duỗi mà ăn". Gia đình rất khá giả. Kiểm tra thêm Thiên Can - nếu Thiên Can chồng hợp con: phát NHANH; con gái phát CHẬM nhưng BỀN.</div>`;
+    }else if(cmpYoung==='BkhacA'){
+      html+=`<div class="verdict bad"><div class="verdict-title">⚠ VỢ CHỒNG CÙNG MẠNG + CON ÚT KHẮC</div>Cha mẹ cùng mạng ${H.napAmEl} nhưng con út mạng ${youngest.napAmEl} khắc lại cha mẹ. Đây là cách "Vợ chồng cùng tuổi, manh chiếu không có mà nằm". Kinh tế suy sụp. Con trai thì nguy hơn con gái (vì đồng tính khắc mạnh hơn).</div>`;
     }
   }
 
-  // Children mạng
+  // 3. Tất cả con
   if(children.length){
-    const youngest=children[children.length-1];
-    const cmpHC=compareEl(H.napAmEl,youngest.napAmEl);
-    const cmpWC=compareEl(W.napAmEl,youngest.napAmEl);
-    // "Con trai nhờ mẹ, con gái nhờ cha" về Thân Mạng
-    const isBoy=true; // Cannot determine, default
-    let kid={cls:'info',title:'',text:''};
-    if(cmpWC==='AsinhB'&&cmpHC==='AsinhB'){kid={cls:'good',title:'CHA MẸ SINH CON ÚT (về Mạng)',text:`Cả cha và mẹ đều sinh mạng con út ${youngest.napAm}. Tốt.`};}
-    else if(cmpWC==='AsinhB'){kid={cls:'good',title:'MẸ SINH CON ÚT (về Mạng)',text:`Mẹ ${W.napAm} sinh con út ${youngest.napAm}. "Con trai nhờ đức mẹ" - rất tốt cho con trai.`};}
-    else if(cmpHC==='AsinhB'){kid={cls:'good',title:'CHA SINH CON ÚT (về Mạng)',text:`Cha sinh mạng con. Tốt cho con gái nhiều hơn theo "Âm Dương tương hợp".`};}
-    else if(cmpWC==='AkhacB'){kid={cls:'bad',title:'MẸ KHẮC CON ÚT (về Mạng)',text:`Mạng mẹ khắc con út. Mẹ vất vả nuôi con, con dễ ốm vặt.`};}
-    else if(cmpHC==='AkhacB'){kid={cls:'bad',title:'CHA KHẮC CON ÚT (về Mạng)',text:`Mạng cha khắc con út. Cần xem tượng hình nạp âm.`};}
-    else if(cmpHC==='BkhacA'||cmpWC==='BkhacA'){kid={cls:'bad',title:'CON ÚT KHẮC CHA/MẸ',text:`Con khắc cha mẹ về Mạng - "Âm khắc Dương" - cần hóa giải bằng các yếu tố khác.`};}
-    else{kid={cls:'info',title:'BÌNH HÒA',text:`Mạng con út không có tương tác mạnh.`};}
-    html+=`<div class="verdict ${kid.cls}"><div class="verdict-title">CON ÚT (${youngest.napAm}): ${kid.title}</div>${kid.text}</div>`;
+    html+=`<div style="margin-top:8px"><b style="color:#ffe066">2. THÂN MẠNG VỢ CHỒNG VỚI CON CÁI</b></div>`;
+    html+=`<p style="font-size:12px;color:#aaa;margin:4px 0 8px">"Con gái nhờ đức cha, con trai nhờ đức mẹ" - tương tác mạnh nhất là Mẹ với Con trai, Cha với Con gái về Thân Mạng.</p>`;
+    for(const c of children){
+      const isLast=c===children[children.length-1];
+      const cmpHC=compareEl(H.napAmEl,c.napAmEl);
+      const cmpWC=compareEl(W.napAmEl,c.napAmEl);
+      const conTrai=c.canYY==='Dương';
+      let kid={cls:'info',title:'',text:''};
+      if(cmpWC==='AsinhB'&&cmpHC==='AsinhB'){
+        kid={cls:'good',title:'CHA MẸ ĐỀU SINH CON (về Mạng) - CỰC TỐT',text:`Cha(${H.napAmEl}) và mẹ(${W.napAmEl}) đều sinh mạng con ${c.napAm}(${c.napAmEl}). ${conTrai?'Con trai nuôi dễ, lớn nhanh, ít ốm đau.':'Con gái phát triển tốt.'}`};
+      }else if(cmpWC==='AsinhB'){
+        kid={cls:'good',title:'MẸ SINH CON (về Mạng)',text:`Mạng mẹ(${W.napAmEl}) sinh mạng con ${c.napAm}(${c.napAmEl}). ${conTrai?'"Con trai nhờ đức mẹ" - MẸ SINH CON TRAI là thuận lý nhất về Thân Mạng. Con trai lớn khỏe, nuôi dễ.':'Mẹ sinh con gái - tăng gắn kết mẹ con.'}`};
+      }else if(cmpHC==='AsinhB'){
+        kid={cls:'good',title:'CHA SINH CON (về Mạng)',text:`Mạng cha(${H.napAmEl}) sinh mạng con ${c.napAm}(${c.napAmEl}). ${conTrai?'Cha sinh con trai - tốt nhưng ít mạnh hơn mẹ sinh con trai.':'"Con gái nhờ đức cha" - CHA SINH CON GÁI: rất thuận lý. Con gái phát triển tốt, được cha yêu thương.'}`};
+      }else if(cmpWC==='BkhacA'){
+        kid={cls:'bad',title:'CON KHẮC MẸ (về Mạng)',text:`Mạng con ${c.napAm}(${c.napAmEl}) khắc mẹ(${W.napAmEl}). ${conTrai?'Con trai khắc mẹ: MẸ KHỔNG NHẤT - sức khỏe mẹ yếu, mẹ vất vả nuôi con, kinh tế gia đình đi xuống sau khi sinh con.':'Con gái khắc mẹ - cùng Âm nên giảm tác hại nhưng vẫn không tốt.'}`};
+      }else if(cmpHC==='BkhacA'){
+        kid={cls:'bad',title:'CON KHẮC CHA (về Mạng)',text:`Mạng con ${c.napAm}(${c.napAmEl}) khắc cha(${H.napAmEl}). ${conTrai?'Con trai khắc cha: cha con khó hòa hợp, kinh tế suy giảm.':'Con gái khắc cha: cùng Dương-Âm nên cha dần khắc phục được. Nhưng vẫn ảnh hưởng xấu.'} Nếu mẹ cũng bị khắc thì trường hợp xấu nhất.`};
+      }else if(cmpWC==='AkhacB'){
+        kid={cls:'bad',title:'MẸ KHẮC CON (về Mạng)',text:`Mạng mẹ(${W.napAmEl}) khắc con ${c.napAm}(${c.napAmEl}). ${conTrai?'Mẹ khắc con trai: con trai ốm vặt, nuôi khó. Kinh tế gia đình chậm.':'Mẹ khắc con gái: con gái ốm yếu hơn bình thường.'}`};
+      }else if(cmpHC==='AkhacB'){
+        kid={cls:'bad',title:'CHA KHẮC CON (về Mạng)',text:`Mạng cha(${H.napAmEl}) khắc con ${c.napAm}(${c.napAmEl}). ${conTrai?'Cha khắc con trai: nhẹ hơn mẹ khắc vì cùng Dương. Con trai lúc nhỏ khó nuôi.':'Cha khắc con gái: cha con gái khó hòa thuận, kinh tế chậm.'}`};
+      }else{
+        kid={cls:'info',title:'BÌNH HÒA',text:`Thân Mạng con ${c.napAm}(${c.napAmEl}) bình hòa với cha mẹ. Xem Thiên Can và Địa Chi.`};
+      }
+      html+=`<div class="verdict ${kid.cls}" style="margin-left:8px"><div class="verdict-title">${c.role}(${c.napAm})${isLast&&children.length>1?' ⭐':''}: ${kid.title}</div>${kid.text}</div>`;
+    }
   }
   return html;
 }
@@ -940,80 +1066,144 @@ function analyzeDiaChi(H,W,children,curY){
   let html='';
   const allChi=[H.chi,W.chi,...children.map(c=>c.chi)];
   const allPeople=[H,W,...children];
+  const chiOrder=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
 
-  // Same chi (vợ chồng cùng tuổi)
+  // 1. Cùng tuổi
   if(H.chi===W.chi&&H.can===W.can){
-    html+=`<div class="verdict info"><div class="verdict-title">VỢ CHỒNG CÙNG TUỔI HOÀN TOÀN (${H.can} ${H.chi})</div>"Vợ chồng cùng tuổi nằm duỗi mà ăn" hay "manh chiếu rách"? - QUYẾT ĐỊNH bởi TUỔI CON, đặc biệt CON ÚT.</div>`;
+    html+=`<div class="verdict info"><div class="verdict-title">VỢ CHỒNG CÙNG TUỔI HOÀN TOÀN (${H.can} ${H.chi})</div>"Vợ chồng cùng tuổi nằm duỗi mà ăn" hay "manh chiếu rách không có mà nằm"? → QUYẾT ĐỊNH HOÀN TOÀN bởi TUỔI CON ÚT và Thân Mạng. Xem phần Thân Mạng và vai trò con cái.</div>`;
   }else if(H.chi===W.chi){
-    html+=`<div class="verdict info"><div class="verdict-title">VỢ CHỒNG CÙNG ĐỊA CHI ${H.chi}</div>Cùng cung Địa Chi nhưng khác Thiên Can. Xét thêm các yếu tố khác.</div>`;
+    html+=`<div class="verdict info"><div class="verdict-title">VỢ CHỒNG CÙNG ĐỊA CHI ${H.chi}</div>Cùng cung Địa Chi nhưng khác Thiên Can (${H.can} vs ${W.can}). Xét thêm các yếu tố Thiên Can và Thân Mạng để luận tổng thể.</div>`;
   }
 
-  // Lục Xung (đối xứng - vd Tý-Ngọ)
-  if(LUC_XUNG_FULL[H.chi]===W.chi){
-    html+=`<div class="verdict bad"><div class="verdict-title">LỤC XUNG (${H.chi}-${W.chi})</div>Vợ chồng Lục Xung (đối xứng qua trục). Theo nguyên lý đối xứng của Luận Tuổi Lạc Việt: NẾU CÓ ĐỦ BỘ ĐỐI XỨNG với con cái thì lại TỐT. Nếu lẻ thì xấu - thường xung đột.</div>`;
-  }
-
-  // Lục Hại
-  if(LUC_HAI_FULL[H.chi]===W.chi){
-    html+=`<div class="verdict bad"><div class="verdict-title">LỤC HẠI (${H.chi}-${W.chi})</div>Vợ chồng Lục Hại. Nếu vào bộ thành cách đối xứng lại tốt; nếu lẻ thì xấu - thường hay bất hòa, kiện cáo.</div>`;
-  }
-
-  // Tam Hợp
+  // 2. Tam Hợp - vợ chồng
   const tamHopHW=H.tamHop===W.tamHop;
   if(tamHopHW){
-    html+=`<div class="verdict good"><div class="verdict-title">VỢ CHỒNG TAM HỢP (${H.tamHop} cục)</div>Cùng cục ${H.tamHop} - ${TAM_HOP_GROUP[H.tamHop].join('-')}. Rất hợp về Địa Chi.</div>`;
+    html+=`<div class="verdict good"><div class="verdict-title">VỢ CHỒNG TAM HỢP (${H.tamHop} cục)</div>Vợ chồng cùng cục ${H.tamHop} (${TAM_HOP_GROUP[H.tamHop].join('-')}). Hợp nhau tốt về Địa Chi - hỗ trợ nhau phát triển. Cẩn thận Tam Tai năm ${TAM_TAI[H.tamHop].join('-')}.</div>`;
   }
 
-  // Check full Tam Hợp family
-  if(children.length){
-    const hopGroups={};
-    allPeople.forEach(p=>{
-      if(!hopGroups[p.tamHop])hopGroups[p.tamHop]=[];
-      hopGroups[p.tamHop].push(p.chi);
-    });
-    for(const[cuc,chis] of Object.entries(hopGroups)){
-      const uniqueChis=[...new Set(chis)];
-      if(uniqueChis.length===3){
-        html+=`<div class="verdict good"><div class="verdict-title">GIA ĐÌNH ĐỦ TAM HỢP ${cuc} CỤC</div>${uniqueChis.join('-')} đủ cục. Rất phát. CẢNH BÁO: Khi vào năm Tam Tai (${TAM_TAI[cuc].join('-')}) thì cả nhà bị hạn - "Tam Hợp hóa Tam Tai".</div>`;
+  // Nhị Hợp (2 trong Tam Hợp)
+  if(!tamHopHW){
+    const hGroup=TAM_HOP_GROUP[H.tamHop];
+    const wGroup=TAM_HOP_GROUP[W.tamHop];
+    // Check if they're consecutive in same Tam Hợp (e.g., Thân-Tý)
+    for(const[cuc,group] of Object.entries(TAM_HOP_GROUP)){
+      if(group.includes(H.chi)&&group.includes(W.chi)){
+        html+=`<div class="verdict good"><div class="verdict-title">VỢ CHỒNG NHỊ HỢP (${cuc} cục - 2/3)</div>Vợ(${W.chi}) chồng(${H.chi}) thuộc 2 trong 3 cung của Tam Hợp ${cuc}: ${group.join('-')}. Tốt nhưng chưa đủ. Cần sinh con tuổi ${group.filter(c=>c!==H.chi&&c!==W.chi).join('')} để đủ Tam Hợp.</div>`;
+        break;
       }
     }
   }
 
-  // Tứ Hành Xung (đủ bộ)
-  for(const[name,group] of Object.entries(TU_XUNG)){
-    const has=group.filter(c=>allChi.includes(c));
-    if(has.length===4){
-      html+=`<div class="verdict good"><div class="verdict-title">ĐỦ BỘ TỨ ${name.toUpperCase()} (${group.join('-')})</div>${name==='Sinh'?'Phát giai đoạn đầu':name==='Vượng'?'Phát trung vận, phát triển nhanh':'Phát hậu vận, chắc chắn'}. Gia đình có cách này, nếu kết hợp Địa Lý &amp; Số phận tốt sẽ giàu có.</div>`;
-    }else if(has.length===2||has.length===3){
-      html+=`<div class="verdict bad"><div class="verdict-title">THIẾU BỘ TỨ ${name.toUpperCase()} (chỉ có ${has.join('-')})</div>Nhị/Tam hành xung - vất vả. Cần sinh thêm con để đủ bộ ${group.filter(c=>!allChi.includes(c)).join(', ')} thì lại tốt.</div>`;
+  // 3. Gia đình đủ Tam Hợp
+  if(children.length){
+    for(const[cuc,group] of Object.entries(TAM_HOP_GROUP)){
+      const familyHas=group.filter(c=>allChi.includes(c));
+      const uniqueHas=[...new Set(familyHas)];
+      if(uniqueHas.length===3){
+        html+=`<div class="verdict good"><div class="verdict-title">⭐ GIA ĐÌNH ĐỦ TAM HỢP ${cuc.toUpperCase()} CỤC (${group.join('-')})</div>Đủ 3 cung Tam Hợp ${cuc}: rất phát về nhiều mặt. CẢNH BÁO QUAN TRỌNG: Khi vào năm Tam Tai ${TAM_TAI[cuc].join('-')} cả nhà đều bị hạn cùng lúc - "Tam Hợp hóa Tam Tai". Cẩn thận 3 năm này.</div>`;
+      }else if(uniqueHas.length===2){
+        html+=`<div class="verdict info"><div class="verdict-title">GIA ĐÌNH NHỊ HỢP ${cuc.toUpperCase()} (${uniqueHas.join('-')})</div>2/3 cung ${cuc}. Có thể sinh thêm con tuổi ${group.filter(c=>!uniqueHas.includes(c)).join('')} để đủ Tam Hợp ${cuc} cục.</div>`;
+      }
     }
   }
 
-  // Chuỗi dây (3+ consecutive)
-  const chiOrder=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
-  const indices=allChi.map(c=>chiOrder.indexOf(c)).sort((a,b)=>a-b);
-  let maxRun=1,run=1;
-  for(let i=1;i<indices.length;i++){
-    if(indices[i]===indices[i-1]+1){run++;maxRun=Math.max(maxRun,run)}
-    else if(indices[i]!==indices[i-1])run=1;
-  }
-  if(maxRun>=3){
-    html+=`<div class="verdict good"><div class="verdict-title">CHUỖI DÂY LIÊN TỤC ≥ ${maxRun}</div>Các tuổi liền nhau theo Địa Chi tạo chuỗi sinh tương sinh. Cuộc sống ổn định, bình an.</div>`;
+  // 4. Lục Xung (đối xứng) vợ chồng
+  if(LUC_XUNG_FULL[H.chi]===W.chi){
+    const hasSymmetricChild=children.some(c=>LUC_XUNG_FULL[c.chi]&&allChi.includes(LUC_XUNG_FULL[c.chi]));
+    html+=`<div class="verdict ${hasSymmetricChild?'info':'bad'}"><div class="verdict-title">VỢ CHỒNG LỤC XUNG / ĐỐI XỨNG (${H.chi}-${W.chi})</div>Vợ chồng đối xứng qua trục ${H.chi}-${W.chi}. ${hasSymmetricChild?'✓ Đã có con cái tạo thêm cặp đối xứng → đang xây dựng cách đối xứng tốt.':'Nếu đứng lẻ: xấu - vợ chồng hay xung đột, mỗi người một hướng. Nếu CON CÁI tạo thêm cặp đối xứng thì lại RẤT TỐT.'}</div>`;
   }
 
-  // Đối xứng
+  // 5. Lục Hại vợ chồng
+  if(LUC_HAI_FULL[H.chi]===W.chi){
+    html+=`<div class="verdict bad"><div class="verdict-title">VỢ CHỒNG LỤC HẠI (${H.chi}-${W.chi})</div>Vợ chồng Lục Hại - tiểu nhân, bất hòa, dễ kiện cáo. Nếu con cái bổ sung tạo cách đối xứng thì hóa giải được. Nếu lẻ - xấu cho gia đình.</div>`;
+  }
+
+  // 6. Tứ Hành Xung
+  for(const[name,group] of Object.entries(TU_XUNG)){
+    const has=group.filter(c=>allChi.includes(c));
+    const uniqueHas=[...new Set(has)];
+    if(uniqueHas.length===4){
+      const desc={Sinh:'phát giai đoạn đầu, phát triển mau nhưng chậm lại',Vượng:'phát trung vận, nhanh và mạnh',Phúc:'phát hậu vận, chậm nhưng bền chắc'}[name];
+      html+=`<div class="verdict good"><div class="verdict-title">⭐ ĐỦ BỘ TỨ HÀNH ${name==='Sinh'?'SINH':name==='Vượng'?'VƯỢNG':'PHÚC'} (${group.join('-')})</div>Gia đình có đủ 4 cung Tứ ${name}: ${desc}. Nếu kết hợp Địa Lý tốt và Số phận tốt sẽ GIÀU CÓ. Nếu không cũng PHÚ TÚC một đời.</div>`;
+    }else if(uniqueHas.length===2||uniqueHas.length===3){
+      html+=`<div class="verdict bad"><div class="verdict-title">THIẾU TỨ HÀNH ${name==='Sinh'?'SINH':name==='Vượng'?'VƯỢNG':'PHÚC'} (${uniqueHas.join('-')} - ${uniqueHas.length}/4)</div>Nhị/Tam hành xung - rất vất vả, nhiều biến động. Cần sinh thêm con tuổi <b>${group.filter(c=>!uniqueHas.includes(c)).join(', ')}</b> để đủ bộ thì xấu hóa thành tốt.</div>`;
+    }
+  }
+
+  // 7. Chuỗi dây liên tục (Consecutive chain)
+  const indices=allChi.map(c=>chiOrder.indexOf(c));
+  const sortedIdx=[...new Set(indices)].sort((a,b)=>a-b);
+  let maxRun=1,run=1,runStart=0;
+  let bestRunStart=0;
+  for(let i=1;i<sortedIdx.length;i++){
+    if(sortedIdx[i]===sortedIdx[i-1]+1){run++;if(run>maxRun){maxRun=run;bestRunStart=sortedIdx[i-run+1];}}
+    else{run=1;}
+  }
+  // Also check wrap-around (Hợi→Tý)
+  const wrapChi=sortedIdx.filter(i=>i>=10);
+  const lowChi=sortedIdx.filter(i=>i<=2);
+  if(wrapChi.length&&lowChi.length){
+    const wrapRun=wrapChi.length+lowChi.length;
+    if(wrapRun>maxRun)maxRun=wrapRun;
+  }
+  if(maxRun>=3){
+    const chainChi=chiOrder.slice(bestRunStart,bestRunStart+maxRun);
+    html+=`<div class="verdict good"><div class="verdict-title">CHUỖI DÂY LIÊN TỤC (${maxRun} cung)</div>Các tuổi ${chainChi.join('-')} liền nhau theo Địa Chi - nguyên lý tương sinh liên tục. Cuộc sống ổn định, bình an, ít biến động. Nếu chuỗi theo hướng cha→mẹ→con thì rất tốt.</div>`;
+  }
+
+  // 8. Chuỗi dây cách quãng đều (Evenly spaced)
+  if(allPeople.length>=3&&maxRun<3){
+    const diffs=[];
+    for(let i=0;i<sortedIdx.length-1;i++)diffs.push(sortedIdx[i+1]-sortedIdx[i]);
+    const allSameDiff=diffs.length>=2&&diffs.every(d=>d===diffs[0]);
+    if(allSameDiff&&diffs[0]>=2&&diffs[0]<=4){
+      html+=`<div class="verdict good"><div class="verdict-title">CHUỖI DÂY CÁCH QUÃNG ĐỀU (khoảng cách ${diffs[0]})</div>Các tuổi Địa Chi cách đều nhau ${diffs[0]} cung - nguyên lý tương sinh cách quãng. Cuộc sống ổn định, ít rối loạn lớn. Cũng là cách tốt trong Luận Tuổi Lạc Việt.</div>`;
+    }
+  }
+
+  // 9. Đối xứng (Symmetric pairs)
   const symmetricPairs=[];
   for(let i=0;i<allChi.length-1;i++){
     for(let j=i+1;j<allChi.length;j++){
       if(LUC_XUNG_FULL[allChi[i]]===allChi[j]){
-        symmetricPairs.push([allChi[i],allChi[j]]);
+        const label=`${allPeople[i].role.split(' ')[0]}(${allChi[i]})-${allPeople[j].role.split(' ')[0]}(${allChi[j]})`;
+        if(!symmetricPairs.find(p=>p.pair===allChi[i]+allChi[j]||p.pair===allChi[j]+allChi[i]))
+          symmetricPairs.push({pair:allChi[i]+allChi[j],label});
       }
     }
   }
   if(symmetricPairs.length>=2){
-    html+=`<div class="verdict good"><div class="verdict-title">CÁCH ĐỐI XỨNG ĐA TRỤC</div>Có ${symmetricPairs.length} cặp đối xứng: ${symmetricPairs.map(p=>p.join('-')).join(', ')}. Theo Luận Tuổi Lạc Việt, gia đình có nhiều cặp đối xứng rất phát về công danh và tiền bạc.</div>`;
+    html+=`<div class="verdict good"><div class="verdict-title">⭐ CÁCH ĐỐI XỨNG ĐA TRỤC (${symmetricPairs.length} cặp)</div>Các cặp đối xứng: ${symmetricPairs.map(p=>p.label).join(' · ')}. Theo Luận Tuổi Lạc Việt: gia đình có nhiều cặp đối xứng RẤT PHÁT về công danh và tiền bạc. Cặp đối xứng nam-nữ thuận lý còn tốt hơn.</div>`;
+  }else if(symmetricPairs.length===1){
+    html+=`<div class="verdict info"><div class="verdict-title">ĐỐI XỨNG ĐƠN TRỤC (${symmetricPairs[0].label})</div>Có 1 cặp đối xứng. Nếu bổ sung thêm các thành viên tạo cặp đối xứng khác thì rất tốt. Hiện tại chỉ ở mức bình thường.</div>`;
   }
 
+  // 10. Phi Tiễn Xuyên Vân
+  // Pattern: A-B đối xứng, và C-D cũng đối xứng, C D nằm 2 bên của A hoặc B
+  if(symmetricPairs.length>=1){
+    for(const sp of symmetricPairs){
+      const a=sp.pair.substring(0,sp.pair.length/2>1?2:1);
+      // Check if there are extra chi adjacent to either end
+      const chiA=allChi.find(c=>sp.label.includes(`(${c})-`));
+      const chiB=allChi.find(c=>sp.label.includes(`-(${c})`)&&c!==chiA);
+      if(chiA&&chiB){
+        const idxA=chiOrder.indexOf(chiA);
+        const idxB=chiOrder.indexOf(chiB);
+        const adjacentA=[chiOrder[(idxA+1)%12],chiOrder[(idxA+11)%12]];
+        const adjacentB=[chiOrder[(idxB+1)%12],chiOrder[(idxB+11)%12]];
+        const hasAdj=adjacentA.filter(c=>allChi.includes(c)&&c!==chiA&&c!==chiB).concat(
+          adjacentB.filter(c=>allChi.includes(c)&&c!==chiA&&c!==chiB));
+        if(hasAdj.length>=2){
+          html+=`<div class="verdict good"><div class="verdict-title">PHI TIỄN XUYÊN VÂN</div>Cặp đối xứng ${chiA}-${chiB} có thêm ${hasAdj.join(',')} ở hai bên. Cách "Phi Tiễn Xuyên Vân" - gia đình chăm chỉ làm ăn, nhờ nỗ lực mà thành công, phú túc.</div>`;
+          break;
+        }
+      }
+    }
+  }
+
+  if(!html){
+    html+=`<div class="verdict neutral"><div class="verdict-title">KHÔNG CÓ CÁCH CỤC ĐẶC BIỆT</div>Địa Chi không rơi vào cách cục Tam Hợp, Tứ Hành Xung, Đối Xứng hay Chuỗi Dây đặc biệt. Địa Chi chỉ chiếm 10-25% trọng số - tham khảo Thiên Can và Thân Mạng là chủ yếu.</div>`;
+  }
   return html;
 }
 
@@ -1046,42 +1236,200 @@ function analyzeTamTai(H,W,children,curY){
 }
 
 function conclude(H,W,children){
-  let goodCount=0,badCount=0;
-  // TC
+  // Weighted scoring: TC~60pts, TM~35pts, DC~15pts (total scale ±110)
+  let tcScore=0,tmScore=0,dcScore=0;
+  const tcDetails=[],tmDetails=[],dcDetails=[];
+
+  // --- Thiên Can (60 pts max) ---
   const tc=compareEl(H.canEl,W.canEl);
-  if(tc==='AsinhB')goodCount+=3;
-  else if(tc==='BsinhA')goodCount+=1;
-  else if(tc==='AkhacB')badCount+=2;
-  else if(tc==='BkhacA')badCount+=3;
-  // TM
+  const duongDuong=H.canYY==='Dương'&&W.canYY==='Dương';
+  if(tc==='AsinhB'){
+    tcScore=duongDuong?60:50;
+    tcDetails.push('Chồng sinh vợ - THUẬN LÝ NHẤT'+(duongDuong?' (Dương-Dương, rất mạnh)':''));
+  }else if(tc==='BsinhA'){
+    tcScore=15;tcDetails.push('Vợ sinh chồng - nghịch lý Thiên Can');
+  }else if(tc==='AkhacB'){
+    tcScore=-40;tcDetails.push('Chồng khắc vợ - thuận lý khắc, xấu');
+  }else if(tc==='BkhacA'){
+    tcScore=-60;tcDetails.push('Vợ khắc chồng - NGHỊCH LÝ KHẮC, xấu nhất');
+  }else{
+    tcScore=20;tcDetails.push('Bình hòa Thiên Can - cùng hành');
+  }
+  if(isHauThienHop(H.can,W.can)){tcScore+=15;tcDetails.push('Hậu Thiên tương hợp Lạc Việt (+bonus)');}
+
+  // --- Thân Mạng (35 pts max) ---
   const tm=compareEl(H.napAmEl,W.napAmEl);
-  if(tm==='BsinhA')goodCount+=2;
-  else if(tm==='AsinhB')badCount+=1;
-  else if(tm==='AkhacB'||tm==='BkhacA')badCount+=1;
-  // DC
-  if(H.tamHop===W.tamHop)goodCount+=1;
-  if(LUC_HAI_FULL[H.chi]===W.chi)badCount+=1;
-  if(LUC_XUNG_FULL[H.chi]===W.chi)badCount+=1;
+  if(tm==='BsinhA'){
+    tmScore=35;tmDetails.push('Vợ sinh chồng - THUẬN LÝ THÂN MẠNG');
+  }else if(tm==='AsinhB'){
+    tmScore=10;tmDetails.push('Chồng sinh vợ - nghịch lý Thân Mạng');
+  }else if(tm==='BkhacA'){
+    tmScore=-30;tmDetails.push('Vợ khắc chồng về Mạng - xấu nhất TM');
+  }else if(tm==='AkhacB'){
+    tmScore=-20;tmDetails.push('Chồng khắc vợ về Mạng - xấu TM');
+  }else{
+    tmScore=18;tmDetails.push('Bình hòa / cùng mạng - con cái quyết định');
+  }
 
-  let level='trung tính';
-  let cls='neutral';
-  if(goodCount>=4&&badCount<=1){level='RẤT TỐT';cls='good'}
-  else if(goodCount>badCount+1){level='Tốt';cls='good'}
-  else if(badCount>goodCount+2){level='Xấu - cần cẩn trọng';cls='bad'}
-  else if(badCount>goodCount){level='Hơi xấu';cls='bad'}
+  // --- Địa Chi (15 pts max) ---
+  if(H.tamHop===W.tamHop){dcScore+=10;dcDetails.push('Vợ chồng cùng Tam Hợp cục');}
+  if(LUC_XUNG_FULL[H.chi]===W.chi){dcScore-=10;dcDetails.push('Vợ chồng Lục Xung');}
+  if(LUC_HAI_FULL[H.chi]===W.chi){dcScore-=5;dcDetails.push('Vợ chồng Lục Hại');}
 
-  let txt=`Tổng hợp 3 yếu tố (Thiên Can 55-65%, Thân Mạng 30-40%, Địa Chi 10-25%), cặp đôi/gia đình này được đánh giá: <b>${level}</b>.`;
-  txt+=`<br><br>Điểm tốt: ${goodCount} · Điểm xấu: ${badCount}`;
-  txt+=`<br><br><i>Lưu ý: Đây chỉ là tổng hợp theo công thức Luận Tuổi Lạc Việt. Trong thực tế cần kết hợp với:</i>`;
-  txt+=`<br>• Tử Vi - Bát Tự (giờ, ngày, tháng sinh)`;
-  txt+=`<br>• Địa Lý Phong Thủy (nhà ở, mồ mả)`;
-  txt+=`<br>• Tượng hình Nạp Âm chi tiết`;
-  txt+=`<br>• Tuổi các con (đặc biệt con út)`;
+  // Con út bonus/penalty
+  if(children.length){
+    const y=children[children.length-1];
+    // TC con út
+    const tcC=compareEl(H.canEl,y.canEl);
+    const tcWC=compareEl(W.canEl,y.canEl);
+    if(tcC==='AsinhB')tcScore+=5;
+    else if(tcWC==='AsinhB')tcScore+=3;
+    else if(tcC==='BkhacA'||tcWC==='BkhacA')tcScore-=5;
+    // TM con út
+    const tmC=compareEl(H.napAmEl,y.napAmEl);
+    const tmWC=compareEl(W.napAmEl,y.napAmEl);
+    if(tmC==='AsinhB'||tmWC==='AsinhB')tmScore+=3;
+    else if(tmC==='BkhacA'||tmWC==='BkhacA')tmScore-=4;
+    // DC con út
+    if(y.tamHop===H.tamHop||y.tamHop===W.tamHop)dcScore+=5;
+    if(LUC_XUNG_FULL[y.chi]===H.chi||LUC_XUNG_FULL[y.chi]===W.chi)dcScore-=5;
+  }
+
+  const total=tcScore+tmScore+dcScore;
+
+  let level,cls;
+  if(total>=70){level='RẤT TỐT';cls='good';}
+  else if(total>=40){level='Tốt';cls='good';}
+  else if(total>=10){level='Trung bình - khá';cls='info';}
+  else if(total>=-10){level='Hơi xấu - cần chú ý';cls='neutral';}
+  else if(total>=-35){level='Xấu - cần cẩn trọng';cls='bad';}
+  else{level='RẤT XẤU - cần hóa giải';cls='bad';}
+
+  const bar=v=>{
+    const pct=Math.min(100,Math.max(0,Math.round((v+110)/220*100)));
+    const c=v>=0?'#4ade80':'#f87171';
+    return `<div style="background:#333;border-radius:4px;height:8px;margin:2px 0"><div style="width:${pct}%;background:${c};height:100%;border-radius:4px"></div></div>`;
+  };
+
+  let txt=`Tổng hợp 3 yếu tố theo trọng số Luận Tuổi Lạc Việt:<br>`;
+  txt+=`<table style="width:100%;font-size:12px;margin:8px 0;border-collapse:collapse">`;
+  txt+=`<tr><td style="width:160px;color:#ffe066">Thiên Can (55-65%)</td><td style="width:50px;text-align:right;color:${tcScore>=0?'#4ade80':'#f87171'}">${tcScore>0?'+':''}${tcScore} đ</td><td style="padding-left:8px">${bar(tcScore)}${tcDetails.join('; ')}</td></tr>`;
+  txt+=`<tr><td style="color:#ffe066">Thân Mạng (30-40%)</td><td style="text-align:right;color:${tmScore>=0?'#4ade80':'#f87171'}">${tmScore>0?'+':''}${tmScore} đ</td><td style="padding-left:8px">${bar(tmScore)}${tmDetails.join('; ')}</td></tr>`;
+  txt+=`<tr><td style="color:#ffe066">Địa Chi (10-25%)</td><td style="text-align:right;color:${dcScore>=0?'#4ade80':'#f87171'}">${dcScore>0?'+':''}${dcScore} đ</td><td style="padding-left:8px">${bar(dcScore)}${dcDetails.join('; ')}</td></tr>`;
+  txt+=`<tr style="border-top:1px solid #555"><td style="color:#fff;font-weight:bold">TỔNG ĐIỂM</td><td style="text-align:right;font-weight:bold;color:${total>=0?'#4ade80':'#f87171'}">${total>0?'+':''}${total}</td><td style="padding-left:8px;font-weight:bold"><b>${level}</b></td></tr>`;
+  txt+=`</table>`;
+
+  txt+=`<br><i style="color:#aaa">Lưu ý: Đây là tổng hợp theo Luận Tuổi Lạc Việt. Thực tế cần kết hợp thêm:</i>`;
+  txt+=`<br>• Tử Vi - Bát Tự (giờ, ngày, tháng sinh) • Địa Lý Phong Thủy (nhà ở, mồ mả)`;
+  txt+=`<br>• Tượng Hình Nạp Âm chi tiết từng người • Tuổi các con (đặc biệt <b>con út</b>)`;
 
   if(children.length===0){
-    txt+=`<br><br>⚠ Chưa nhập tuổi con - phân tích còn thiếu. "Giàu con út, khó con út" - tuổi con út quyết định hạnh phúc gia đình.`;
+    txt+=`<br><br><b style="color:#ffe066">⚠ Chưa nhập tuổi con</b> - phân tích còn thiếu. "Giàu con út, khó con út" - tuổi con út là yếu tố QUYẾT ĐỊNH.`;
   }
   return `<div class="verdict ${cls}"><div class="verdict-title">KẾT LUẬN</div>${txt}</div>`;
+}
+
+function analyzeHoaGiai(H,W,children){
+  let html='';
+  const youngest=children[children.length-1];
+  const tcCmp=compareEl(H.canEl,W.canEl);
+  const tmCmp=compareEl(H.napAmEl,W.napAmEl);
+  const tcBad=tcCmp==='AkhacB'||tcCmp==='BkhacA';
+  const tmBad=tmCmp==='AkhacB'||tmCmp==='BkhacA';
+
+  for(const c of children){
+    const isLast=c===youngest;
+    const hoaGiai=[];
+    const tangNang=[];
+
+    // --- Thiên Can hóa giải ---
+    if(tcCmp==='AkhacB'){
+      // Cha khắc mẹ: con tiết cha hoặc con sinh mẹ = hóa giải
+      if(compareEl(H.canEl,c.canEl)==='AsinhB')
+        hoaGiai.push(`TC: Cha(${H.canEl}) sinh con(${c.canEl}) → tiết khí khắc → HÓA GIẢI cha khắc mẹ`);
+      if(compareEl(c.canEl,W.canEl)==='AsinhB')
+        hoaGiai.push(`TC: Con(${c.canEl}) sinh mẹ(${W.canEl}) → tăng sức mẹ → HÓA GIẢI cha khắc mẹ`);
+      if(compareEl(c.canEl,W.canEl)==='AkhacB')
+        tangNang.push(`TC: Con(${c.canEl}) cũng khắc mẹ(${W.canEl}) → TĂNG NẶNG cha khắc mẹ`);
+    }
+    if(tcCmp==='BkhacA'){
+      // Mẹ khắc cha: con tiết mẹ hoặc con sinh cha = hóa giải
+      if(compareEl(W.canEl,c.canEl)==='AsinhB')
+        hoaGiai.push(`TC: Mẹ(${W.canEl}) sinh con(${c.canEl}) → tiết khí khắc → HÓA GIẢI mẹ khắc cha`);
+      if(compareEl(c.canEl,H.canEl)==='AsinhB')
+        hoaGiai.push(`TC: Con(${c.canEl}) sinh cha(${H.canEl}) → tăng sức cha → HÓA GIẢI mẹ khắc cha`);
+      if(compareEl(c.canEl,H.canEl)==='AkhacB')
+        tangNang.push(`TC: Con(${c.canEl}) cũng khắc cha(${H.canEl}) → TĂNG NẶNG mẹ khắc cha`);
+    }
+
+    // --- Thân Mạng hóa giải ---
+    if(tmCmp==='AkhacB'){
+      if(compareEl(H.napAmEl,c.napAmEl)==='AsinhB')
+        hoaGiai.push(`TM: Cha mạng(${H.napAmEl}) sinh con mạng(${c.napAmEl}) → tiết khí → HÓA GIẢI cha khắc mẹ về Mạng`);
+      if(compareEl(c.napAmEl,W.napAmEl)==='AsinhB')
+        hoaGiai.push(`TM: Con mạng(${c.napAmEl}) sinh mẹ mạng(${W.napAmEl}) → HÓA GIẢI cha khắc mẹ về Mạng`);
+      if(compareEl(c.napAmEl,W.napAmEl)==='AkhacB')
+        tangNang.push(`TM: Con mạng(${c.napAmEl}) cũng khắc mẹ mạng(${W.napAmEl}) → TĂNG NẶNG`);
+    }
+    if(tmCmp==='BkhacA'){
+      if(compareEl(W.napAmEl,c.napAmEl)==='AsinhB')
+        hoaGiai.push(`TM: Mẹ mạng(${W.napAmEl}) sinh con mạng(${c.napAmEl}) → tiết khí → HÓA GIẢI mẹ khắc cha về Mạng`);
+      if(compareEl(c.napAmEl,H.napAmEl)==='AsinhB')
+        hoaGiai.push(`TM: Con mạng(${c.napAmEl}) sinh cha mạng(${H.napAmEl}) → HÓA GIẢI mẹ khắc cha về Mạng`);
+      if(compareEl(c.napAmEl,H.napAmEl)==='AkhacB')
+        tangNang.push(`TM: Con mạng(${c.napAmEl}) cũng khắc cha mạng(${H.napAmEl}) → TĂNG NẶNG`);
+    }
+
+    // --- Địa Chi hóa giải ---
+    // Con hoàn thành Tam Hợp cha-mẹ
+    if(H.tamHop===W.tamHop){
+      const grp=TAM_HOP_GROUP[H.tamHop];
+      const present=grp.filter(ch=>[H.chi,W.chi,c.chi].includes(ch));
+      if(present.length===3)
+        hoaGiai.push(`DC: Con(${c.chi}) hoàn thành Tam Hợp ${H.tamHop}(${grp.join('-')}) cùng cha mẹ → Địa Chi CỰC TỐT`);
+      else if(present.length===2&&grp.includes(c.chi))
+        hoaGiai.push(`DC: Con(${c.chi}) cùng cục Tam Hợp ${H.tamHop} với cha/mẹ → hỗ trợ Địa Chi`);
+    }
+    // Con Lục Xung với cha/mẹ = tăng nặng
+    if(LUC_XUNG_FULL[c.chi]===H.chi)
+      tangNang.push(`DC: Con(${c.chi}) Lục Xung với cha(${H.chi}) → hay xung đột cha con`);
+    if(LUC_XUNG_FULL[c.chi]===W.chi)
+      tangNang.push(`DC: Con(${c.chi}) Lục Xung với mẹ(${W.chi}) → hay xung đột mẹ con`);
+    // Con cùng Tam Hợp cha/mẹ nhưng cha mẹ khác cục = hỗ trợ một bên
+    if(H.tamHop!==W.tamHop){
+      if(c.tamHop===H.tamHop){
+        const grp=TAM_HOP_GROUP[H.tamHop];
+        const cnt=grp.filter(ch=>[H.chi,W.chi,c.chi].includes(ch)).length;
+        if(cnt===3)hoaGiai.push(`DC: Con(${c.chi}) hoàn chỉnh Tam Hợp ${H.tamHop}(${grp.join('-')}) với cha → cha phát`);
+      }else if(c.tamHop===W.tamHop){
+        const grp=TAM_HOP_GROUP[W.tamHop];
+        const cnt=grp.filter(ch=>[H.chi,W.chi,c.chi].includes(ch)).length;
+        if(cnt===3)hoaGiai.push(`DC: Con(${c.chi}) hoàn chỉnh Tam Hợp ${W.tamHop}(${grp.join('-')}) với mẹ → mẹ phát`);
+      }
+    }
+
+    let cls='info',title='TÁC ĐỘNG TRUNG TÍNH',body='';
+    if(hoaGiai.length>0&&tangNang.length===0){
+      cls='good';title='HÓA GIẢI';
+      body=hoaGiai.map(s=>`<div style="margin:3px 0">✓ ${s}</div>`).join('');
+    }else if(tangNang.length>0&&hoaGiai.length===0){
+      cls='bad';title='TĂNG NẶNG';
+      body=tangNang.map(s=>`<div style="margin:3px 0">✗ ${s}</div>`).join('');
+    }else if(hoaGiai.length>0&&tangNang.length>0){
+      cls='neutral';title='VỪA HÓA GIẢI VỪA TĂNG NẶNG';
+      body=hoaGiai.map(s=>`<div style="margin:3px 0;color:#7fff7f">✓ ${s}</div>`).join('');
+      body+=tangNang.map(s=>`<div style="margin:3px 0;color:#ff9999">✗ ${s}</div>`).join('');
+    }else{
+      body=`Tuổi ${c.can} ${c.chi} (${c.napAm}) không tạo tương tác hóa giải hay tăng nặng đặc biệt với tương quan cha mẹ. Tham khảo chi tiết ở các mục Thiên Can, Thân Mạng, Địa Chi.`;
+    }
+    html+=`<div class="verdict ${cls}" style="margin-left:8px"><div class="verdict-title">${c.role}(${c.can} ${c.chi})${isLast&&children.length>1?' ⭐':''}: ${title}</div>${body}</div>`;
+  }
+
+  // Nhận định con út
+  const y=youngest;
+  html+=`<div class="verdict info" style="margin-top:10px"><div class="verdict-title">⭐ NHẬN ĐỊNH CON ÚT: ${y.role} (${y.can} ${y.chi})</div>"Giàu con út, khó con út" - Con út là yếu tố QUYẾT ĐỊNH vận mệnh gia đình. Thiên Can ${y.canEl}(${y.canYY}), Thân Mạng ${y.napAmEl}(${y.napAm}), Địa Chi cục ${y.tamHop}. Xem các mục phân tích Thiên Can, Thân Mạng và Địa Chi bên trên để thấy đầy đủ tác động của con út đến cha mẹ.</div>`;
+
+  return html;
 }
 
 // ============== HOA GIAP TABLE ==============
