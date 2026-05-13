@@ -263,6 +263,55 @@
 
       <div id="dlResult"></div>
 
+      <h3 style="margin-top:18px;color:#ffd700">🏗️ PHÂN CUNG NHÀ - BÁT TRẠCH TRÊN MẶT BẰNG</h3>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Nhập kích thước nhà → tự động vẽ mặt bằng với 8 cung Bát Trạch + tô màu cát/hung theo tuổi gia chủ. Mặt tiền (cửa chính) sẽ ở phía trên.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Rộng nhà (m)</label>
+          <input type="number" id="hpWidth" value="4" step="0.1" min="2">
+        </div>
+        <div class="form-row">
+          <label>Dài nhà (m)</label>
+          <input type="number" id="hpLength" value="20" step="0.1" min="3">
+        </div>
+        <div class="form-row">
+          <label>Vị trí cửa (% từ trái)</label>
+          <input type="number" id="hpDoorPos" value="50" min="10" max="90" step="5">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="drawHousePlan()">VẼ PHÂN CUNG NHÀ</button>
+        </div>
+      </div>
+      <div id="housePlanResult"></div>
+
+      <h3 style="margin-top:18px;color:#ffd700">📐 OVERLAY LÊN BẢN VẼ CÓ SẴN</h3>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Tải ảnh mặt bằng nhà của bạn (JPG/PNG/PDF dạng ảnh) → công cụ sẽ phủ 8 cung Bát Trạch trong suốt lên trên. Sau khi tải, <b>nhấp chuột vào TÂM NHÀ</b> trên ảnh để định vị, rồi kéo thanh góc để khớp hướng chính xác.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Tải ảnh mặt bằng</label>
+          <input type="file" id="hpFloorImage" accept="image/*" onchange="loadFloorPlan()" style="padding:8px;background:rgba(0,0,0,.3);border:1px solid rgba(255,215,0,.3);border-radius:8px;color:#fff;font-family:inherit">
+        </div>
+        <div class="form-row">
+          <label>Góc hướng chính xác (0-359°)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="range" id="hpFineAng" min="0" max="359" value="0" step="1" style="flex:1;accent-color:#ffd700" oninput="hpUpdateAng()">
+            <span id="hpFineAngLabel" style="color:#ffd700;font-weight:bold;min-width:50px;text-align:right">0°</span>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Độ trong suốt cung (%)</label>
+          <div style="display:flex;gap:8px;align-items:center">
+            <input type="range" id="hpOpacity" min="10" max="80" value="35" step="5" style="flex:1;accent-color:#ffd700" oninput="drawFloorPlanWithImage()">
+            <span id="hpOpacityLabel" style="color:#ffd700;font-weight:bold;min-width:40px;text-align:right">35%</span>
+          </div>
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action secondary" onclick="hpResetCenter()">↺ Reset tâm về giữa</button>
+        </div>
+      </div>
+      <div id="hpFloorContainer" style="margin-top:10px"></div>
+      <div id="hpFloorLegend"></div>
+
       <h3 style="margin-top:18px;color:#ffd700">📋 KHÁI NIỆM CƠ BẢN</h3>
       <details open><summary>HƯỚNG nhà</summary><p>Là hướng mặt tiền - cửa chính - tính từ trong nhà nhìn ra. Vd: tường mặt tiền và cửa quay về Đông → nhà <b>hướng Đông</b>. Đây là hướng tương tác chính của môi trường lên ngôi nhà.</p></details>
       <details><summary>SƠN nhà</summary><p>Đường thẳng nối điểm giữa ranh phía trước (cổng chính) đi qua TÂM NHÀ ra ranh phía sau. <b>Tọa Sơn - Hướng Thủy</b>: lưng (sơn) tựa vào đâu, mặt (hướng) nhìn ra đâu.</p></details>
@@ -1829,6 +1878,330 @@ function getSeasonalEl(m){
   if(m<=6)return'Hỏa';
   if(m<=9)return'Kim';
   return'Thủy';
+}
+
+// ============== PHÂN CUNG NHÀ (BÁT TRẠCH MẶT BẰNG) ==============
+function drawHousePlan(){
+  const w=parseFloat(document.getElementById('hpWidth').value)||4;
+  const l=parseFloat(document.getElementById('hpLength').value)||20;
+  const doorPct=parseFloat(document.getElementById('hpDoorPos').value)||50;
+  const y=parseInt(document.getElementById('dlYear').value);
+  const g=document.getElementById('dlGender').value;
+  const huongAng=parseInt(document.getElementById('dlHuong').value);
+  if(!y){alert('Vui lòng nhập năm sinh gia chủ ở mục Sơn-Hướng-Tọa phía trên');return}
+
+  const phi=cungPhi(y,g);
+  const dirs=BAT_TRACH_DIR[phi.name];
+  const huongNames=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
+  const huongName=huongNames[huongAng/45];
+
+  // SVG canvas - fit house with margins
+  const SW=560,SH=900,M=90;
+  const ratio=l/w;
+  let HW,HL;
+  if(ratio>(SH-2*M)/(SW-2*M)){HL=SH-2*M;HW=HL/ratio}
+  else{HW=SW-2*M;HL=HW*ratio}
+  const HX=(SW-HW)/2,HY=(SH-HL)/2;
+  const CX=SW/2,CY=SH/2;
+  const R=Math.sqrt(HW*HW+HL*HL)/2+30;
+
+  const dirList=[
+    {name:'Bắc',angle:0},{name:'Đông Bắc',angle:45},{name:'Đông',angle:90},{name:'Đông Nam',angle:135},
+    {name:'Nam',angle:180},{name:'Tây Nam',angle:225},{name:'Tây',angle:270},{name:'Tây Bắc',angle:315}
+  ];
+
+  const FILL_COLOR={
+    'cat-dai':'#aed581',  // xanh lá đậm
+    'cat':'#fff59d',      // vàng
+    'hung':'#ffb74d',     // cam
+    'hung-dai':'#ef5350'  // đỏ
+  };
+  const SECTOR_LABEL_COLOR={
+    'cat-dai':'#1b5e20','cat':'#5d4037','hung':'#bf360c','hung-dai':'#b71c1c'
+  };
+
+  let svg=`<svg viewBox="0 0 ${SW} ${SH}" xmlns="http://www.w3.org/2000/svg" style="width:100%;max-width:560px;background:#fafafa;border-radius:8px;display:block;margin:10px auto">
+    <defs>
+      <clipPath id="hClip"><rect x="${HX}" y="${HY}" width="${HW}" height="${HL}"/></clipPath>
+      <marker id="ha" markerWidth="10" markerHeight="10" refX="5" refY="3" orient="auto"><polygon points="0 0,10 3,0 6" fill="#c8202a"/></marker>
+    </defs>`;
+
+  // 1. Draw 8 sectors clipped to house
+  svg+=`<g clip-path="url(#hClip)">`;
+  for(const d of dirList){
+    const meaning=dirs[d.name];
+    const cls=DIR_CLASS[meaning];
+    const fill=FILL_COLOR[cls]||'#eee';
+    const svgAng=(d.angle-huongAng+360)%360;
+    const a1=svgAng-22.5,a2=svgAng+22.5;
+    const p1x=CX+R*Math.sin(a1*Math.PI/180);
+    const p1y=CY-R*Math.cos(a1*Math.PI/180);
+    const p2x=CX+R*Math.sin(a2*Math.PI/180);
+    const p2y=CY-R*Math.cos(a2*Math.PI/180);
+    svg+=`<path d="M ${CX},${CY} L ${p1x},${p1y} A ${R},${R} 0 0,1 ${p2x},${p2y} Z" fill="${fill}" stroke="#666" stroke-width="0.8" opacity="0.85"/>`;
+  }
+  svg+='</g>';
+
+  // 2. Draw house outline
+  svg+=`<rect x="${HX}" y="${HY}" width="${HW}" height="${HL}" fill="none" stroke="#000" stroke-width="3"/>`;
+
+  // 3. Draw door
+  const doorX=HX+HW*(doorPct/100);
+  const doorW=Math.min(HW*0.18,30);
+  svg+=`<rect x="${doorX-doorW/2}" y="${HY-4}" width="${doorW}" height="8" fill="#fff" stroke="#c8202a" stroke-width="2"/>`;
+  svg+=`<text x="${doorX}" y="${HY-10}" font-size="11" font-weight="bold" fill="#c8202a" text-anchor="middle">CỬA CHÍNH</text>`;
+
+  // 4. Vertical "trục" axis (front to back through center)
+  svg+=`<line x1="${doorX}" y1="${HY}" x2="${CX}" y2="${CY}" stroke="#c8202a" stroke-width="2.5" stroke-dasharray="4,3" opacity="0.7"/>`;
+  svg+=`<line x1="${CX}" y1="${CY}" x2="${CX}" y2="${HY+HL}" stroke="#c8202a" stroke-width="2.5" stroke-dasharray="4,3" opacity="0.7"/>`;
+
+  // 5. Center point
+  svg+=`<circle cx="${CX}" cy="${CY}" r="9" fill="#c8202a" stroke="#fff" stroke-width="2"/>`;
+  svg+=`<text x="${CX+13}" y="${CY+4}" font-size="10" fill="#c8202a" font-weight="bold">TÂM NHÀ</text>`;
+
+  // 6. Labels for each sector
+  for(const d of dirList){
+    const meaning=dirs[d.name];
+    const cls=DIR_CLASS[meaning];
+    const ct=CUUTINH[meaning];
+    const svgAng=(d.angle-huongAng+360)%360;
+    // Position label inside house, partway from center to edge
+    const labelR=Math.min(HW,HL)*0.32;
+    const lx=CX+labelR*Math.sin(svgAng*Math.PI/180);
+    const ly=CY-labelR*Math.cos(svgAng*Math.PI/180);
+    const c=SECTOR_LABEL_COLOR[cls];
+    svg+=`<text x="${lx}" y="${ly-10}" font-size="10" font-weight="bold" fill="#000" text-anchor="middle">${d.name}</text>`;
+    svg+=`<text x="${lx}" y="${ly+3}" font-size="11" font-weight="bold" fill="${c}" text-anchor="middle">${meaning}</text>`;
+    svg+=`<text x="${lx}" y="${ly+15}" font-size="9" fill="#555" text-anchor="middle">${ct.star}</text>`;
+  }
+
+  // 7. North compass indicator (small)
+  const compX=SW-50,compY=50;
+  // Tính vị trí Bắc trong SVG (north is at angle (0-huongAng+360)%360)
+  const nAng=(0-huongAng+360)%360;
+  const nx=compX+25*Math.sin(nAng*Math.PI/180);
+  const ny=compY-25*Math.cos(nAng*Math.PI/180);
+  svg+=`<circle cx="${compX}" cy="${compY}" r="28" fill="#fff" stroke="#000" stroke-width="1.5"/>`;
+  svg+=`<line x1="${compX}" y1="${compY}" x2="${nx}" y2="${ny}" stroke="#c8202a" stroke-width="2.5" marker-end="url(#ha)"/>`;
+  svg+=`<text x="${nx}" y="${ny<compY?ny-3:ny+12}" font-size="11" font-weight="bold" fill="#c8202a" text-anchor="middle">B</text>`;
+
+  // 8. Hướng label above house
+  svg+=`<text x="${CX}" y="${HY-35}" font-size="14" font-weight="bold" fill="#1a1a1a" text-anchor="middle">HƯỚNG NHÀ: ${huongName.toUpperCase()} (${huongAng}°)</text>`;
+  svg+=`<text x="${CX}" y="${HY+HL+30}" font-size="11" fill="#666" text-anchor="middle">Gia chủ: ${phi.name} (${phi.trach}) - Năm sinh ${y}</text>`;
+  svg+=`<text x="${CX}" y="${HY+HL+44}" font-size="10" fill="#888" text-anchor="middle">Kích thước: ${w}m × ${l}m</text>`;
+
+  svg+='</svg>';
+
+  // Build recommendations
+  const catDirs=dirList.filter(d=>DIR_CLASS[dirs[d.name]].includes('cat'));
+  const hungDirs=dirList.filter(d=>DIR_CLASS[dirs[d.name]].includes('hung'));
+  const sinhKhi=dirList.find(d=>dirs[d.name]==='Sinh Khí');
+  const thienY=dirList.find(d=>dirs[d.name]==='Thiên Y');
+  const dienNien=dirList.find(d=>dirs[d.name]==='Diên Niên');
+  const phucVi=dirList.find(d=>dirs[d.name]==='Phục Vị');
+  const tuyetMenh=dirList.find(d=>dirs[d.name]==='Tuyệt Mệnh');
+  const nguQuy=dirList.find(d=>dirs[d.name]==='Ngũ Quỷ');
+  const lucSat=dirList.find(d=>dirs[d.name]==='Lục Sát');
+  const hoaHai=dirList.find(d=>dirs[d.name]==='Họa Hại');
+
+  let rec='<div class="card" style="background:rgba(255,255,255,.04);margin-top:14px"><h3 style="color:#ffd700;margin-bottom:10px">💡 KHUYẾN NGHỊ BỐ TRÍ THEO BÁT TRẠCH</h3>';
+  rec+='<div class="lakinh-mini">';
+  rec+=`<div class="lk-card" style="border-color:#4caf50">
+    <div class="lk-title" style="color:#8bc34a">🟢 NÊN BỐ TRÍ Ở CÁT PHƯƠNG</div>
+    <div class="lk-row"><span>Cửa chính &amp; mặt tiền:</span><span>${sinhKhi?.name||'-'} (Sinh Khí)</span></div>
+    <div class="lk-row"><span>Phòng ngủ chính:</span><span>${sinhKhi?.name||'-'} hoặc ${dienNien?.name||'-'}</span></div>
+    <div class="lk-row"><span>Phòng làm việc:</span><span>${sinhKhi?.name||'-'} hoặc ${thienY?.name||'-'}</span></div>
+    <div class="lk-row"><span>Bàn thờ:</span><span>${thienY?.name||'-'} (Thiên Y) hoặc ${phucVi?.name||'-'} (Phục Vị)</span></div>
+    <div class="lk-row"><span>Phòng khách:</span><span>${dienNien?.name||'-'} (Diên Niên)</span></div>
+    <div class="lk-row"><span>Bàn ăn:</span><span>${thienY?.name||'-'} hoặc ${dienNien?.name||'-'}</span></div>
+  </div>`;
+  rec+=`<div class="lk-card" style="border-color:#e74c3c">
+    <div class="lk-title" style="color:#ef9a9a">🔴 NÊN ĐẶT Ở HUNG PHƯƠNG ("tọa hung hướng cát")</div>
+    <div class="lk-row"><span>Bếp (Hỏa khắc hung):</span><span>${tuyetMenh?.name||'-'} (Tuyệt Mệnh) - lưng tựa hung, mặt hướng cát</span></div>
+    <div class="lk-row"><span>WC, nhà vệ sinh:</span><span>${nguQuy?.name||hoaHai?.name||'-'}</span></div>
+    <div class="lk-row"><span>Kho, tủ giày:</span><span>${lucSat?.name||hoaHai?.name||'-'}</span></div>
+    <div class="lk-row"><span>Cầu thang:</span><span>${hoaHai?.name||'-'} (tránh tâm nhà)</span></div>
+  </div>`;
+  rec+='</div>';
+
+  rec+='<h4 style="color:#ffd700;margin-top:14px;font-size:13px">⚠ LƯU Ý QUAN TRỌNG</h4>';
+  rec+='<div class="principle-list" style="font-size:12px">';
+  rec+='<p>• <b>Tâm nhà</b> (chấm đỏ) phải để trống thoáng, không đặt cột, giếng, đào sâu >50cm. Bề rộng 30cm mỗi bên tính từ tâm.</p>';
+  rec+='<p>• <b>Trục Sơn-Hướng</b> (đường đỏ đứt nét từ cửa qua tâm ra sau): không nên có vật cản, có thể đặt chậu cây tròn hoặc bể cá ở phòng khách.</p>';
+  rec+='<p>• <b>Bếp</b>: Tọa hung (lưng bếp tựa phương xấu) - Hướng cát (mặt bếp nhìn về phương tốt). Sách Bát Trạch Minh Cảnh: "Hỏa môn áp Tuyệt Mệnh, sự khanh chi đại cát".</p>';
+  rec+='<p>• <b>WC</b>: đặt ở phương hung để "trấn" hung khí (xả thải ra phương xấu). Tránh đặt giữa nhà hoặc trên trục.</p>';
+  rec+='<p>• <b>Cầu thang</b>: tránh đối diện cửa chính. Bậc đầu cong để dẫn khí. Số bậc nên là 13, 17, 21 (Sinh) - tránh 14, 18 (Tử).</p>';
+  rec+='</div></div>';
+
+  document.getElementById('housePlanResult').innerHTML=svg+rec;
+}
+
+// ============== OVERLAY BÁT TRẠCH LÊN BẢN VẼ CÓ SẴN ==============
+let hpImageData=null,hpImgW=0,hpImgH=0;
+let hpCenterX=0.5,hpCenterY=0.5; // % position 0-1
+let hpFineAng=0; // 0-359°
+
+function loadFloorPlan(){
+  const file=document.getElementById('hpFloorImage').files[0];
+  if(!file)return;
+  const reader=new FileReader();
+  reader.onload=e=>{
+    hpImageData=e.target.result;
+    const img=new Image();
+    img.onload=()=>{
+      hpImgW=img.width;hpImgH=img.height;
+      hpCenterX=0.5;hpCenterY=0.5;
+      // Default fine angle from dropdown
+      hpFineAng=parseInt(document.getElementById('dlHuong').value)||0;
+      document.getElementById('hpFineAng').value=hpFineAng;
+      document.getElementById('hpFineAngLabel').textContent=hpFineAng+'°';
+      drawFloorPlanWithImage();
+    };
+    img.src=hpImageData;
+  };
+  reader.readAsDataURL(file);
+}
+
+function hpUpdateAng(){
+  hpFineAng=parseInt(document.getElementById('hpFineAng').value)||0;
+  document.getElementById('hpFineAngLabel').textContent=hpFineAng+'°';
+  drawFloorPlanWithImage();
+}
+
+function hpResetCenter(){
+  hpCenterX=0.5;hpCenterY=0.5;
+  drawFloorPlanWithImage();
+}
+
+function drawFloorPlanWithImage(){
+  if(!hpImageData)return;
+  const y=parseInt(document.getElementById('dlYear').value);
+  if(!y){alert('Vui lòng nhập năm sinh gia chủ ở mục Sơn-Hướng-Tọa');return}
+  const g=document.getElementById('dlGender').value;
+  const phi=cungPhi(y,g);
+  const dirs=BAT_TRACH_DIR[phi.name];
+  const opacity=(parseInt(document.getElementById('hpOpacity').value)||35)/100;
+  document.getElementById('hpOpacityLabel').textContent=Math.round(opacity*100)+'%';
+
+  const iw=hpImgW,ih=hpImgH;
+  const cx=iw*hpCenterX,cy=ih*hpCenterY;
+  const huongAng=hpFineAng;
+  const huongNames=['Bắc','Đông Bắc','Đông','Đông Nam','Nam','Tây Nam','Tây','Tây Bắc'];
+  const huongShort=huongNames[Math.round(huongAng/45)%8];
+
+  // Bán kính đủ phủ toàn ảnh từ tâm
+  const cornerDists=[
+    Math.sqrt(cx*cx+cy*cy),
+    Math.sqrt((iw-cx)*(iw-cx)+cy*cy),
+    Math.sqrt(cx*cx+(ih-cy)*(ih-cy)),
+    Math.sqrt((iw-cx)*(iw-cx)+(ih-cy)*(ih-cy))
+  ];
+  const R=Math.max(...cornerDists)+10;
+
+  const dirList=[
+    {name:'Bắc',angle:0},{name:'Đông Bắc',angle:45},{name:'Đông',angle:90},{name:'Đông Nam',angle:135},
+    {name:'Nam',angle:180},{name:'Tây Nam',angle:225},{name:'Tây',angle:270},{name:'Tây Bắc',angle:315}
+  ];
+  const FILL_COLOR={'cat-dai':'#4caf50','cat':'#ffc107','hung':'#ff9800','hung-dai':'#e74c3c'};
+
+  let svg=`<svg viewBox="0 0 ${iw} ${ih}" xmlns="http://www.w3.org/2000/svg" id="hpFloorSvg" style="width:100%;cursor:crosshair;background:#fff;border-radius:8px;display:block" onclick="hpClickSetCenter(event)">`;
+  svg+=`<image href="${hpImageData}" width="${iw}" height="${ih}"/>`;
+  // 8 sectors with transparency
+  for(const d of dirList){
+    const meaning=dirs[d.name];
+    const cls=DIR_CLASS[meaning];
+    const fill=FILL_COLOR[cls];
+    const svgAng=(d.angle-huongAng+360)%360;
+    const a1=svgAng-22.5,a2=svgAng+22.5;
+    const p1x=cx+R*Math.sin(a1*Math.PI/180);
+    const p1y=cy-R*Math.cos(a1*Math.PI/180);
+    const p2x=cx+R*Math.sin(a2*Math.PI/180);
+    const p2y=cy-R*Math.cos(a2*Math.PI/180);
+    svg+=`<path d="M ${cx},${cy} L ${p1x},${p1y} A ${R},${R} 0 0,1 ${p2x},${p2y} Z" fill="${fill}" stroke="#000" stroke-width="${Math.max(1,iw/600)}" opacity="${opacity}"/>`;
+  }
+  // 8 boundary lines from center (slightly stronger)
+  for(let i=0;i<8;i++){
+    const bAng=(i*45+22.5-huongAng+360)%360;
+    const ex=cx+R*Math.sin(bAng*Math.PI/180);
+    const ey=cy-R*Math.cos(bAng*Math.PI/180);
+    svg+=`<line x1="${cx}" y1="${cy}" x2="${ex}" y2="${ey}" stroke="#000" stroke-width="${Math.max(1.5,iw/500)}" opacity="0.5"/>`;
+  }
+
+  // Labels
+  const labelR=Math.min(iw,ih)*0.32;
+  const fontSize=Math.max(14,Math.min(iw,ih)/30);
+  for(const d of dirList){
+    const meaning=dirs[d.name];
+    const cls=DIR_CLASS[meaning];
+    const ct=CUUTINH[meaning];
+    const svgAng=(d.angle-huongAng+360)%360;
+    const lx=cx+labelR*Math.sin(svgAng*Math.PI/180);
+    const ly=cy-labelR*Math.cos(svgAng*Math.PI/180);
+    svg+=`<text x="${lx}" y="${ly-fontSize*0.4}" font-size="${fontSize*0.85}" font-weight="bold" fill="#000" text-anchor="middle" stroke="#fff" stroke-width="${fontSize*0.2}" paint-order="stroke" font-family="Arial">${d.name}</text>`;
+    svg+=`<text x="${lx}" y="${ly+fontSize*0.5}" font-size="${fontSize}" font-weight="bold" fill="${cls.includes('cat')?'#1b5e20':'#b71c1c'}" text-anchor="middle" stroke="#fff" stroke-width="${fontSize*0.22}" paint-order="stroke" font-family="Arial">${meaning}</text>`;
+    svg+=`<text x="${lx}" y="${ly+fontSize*1.4}" font-size="${fontSize*0.7}" fill="#444" text-anchor="middle" stroke="#fff" stroke-width="${fontSize*0.15}" paint-order="stroke" font-family="Arial">${ct.star}</text>`;
+  }
+
+  // Center marker - draggable visually
+  const centerR=Math.max(10,Math.min(iw,ih)/60);
+  svg+=`<circle cx="${cx}" cy="${cy}" r="${centerR}" fill="#c8202a" stroke="#fff" stroke-width="${centerR*0.3}" opacity="0.9"/>`;
+  svg+=`<circle cx="${cx}" cy="${cy}" r="${centerR*0.4}" fill="#fff"/>`;
+
+  // Hướng arrow from center pointing to TOP of plan (default) - but actually we want to indicate where the front is
+  const arrowLen=Math.min(iw,ih)*0.18;
+  // The "hướng" direction in image - we use svgAng=0 which corresponds to compass huongAng
+  // The arrow should point in compass direction of huongAng, which in SVG = svgAng 0 = straight up
+  const ax=cx,ay=cy-arrowLen;
+  svg+=`<defs><marker id="hpa" markerWidth="14" markerHeight="14" refX="6" refY="4" orient="auto"><polygon points="0 0,14 4,0 8" fill="#c8202a"/></marker></defs>`;
+  svg+=`<line x1="${cx}" y1="${cy}" x2="${ax}" y2="${ay}" stroke="#c8202a" stroke-width="${centerR*0.5}" marker-end="url(#hpa)"/>`;
+
+  // North indicator at corner
+  const compR=Math.max(30,Math.min(iw,ih)/20);
+  const compX=iw-compR*1.6,compY=compR*1.6;
+  // North position in image: svgAng for compass 0 = (0-huongAng+360)%360
+  const nAng=(0-huongAng+360)%360;
+  const nx=compX+compR*Math.sin(nAng*Math.PI/180);
+  const ny=compY-compR*Math.cos(nAng*Math.PI/180);
+  svg+=`<circle cx="${compX}" cy="${compY}" r="${compR}" fill="#fff" stroke="#000" stroke-width="2" opacity="0.9"/>`;
+  svg+=`<line x1="${compX}" y1="${compY}" x2="${nx}" y2="${ny}" stroke="#c8202a" stroke-width="3" marker-end="url(#hpa)"/>`;
+  svg+=`<text x="${nx}" y="${ny<compY?ny-4:ny+compR*0.5}" font-size="${compR*0.7}" font-weight="bold" fill="#c8202a" text-anchor="middle">B</text>`;
+
+  svg+='</svg>';
+
+  document.getElementById('hpFloorContainer').innerHTML=svg;
+
+  // Legend
+  let legend=`<div style="background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.2);border-radius:8px;padding:10px 14px;margin-top:10px;font-size:12px">
+    <b style="color:#ffd700">Gia chủ:</b> ${phi.name} (${phi.trach}) — <b style="color:#ffd700">Hướng:</b> ${huongShort} (${huongAng}°)<br>
+    <b style="color:#ffd700">8 cung Bát Trạch trên bản vẽ của bạn:</b><br>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:6px;margin-top:6px">`;
+  for(const d of dirList){
+    const meaning=dirs[d.name];
+    const cls=DIR_CLASS[meaning];
+    const ct=CUUTINH[meaning];
+    const c=FILL_COLOR[cls];
+    const isCat=cls.includes('cat');
+    legend+=`<div style="display:flex;align-items:center;gap:6px;font-size:11.5px">
+      <span style="display:inline-block;width:16px;height:16px;background:${c};border:1px solid #333;border-radius:3px"></span>
+      <b>${d.name}</b>: <span style="color:${isCat?'#8bc34a':'#ff9090'}">${meaning}</span> · ${ct.star} · ${ct.months}
+    </div>`;
+  }
+  legend+='</div></div>';
+  document.getElementById('hpFloorLegend').innerHTML=legend;
+}
+
+function hpClickSetCenter(event){
+  const svg=event.currentTarget;
+  const pt=svg.createSVGPoint();
+  pt.x=event.clientX;
+  pt.y=event.clientY;
+  const ctm=svg.getScreenCTM();
+  if(!ctm)return;
+  const svgPt=pt.matrixTransform(ctm.inverse());
+  const vb=svg.viewBox.baseVal;
+  hpCenterX=svgPt.x/vb.width;
+  hpCenterY=svgPt.y/vb.height;
+  drawFloorPlanWithImage();
 }
 
 // ============== LỊCH THÁNG NGÀY TỐT XẤU ==============
