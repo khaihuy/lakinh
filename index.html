@@ -1324,21 +1324,51 @@ function xemNgay(today){
   const naTh=napAmFromCC(canTh,chiTh);
   const naNa=napAmFromCC(canNa,chiNa);
 
-  // 28 Tú: index = jd % 28
-  const tuIdx=jd%28;
+  // 28 Tú: index = (jd + offset) % 28, offset hiệu chỉnh theo anchor
+  const tuIdx=(jd+11)%28;
   const tu=TU28[tuIdx];
 
-  // 12 Trực: cycle 12, base by month
-  const trucIdx=(jd+(lunar.month*2))%12;
+  // Tiết Khí: ước tính theo ngày Dương lịch (mỗi tiết ~15 ngày, tiết đầu tháng ~ngày 4-8, tiết giữa tháng ~ngày 19-23)
+  // 12 tiết "tiết" (đứng đầu tháng) đánh dấu chuyển tháng âm:
+  // Lập Xuân(2/4)→Dần, Kinh Trập(3/6)→Mão, Thanh Minh(4/5)→Thìn, Lập Hạ(5/5)→Tỵ,
+  // Mang Chủng(6/6)→Ngọ, Tiểu Thử(7/7)→Mùi, Lập Thu(8/8)→Thân, Bạch Lộ(9/8)→Dậu,
+  // Hàn Lộ(10/8)→Tuất, Lập Đông(11/7)→Hợi, Đại Tuyết(12/7)→Tý, Tiểu Hàn(1/6)→Sửu
+  const TIET_DATES=[[1,6,'Tiểu Hàn',1],[1,20,'Đại Hàn',1],[2,4,'Lập Xuân',2],[2,19,'Vũ Thủy',2],[3,6,'Kinh Trập',3],[3,21,'Xuân Phân',3],[4,5,'Thanh Minh',4],[4,20,'Cốc Vũ',4],[5,5,'Lập Hạ',5],[5,21,'Tiểu Mãn',5],[6,6,'Mang Chủng',6],[6,21,'Hạ Chí',6],[7,7,'Tiểu Thử',7],[7,23,'Đại Thử',7],[8,8,'Lập Thu',8],[8,23,'Xử Thử',8],[9,8,'Bạch Lộ',9],[9,23,'Thu Phân',9],[10,8,'Hàn Lộ',10],[10,23,'Sương Giáng',10],[11,7,'Lập Đông',11],[11,22,'Tiểu Tuyết',11],[12,7,'Đại Tuyết',0],[12,22,'Đông Chí',0]];
+  // Find current tiết
+  let currentTiet='',kienIdx=0;
+  for(let i=TIET_DATES.length-1;i>=0;i--){
+    const [tm,td,name,k]=TIET_DATES[i];
+    if(m>tm||(m===tm&&d>=td)){currentTiet=name;kienIdx=k;break}
+  }
+  if(!currentTiet){currentTiet='Tiểu Hàn năm trước';kienIdx=1}
+  // Kiến tháng chỉ chuyển ở các "tiết" đứng đầu tháng (12 tiết chính), không đổi ở giữa tháng
+  // Map tiết đầu tháng → kiến chi index
+  const KIEN_BY_TIET={'Tiểu Hàn':1,'Lập Xuân':2,'Kinh Trập':3,'Thanh Minh':4,'Lập Hạ':5,'Mang Chủng':6,'Tiểu Thử':7,'Lập Thu':8,'Bạch Lộ':9,'Hàn Lộ':10,'Lập Đông':11,'Đại Tuyết':0};
+  // Find latest "tiết chính" before current date
+  let kienChi=1;
+  const tietChinh=['Tiểu Hàn','Lập Xuân','Kinh Trập','Thanh Minh','Lập Hạ','Mang Chủng','Tiểu Thử','Lập Thu','Bạch Lộ','Hàn Lộ','Lập Đông','Đại Tuyết'];
+  for(let i=TIET_DATES.length-1;i>=0;i--){
+    const [tm,td,name,k]=TIET_DATES[i];
+    if((m>tm||(m===tm&&d>=td)) && tietChinh.includes(name)){kienChi=KIEN_BY_TIET[name];break}
+  }
+  // Nếu chưa qua Tiểu Hàn năm nay (đầu tháng 1), kiến = Tý (năm trước)
+  if(m===1&&d<6)kienChi=0;
+
+  // 12 Trực: Trực Kiến ở chi ngày trùng với kiến tháng, từ đó cộng dồn
+  const chiDayIdx=(jd+1)%12;
+  const trucIdx=((chiDayIdx-kienChi)%12+12)%12;
   const truc=TRUC12[trucIdx];
 
   // 12 Giờ Hoàng Đạo
-  const chiDayIdx=(jd+1)%12;
+  // Pattern theo chi ngày, shift vị thần theo chi ngày
   const pat=GIO_HD_PAT[chiDayIdx%6];
+  // Công thức shift cho VITHAN12 (đã được kiểm chứng với data trang gốc):
+  // shift = (4 - 2*(chi%6) + 12) % 12
+  const vtShift=((4-2*(chiDayIdx%6))%12+12)%12;
   const giobl=[];
   for(let i=0;i<12;i++){
     const chi=CHI_AL[i];
-    const vt=VITHAN12[i];
+    const vt=VITHAN12[(vtShift+i)%12];
     const isHD=pat[i]==='1';
     const start=(i*2+23)%24,end=(i*2+1)%24;
     giobl.push({chi,vt,isHD,desc:VITHAN_DESC[vt]||'',hours:`${start}h-${end}h`,cat:VITHAN_CAT[vt]});
@@ -1366,15 +1396,22 @@ function xemNgay(today){
     </div>
   </div>`;
 
+  // Tiết Khí
+  html+=`<div class="verdict info" style="margin-top:12px"><div class="verdict-title">🌿 TIẾT KHÍ: ${currentTiet}</div>
+    Tháng kiến: <b>${CHI_AL[kienChi]}</b> · Chi ngày: <b>${chiN}</b></div>`;
+
   // Sao 28 Tú
   const tuCls=tu.cat==='Tốt'?'good':tu.cat==='Xấu'?'bad':'neutral';
-  html+=`<div class="verdict ${tuCls}" style="margin-top:12px"><div class="verdict-title">⭐ SAO 28 TÚ: ${tu.name}</div>
+  html+=`<div class="verdict ${tuCls}" style="margin-top:8px"><div class="verdict-title">⭐ SAO 28 TÚ: ${tu.name}</div>
     <b>Tướng tinh:</b> con ${tu.animal} · <b>Cấp độ:</b> ${tu.cat}<br>
     <small style="color:#aaa">Tra cứu chi tiết "nên làm/kiêng cữ" của sao này trên trang gốc Địa Lý Lạc Việt.</small></div>`;
 
   // Trực
-  html+=`<div class="verdict info" style="margin-top:8px"><div class="verdict-title">🎯 TRỰC: ${truc}</div>
-    <small>12 Trực: Kiến (động), Trừ (tẩy uế), Mãn (đủ đầy), Bình (cân bằng), Định (yên), Chấp (giữ), Phá (kỵ tạo dựng), Nguy (cẩn trọng), Thành (xong việc), Thâu (cất giữ), Khai (mở), Bế (đóng kín)</small></div>`;
+  const trucMeaning={'Kiến':'Khởi động, xuất hành (tốt)','Trừ':'Tẩy uế, chữa bệnh (tốt)','Mãn':'Đủ đầy, mua bán, gặt hái','Bình':'Cân bằng, sửa chữa','Định':'Yên định, an cư','Chấp':'Giữ, ký kết','Phá':'Đại kỵ tạo dựng (xấu)','Nguy':'Cẩn trọng (xấu)','Thành':'Xong việc, đại lợi','Thâu':'Cất giữ, gặt lúa','Khai':'Mở thông, khởi tạo (tốt)','Bế':'Đóng kín, xây tường'};
+  const trucCat=['Kiến','Trừ','Mãn','Định','Thành','Khai','Bình'].includes(truc);
+  html+=`<div class="verdict ${trucCat?'good':'bad'}" style="margin-top:8px"><div class="verdict-title">🎯 TRỰC: ${truc}</div>
+    ${trucMeaning[truc]||''}<br>
+    <small style="color:#aaa">12 Trực luân chuyển theo tiết khí. Trực Kiến tại chi ngày trùng kiến tháng (${CHI_AL[kienChi]}).</small></div>`;
 
   // 12 Hoàng Đạo
   html+='<h3 style="margin-top:14px;color:#ffd700">⏰ 12 GIỜ HOÀNG ĐẠO TRONG NGÀY</h3>';
