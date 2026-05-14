@@ -598,8 +598,12 @@
             <option value="12">Hợi (21h-23h)</option>
           </select>
         </div>
+        <div class="form-row">
+          <label>Ngày an táng dự kiến (DD/MM/YYYY) <span style="color:#888;font-size:11px">- tùy chọn, để tư vấn giờ hạ huyệt</span></label>
+          <input type="text" id="ttBurialDate" placeholder="vd: 23/03/2026" maxlength="10" oninput="formatDateInput(this)">
+        </div>
         <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
-          <button class="action" onclick="tinhTrungTang()">⚰️ TÍNH TRÙNG TANG</button>
+          <button class="action" onclick="tinhTrungTang()">⚰️ TÍNH TRÙNG TANG &amp; TƯ VẤN GIỜ</button>
         </div>
       </div>
       <div id="trungTangResult"></div>
@@ -3302,6 +3306,112 @@ function tinhTrungTang(){
     verdict=`Tất cả ${items.length} yếu tố rơi vào <b>Thiên Di</b> (Tý/Ngọ/Mão/Dậu) - không có Trùng Tang cũng không có Nhập Mộ. Đây là trường hợp <b>trung bình</b>: không phạm Trùng Tang, người mất "thiên di" (chuyển dời) bình thường. Gia đình lo hậu sự chu đáo theo lễ nghi là được.`;
   }
   html+=`<div class="verdict ${vcls}" style="margin-top:12px"><div class="verdict-title">${vtitle}</div>${verdict}</div>`;
+
+  // ===== TƯ VẤN GIỜ AN TÁNG =====
+  const burialDt=document.getElementById('ttBurialDate').value;
+  if(burialDt){
+    const bp=parseVNDate(burialDt);
+    if(!bp){
+      html+='<div class="verdict bad" style="margin-top:12px"><div class="verdict-title">⚠ Ngày an táng không hợp lệ</div>Định dạng đúng: DD/MM/YYYY</div>';
+    }else{
+      const bLunar=getLunar(bp.d,bp.m,bp.y);
+      const bjd=bLunar.jd;
+      const bChiDay=(bjd+1)%12;        // chi của ngày an táng
+      const bCanDay=CAN_AL[(bjd+9)%10];
+      // Chi tuổi người mất (xấp xỉ theo năm dương sinh)
+      const deceasedChi=((birthY+8)%12+12)%12;
+      // 28 Tú & Trực của ngày an táng (tái dùng scoreDay)
+      const sBurial=scoreDay(bp.d,bp.m,bp.y);
+      // Hoàng Đạo pattern
+      const pat=GIO_HD_PAT[bChiDay%6];
+      const vtShift=((4-2*(bChiDay%6))%12+12)%12;
+      const xungTuoiChi=(deceasedChi+6)%12;   // giờ xung tuổi người mất
+      const xungNgayChi=(bChiDay+6)%12;        // giờ xung ngày an táng
+      // Chạy lại trùng tang với GIỜ thay đổi để xem giờ nào cho Nhập Mộ
+      // (cung Giờ = từ cung Ngày của người mất, đếm tiếp theo giờ an táng)
+      const hourRows=[];
+      for(let i=0;i<12;i++){
+        const isHD=pat[i]==='1';
+        const vt=VITHAN12[(vtShift+i)%12];
+        const isVtCat=VITHAN_CAT[vt];
+        const xungTuoi=(i===xungTuoiChi);
+        const xungNgay=(i===xungNgayChi);
+        // Cung trùng tang nếu chọn giờ này (dựa trên cungNgay của người mất đã tính ở trên)
+        const cungGioTest=((cungNgay+(i+1-1)*dir)%12+120)%12;
+        const ttLoai=trungTangLoai(cungGioTest);
+        // Chấm điểm giờ an táng
+        let pt=0;
+        if(isHD)pt+=2; else pt-=1;
+        if(isVtCat)pt+=1;
+        if(xungTuoi)pt-=4;   // đại kỵ
+        if(xungNgay)pt-=2;
+        if(ttLoai.loai==='Nhập Mộ')pt+=2;
+        else if(ttLoai.loai==='Trùng Tang')pt-=2;
+        const start=(i*2+23)%24,end=(i*2+1)%24;
+        hourRows.push({i,chi:CHI_AL[i],isHD,vt,isVtCat,xungTuoi,xungNgay,ttLoai,pt,hours:`${start}h-${end}h`});
+      }
+      const ranked=[...hourRows].sort((a,b)=>b.pt-a.pt);
+      const best=ranked.filter(h=>h.pt>=3&&!h.xungTuoi);
+
+      html+='<h3 style="margin-top:16px;color:#ffd700">🕯️ TƯ VẤN GIỜ AN TÁNG (HẠ HUYỆT)</h3>';
+      html+=`<p style="font-size:12.5px;color:#ccc">Ngày an táng: <b style="color:#ffd700">${formatVNDate(bp.d,bp.m,bp.y)}</b> (ÂL ${bLunar.day}/${bLunar.month}/${bLunar.year}) · ${bCanDay} ${CHI_AL[bChiDay]} · Sao ${sBurial.tu.name} (${sBurial.tu.cat}) · Trực ${sBurial.truc}${sBurial.trucCat?'':' (hung)'}</p>`;
+      if(sBurial.tamNuong||sBurial.nguyetKy){
+        html+=`<div class="verdict bad" style="margin-top:6px"><div class="verdict-title">⚠ Ngày an táng phạm ${sBurial.tamNuong?'Tam Nương':''}${sBurial.tamNuong&&sBurial.nguyetKy?' + ':''}${sBurial.nguyetKy?'Nguyệt Kỵ':''}</div>Nên cân nhắc đổi ngày an táng nếu có thể. Nếu không đổi được, chọn giờ tốt nhất bên dưới để hóa giải bớt.</div>`;
+      }
+
+      // Bảng 12 giờ
+      html+='<div class="direction-grid" style="grid-template-columns:repeat(auto-fit,minmax(165px,1fr));margin-top:8px">';
+      hourRows.forEach(h=>{
+        let cls='hung',icon='🔴';
+        if(h.xungTuoi){cls='hung-dai';icon='⛔'}
+        else if(h.pt>=3){cls='cat-dai';icon='🟢'}
+        else if(h.pt>=1){cls='cat';icon='🟡'}
+        const flags=[];
+        if(h.isHD)flags.push('Hoàng Đạo');else flags.push('Hắc Đạo');
+        if(h.xungTuoi)flags.push('<b style="color:#ff5555">XUNG TUỔI NGƯỜI MẤT</b>');
+        if(h.xungNgay)flags.push('xung ngày');
+        html+=`<div class="dir-cell ${cls}">
+          <span class="dn">${icon} Giờ ${h.chi}</span>
+          <small>${h.hours}</small><br>
+          <b style="font-size:11px">${h.vt}</b><br>
+          <small style="font-size:10px;color:#888">${flags.join(' · ')}</small>
+          <hr style="border:none;border-top:1px dashed rgba(255,215,0,.3);margin:4px 0">
+          <small style="font-size:10px">Cung Giờ: <b>${CHI_AL[((cungNgay+h.i*dir)%12+120)%12]}</b> (${h.ttLoai.loai})</small>
+        </div>`;
+      });
+      html+='</div>';
+
+      // Đề xuất
+      if(best.length){
+        html+='<div class="verdict good" style="margin-top:10px"><div class="verdict-title">✓ GIỜ ĐỀ XUẤT HẠ HUYỆT</div>';
+        html+='Các giờ tốt nhất để hạ huyệt trong ngày này (Hoàng Đạo, không xung tuổi người mất):<br><br>';
+        best.slice(0,4).forEach((h,idx)=>{
+          html+=`<b>#${idx+1} · Giờ ${h.chi}</b> (${h.hours}) — ${h.vt}${h.vt&&VITHAN_DESC[h.vt]?' ('+VITHAN_DESC[h.vt]+')':''}${h.ttLoai.loai==='Nhập Mộ'?' · <span style="color:#4ade80">cung Giờ Nhập Mộ - rất tốt</span>':''}<br>`;
+        });
+        html+='</div>';
+      }else{
+        html+='<div class="verdict bad" style="margin-top:10px"><div class="verdict-title">⚠ Ngày này ít giờ đẹp</div>Không có giờ nào thực sự tốt (Hoàng Đạo + không xung tuổi). Nên cân nhắc <b>đổi ngày an táng</b>, hoặc chọn giờ ít xấu nhất trong bảng trên và làm lễ hóa giải kỹ.</div>';
+      }
+
+      // Giờ đại kỵ
+      const kyHours=hourRows.filter(h=>h.xungTuoi);
+      if(kyHours.length){
+        html+=`<div class="verdict bad" style="margin-top:8px"><div class="verdict-title">⛔ GIỜ ĐẠI KỴ - TUYỆT ĐỐI TRÁNH</div>
+          Giờ <b>${kyHours.map(h=>h.chi+' ('+h.hours+')').join(', ')}</b> — xung trực tiếp với tuổi người mất (${CHI_AL[deceasedChi]}). Kiêng hạ huyệt, di quan vào giờ này.</div>`;
+      }
+
+      html+=`<div style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:11.5px;color:#bbb;line-height:1.7">
+        <b style="color:#ffd700">Nguyên tắc chọn giờ an táng:</b><br>
+        • Ưu tiên <b>giờ Hoàng Đạo</b> + thần cát (Thanh Long, Minh Đường, Kim Quỹ, Bảo Quang, Ngọc Đường, Tư Mệnh).<br>
+        • <b>Tuyệt đối tránh giờ xung tuổi người mất</b> (Lục Xung với con giáp người đã khuất).<br>
+        • Nếu chọn được giờ mà <b>cung Giờ rơi Nhập Mộ</b> thì càng tốt - giúp hóa giải Trùng Tang.<br>
+        • Tránh giờ xung với chi ngày an táng.<br>
+        • Giờ hạ huyệt và giờ di quan (động quan) nên cùng tốt; nếu khác nhau, ưu tiên giờ <b>hạ huyệt</b>.
+      </div>`;
+    }
+  }else{
+    html+='<div style="margin-top:12px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:11.5px;color:#aaa">💡 Nhập <b>"Ngày an táng dự kiến"</b> ở trên rồi tính lại để được tư vấn <b>giờ hạ huyệt tốt nhất</b> trong ngày đó.</div>';
+  }
 
   // Ghi chú
   html+=`<div style="margin-top:12px;padding:10px 14px;background:rgba(255,193,7,.08);border-left:3px solid #ffc107;border-radius:4px;font-size:11.5px;color:#ccc;line-height:1.7">
