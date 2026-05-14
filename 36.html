@@ -15,7 +15,7 @@
   .info-panel{background:rgba(255,255,255,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:12px 16px;margin-bottom:12px;display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:10px;width:100%;max-width:800px;text-align:center}
   .info-label{font-size:10px;color:#aaa;text-transform:uppercase;letter-spacing:1px;margin-bottom:2px}
   .info-value{font-size:17px;font-weight:bold;color:#ffd700}
-  .compass-container{position:relative;width:100%;max-width:880px;aspect-ratio:1}
+  .compass-container{position:relative;width:100%;max-width:880px;aspect-ratio:1;transform-origin:center center;transition:width .15s ease,height .15s ease}
   .compass-svg{width:100%;height:100%;transition:transform .1s linear;filter:drop-shadow(0 6px 24px rgba(0,0,0,.5))}
   .pointer{position:absolute;top:50%;left:50%;width:4px;height:49%;background:linear-gradient(to top,transparent 0%,transparent 50%,#ff2222 50%,#ff2222 100%);transform-origin:bottom center;transform:translate(-50%,-100%);z-index:10;pointer-events:none}
   .pointer::before{content:'';position:absolute;top:-2px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:7px solid transparent;border-right:7px solid transparent;border-bottom:13px solid #ff2222}
@@ -44,7 +44,13 @@
   details p{font-size:11.5px;color:#ccc;padding:5px 0;line-height:1.55}
   .tang-list{font-size:11px;line-height:1.5;color:#ccc}
   .tang-list b{color:#ffd700}
-  .compass-wrap{position:relative;width:100%;overflow:auto;display:flex;justify-content:center}
+  .compass-wrap{position:relative;width:100%;max-height:88vh;overflow:auto;display:flex;justify-content:center;align-items:flex-start;cursor:grab;scrollbar-width:thin;scrollbar-color:#ffd700 rgba(255,255,255,.08);padding:8px}
+  .compass-wrap::-webkit-scrollbar{width:12px;height:12px}
+  .compass-wrap::-webkit-scrollbar-thumb{background:#ffd700;border-radius:6px;border:2px solid rgba(0,0,0,.4)}
+  .compass-wrap::-webkit-scrollbar-track{background:rgba(255,255,255,.05);border-radius:6px}
+  .compass-wrap.dragging{cursor:grabbing}
+  .compass-wrap.zoomed{justify-content:flex-start}
+  .zoom-info{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.7);color:#ffd700;padding:4px 10px;border-radius:6px;font-size:11px;z-index:20;pointer-events:none}
   @media(max-width:600px){h1{font-size:19px}.info-value{font-size:14px}}
 </style>
 </head>
@@ -62,8 +68,9 @@
         <div><div class="info-label">Nạp Âm</div><div class="info-value" id="napamDisp" style="font-size:13px">Hải Trung Kim</div></div>
       </div>
 
-      <div class="compass-wrap">
-        <div class="compass-container">
+      <div class="compass-wrap" id="compassWrap">
+        <div class="zoom-info" id="zoomInfo">100% — Cuộn để xem chi tiết · Kéo để di chuyển · Lăn chuột để zoom</div>
+        <div class="compass-container" id="compassContainer">
           <svg class="compass-svg" id="compassSvg" viewBox="0 0 1500 1500" xmlns="http://www.w3.org/2000/svg">
             <defs>
               <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
@@ -266,18 +273,18 @@ const xiu28=[
 // ===== 60 Hoa Giáp + Nạp Âm =====
 const heavenlyStems=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
 const earthlyBranches=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
-// LẠC THƯ HOA GIÁP - đổi chỗ Thủy ↔ Hỏa so với Lục Thập Hoa Giáp cổ Hán
+// LẠC THƯ HOA GIÁP - hoán đổi cặp tên Thủy/Hỏa theo sách "Luận Tuổi Lạc Việt"
 const napAm60=[
- 'Hải Trung Kim','Hải Trung Kim','Lư Trung Thủy','Lư Trung Thủy','Đại Lâm Mộc','Đại Lâm Mộc',
- 'Lộ Bàng Thổ','Lộ Bàng Thổ','Kiếm Phong Kim','Kiếm Phong Kim','Sơn Đầu Thủy','Sơn Đầu Thủy',
- 'Giản Hạ Hỏa','Giản Hạ Hỏa','Thành Đầu Thổ','Thành Đầu Thổ','Bạch Lạp Kim','Bạch Lạp Kim',
- 'Dương Liễu Mộc','Dương Liễu Mộc','Tuyền Trung Hỏa','Tuyền Trung Hỏa','Ốc Thượng Thổ','Ốc Thượng Thổ',
- 'Tích Lịch Thủy','Tích Lịch Thủy','Tùng Bách Mộc','Tùng Bách Mộc','Trường Lưu Hỏa','Trường Lưu Hỏa',
- 'Sa Trung Kim','Sa Trung Kim','Sơn Hạ Thủy','Sơn Hạ Thủy','Bình Địa Mộc','Bình Địa Mộc',
- 'Bích Thượng Thổ','Bích Thượng Thổ','Kim Bạc Kim','Kim Bạc Kim','Phú Đăng Thủy','Phú Đăng Thủy',
- 'Thiên Hà Hỏa','Thiên Hà Hỏa','Đại Trạch Thổ','Đại Trạch Thổ','Thoa Xuyến Kim','Thoa Xuyến Kim',
- 'Tang Đố Mộc','Tang Đố Mộc','Đại Khê Hỏa','Đại Khê Hỏa','Sa Trung Thổ','Sa Trung Thổ',
- 'Thiên Thượng Thủy','Thiên Thượng Thủy','Thạch Lựu Mộc','Thạch Lựu Mộc','Đại Hải Hỏa','Đại Hải Hỏa'
+ 'Hải Trung Kim','Hải Trung Kim','Giáng Hạ Thủy','Giáng Hạ Thủy','Đại Lâm Mộc','Đại Lâm Mộc',
+ 'Lộ Bàng Thổ','Lộ Bàng Thổ','Kiếm Phong Kim','Kiếm Phong Kim','Tuyền Trung Thủy','Tuyền Trung Thủy',
+ 'Lư Trung Hỏa','Lư Trung Hỏa','Thành Đầu Thổ','Thành Đầu Thổ','Bạch Lạp Kim','Bạch Lạp Kim',
+ 'Dương Liễu Mộc','Dương Liễu Mộc','Sơn Đầu Hỏa','Sơn Đầu Hỏa','Ốc Thượng Thổ','Ốc Thượng Thổ',
+ 'Trường Lưu Thủy','Trường Lưu Thủy','Tùng Bách Mộc','Tùng Bách Mộc','Tích Lịch Hỏa','Tích Lịch Hỏa',
+ 'Sa Trung Kim','Sa Trung Kim','Thiên Hà Thủy','Thiên Hà Thủy','Bình Địa Mộc','Bình Địa Mộc',
+ 'Bích Thượng Thổ','Bích Thượng Thổ','Kim Bạc Kim','Kim Bạc Kim','Đại Khê Thủy','Đại Khê Thủy',
+ 'Sơn Hạ Hỏa','Sơn Hạ Hỏa','Đại Trạch Thổ','Đại Trạch Thổ','Thoa Xuyến Kim','Thoa Xuyến Kim',
+ 'Tang Đố Mộc','Tang Đố Mộc','Phú Đăng Hỏa','Phú Đăng Hỏa','Sa Trung Thổ','Sa Trung Thổ',
+ 'Đại Hải Thủy','Đại Hải Thủy','Thạch Lựu Mộc','Thạch Lựu Mộc','Thiên Thượng Hỏa','Thiên Thượng Hỏa'
 ];
 function hoaGiap(i){
   const s=heavenlyStems[i%10];
@@ -796,7 +803,7 @@ function getPhanKim(d){
 
 function update(h){
   curH=((h%360)+360)%360;
-  svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`;
+  svg.style.transform=`rotate(${-curH}deg)`;
   document.getElementById('degDisp').textContent=curH.toFixed(1)+'°';
   document.getElementById('dirDisp').textContent=dirName(curH);
   const sIdx=getSonIdx(curH);
@@ -867,11 +874,119 @@ function update(h){
   document.getElementById('manualValue').textContent=curH.toFixed(1)+'°';
 }
 
-// ===== Zoom =====
+// ===== Zoom với khả năng cuộn/kéo khi phóng to =====
 let zoom=1;
-document.getElementById('zoomIn').addEventListener('click',()=>{zoom=Math.min(zoom+0.25,3);svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`});
-document.getElementById('zoomOut').addEventListener('click',()=>{zoom=Math.max(zoom-0.25,0.5);svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`});
-document.getElementById('zoomReset').addEventListener('click',()=>{zoom=1;svg.style.transform=`rotate(${-curH}deg) scale(${zoom})`});
+const compassWrap=document.getElementById('compassWrap');
+const compassContainer=document.getElementById('compassContainer');
+const zoomInfoEl=document.getElementById('zoomInfo');
+const pointer=document.querySelector('.pointer');
+const centerDot=document.querySelector('.center-dot');
+
+function applyZoom(targetZoom,centerX,centerY){
+  // Lưu vị trí tâm trước khi zoom (để giữ tâm)
+  const prevScrollL=compassWrap.scrollLeft;
+  const prevScrollT=compassWrap.scrollTop;
+  const wrapRect=compassWrap.getBoundingClientRect();
+  // Tâm điểm zoom: mặc định giữa khung nhìn
+  const cx=centerX!==undefined?centerX:wrapRect.width/2;
+  const cy=centerY!==undefined?centerY:wrapRect.height/2;
+  const prevZoom=zoom;
+  zoom=Math.max(0.5,Math.min(5,targetZoom));
+  // Cập nhật kích thước container để wrap có thể scroll
+  const baseSize=Math.min(880,compassWrap.clientWidth-32);
+  const newSize=baseSize*zoom;
+  compassContainer.style.width=newSize+'px';
+  compassContainer.style.height=newSize+'px';
+  compassContainer.style.maxWidth='none';
+  // Pointer & centerDot scale theo
+  if(pointer)pointer.style.height=(newSize*0.49)+'px';
+  // Vẽ lại SVG (giữ rotate, scale chỉ là 1 vì container đã to lên)
+  svg.style.transform=`rotate(${-curH}deg)`;
+  // Điều chỉnh scroll để zoom tại tâm
+  if(prevZoom>0){
+    const ratio=zoom/prevZoom;
+    compassWrap.scrollLeft=(prevScrollL+cx)*ratio-cx;
+    compassWrap.scrollTop=(prevScrollT+cy)*ratio-cy;
+  }
+  // Hiển thị %
+  zoomInfoEl.textContent=`${Math.round(zoom*100)}% — ${zoom>1?'Kéo chuột hoặc cuộn để di chuyển · Lăn để zoom':'Phóng to để xem chi tiết · Lăn chuột để zoom'}`;
+  // Class báo trạng thái
+  if(zoom>1)compassWrap.classList.add('zoomed');else compassWrap.classList.remove('zoomed');
+}
+
+document.getElementById('zoomIn').addEventListener('click',()=>applyZoom(zoom+0.25));
+document.getElementById('zoomOut').addEventListener('click',()=>applyZoom(zoom-0.25));
+document.getElementById('zoomReset').addEventListener('click',()=>{
+  applyZoom(1);
+  compassWrap.scrollTo({left:(compassContainer.offsetWidth-compassWrap.clientWidth)/2,top:0,behavior:'smooth'});
+});
+
+// ===== Lăn chuột để zoom =====
+compassWrap.addEventListener('wheel',(e)=>{
+  if(!e.ctrlKey&&!e.metaKey){
+    // Lăn thường = cuộn (mặc định)
+    return;
+  }
+  e.preventDefault();
+  const rect=compassWrap.getBoundingClientRect();
+  const cx=e.clientX-rect.left;
+  const cy=e.clientY-rect.top;
+  const delta=e.deltaY<0?0.15:-0.15;
+  applyZoom(zoom+delta,cx,cy);
+},{passive:false});
+
+// ===== Kéo chuột để pan (khi đã zoom) =====
+let isDragging=false,startX=0,startY=0,startScrollL=0,startScrollT=0;
+compassWrap.addEventListener('mousedown',(e)=>{
+  if(zoom<=1)return;
+  // Bỏ qua click vào button hoặc link
+  if(e.target.closest('button,a,input'))return;
+  isDragging=true;
+  compassWrap.classList.add('dragging');
+  startX=e.clientX;startY=e.clientY;
+  startScrollL=compassWrap.scrollLeft;startScrollT=compassWrap.scrollTop;
+  e.preventDefault();
+});
+window.addEventListener('mousemove',(e)=>{
+  if(!isDragging)return;
+  compassWrap.scrollLeft=startScrollL-(e.clientX-startX);
+  compassWrap.scrollTop=startScrollT-(e.clientY-startY);
+});
+window.addEventListener('mouseup',()=>{
+  if(isDragging){isDragging=false;compassWrap.classList.remove('dragging')}
+});
+
+// ===== Cảm ứng touch =====
+let touchStartX=0,touchStartY=0,touchScrollL=0,touchScrollT=0,touchDist=0,touchZoomStart=1;
+compassWrap.addEventListener('touchstart',(e)=>{
+  if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    touchDist=Math.sqrt(dx*dx+dy*dy);
+    touchZoomStart=zoom;
+  }else if(e.touches.length===1&&zoom>1){
+    touchStartX=e.touches[0].clientX;touchStartY=e.touches[0].clientY;
+    touchScrollL=compassWrap.scrollLeft;touchScrollT=compassWrap.scrollTop;
+  }
+},{passive:true});
+compassWrap.addEventListener('touchmove',(e)=>{
+  if(e.touches.length===2){
+    const dx=e.touches[0].clientX-e.touches[1].clientX;
+    const dy=e.touches[0].clientY-e.touches[1].clientY;
+    const newDist=Math.sqrt(dx*dx+dy*dy);
+    if(touchDist>0){
+      const ratio=newDist/touchDist;
+      const rect=compassWrap.getBoundingClientRect();
+      const midX=(e.touches[0].clientX+e.touches[1].clientX)/2-rect.left;
+      const midY=(e.touches[0].clientY+e.touches[1].clientY)/2-rect.top;
+      applyZoom(touchZoomStart*ratio,midX,midY);
+    }
+    e.preventDefault();
+  }else if(e.touches.length===1&&zoom>1){
+    compassWrap.scrollLeft=touchScrollL-(e.touches[0].clientX-touchStartX);
+    compassWrap.scrollTop=touchScrollT-(e.touches[0].clientY-touchStartY);
+  }
+},{passive:false});
 
 // ===== Sensor =====
 let sensorActive=false;
