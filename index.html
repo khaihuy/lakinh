@@ -3189,7 +3189,8 @@ function tuViCuc(yearCanIdx,menhChi){
 
 // Place 14 chính tinh
 function placeChinhTinh(tv){
-  const tphu=(10-tv+12)%12;
+  // Thiên Phủ đối xứng Tử Vi qua trục Dần-Thân: tphu = (4 - tv) mod 12
+  const tphu=(4-tv+12)%12;
   const positions={};
   for(const star of TUVI_CHINH_TINH){
     const ref=star.bo==='TV'?tv:tphu;
@@ -3266,8 +3267,8 @@ function computeTuViChart(sD,sM,sY,hourIdx,gender){
   else if([8,0,4].includes(yearChiIdx)){htStart=2;ltStart=10}
   else if([5,9,1].includes(yearChiIdx)){htStart=3;ltStart=10}
   else if([11,3,7].includes(yearChiIdx)){htStart=9;ltStart=10}
-  phuTinh['Hỏa Tinh']=(htStart+hourIdx-1)%12;
-  phuTinh['Linh Tinh']=(ltStart+hourIdx-1)%12;
+  phuTinh['Hỏa Tinh']=(htStart+hourIdx-1)%12;          // Hỏa Tinh an thuận theo giờ
+  phuTinh['Linh Tinh']=((ltStart-(hourIdx-1))%12+120)%12; // Linh Tinh an nghịch theo giờ
   // Thiên Mã (chi năm tam hợp)
   if([2,6,10].includes(yearChiIdx))phuTinh['Thiên Mã']=8;
   else if([8,0,4].includes(yearChiIdx))phuTinh['Thiên Mã']=2;
@@ -3292,9 +3293,9 @@ function computeTuViChart(sD,sM,sY,hourIdx,gender){
   for(let i=0;i<12;i++){
     phuTinh[NIEN_TRI[i]]=(yearChiIdx+i)%12;
   }
-  // Thai phụ, Phong cáo (theo giờ)
-  phuTinh['Thai Phụ']=(2+hourIdx-1)%12; // start Mão thuận
-  phuTinh['Phong Cáo']=(10+hourIdx-1)%12;
+  // Thai Phụ: khởi Ngọ tại giờ Tý, đếm thuận. Phong Cáo: khởi Dần tại giờ Tý, đếm thuận.
+  phuTinh['Thai Phụ']=(6+hourIdx-1)%12;
+  phuTinh['Phong Cáo']=(2+hourIdx-1)%12;
   // Tam Thai, Bát Tọa (theo Tả Phụ Hữu Bật + ngày)
   phuTinh['Tam Thai']=(TA_PHU[month-1]+day-1)%12;
   phuTinh['Bát Tọa']=(HUU_BAT[month-1]-day+1+12*5)%12;
@@ -3303,33 +3304,32 @@ function computeTuViChart(sD,sM,sY,hourIdx,gender){
   const THIEN_QUAN={'Giáp':7,'Ất':4,'Bính':5,'Đinh':2,'Mậu':3,'Kỷ':9,'Canh':11,'Tân':9,'Nhâm':10,'Quý':6};
   const THIEN_PHUC={'Giáp':9,'Ất':8,'Bính':0,'Đinh':11,'Mậu':3,'Kỷ':2,'Canh':6,'Tân':5,'Nhâm':6,'Quý':5};
   const THIEN_TRU={'Giáp':5,'Ất':6,'Bính':0,'Đinh':5,'Mậu':6,'Kỷ':8,'Canh':2,'Tân':6,'Nhâm':9,'Quý':11};
-  const THIEN_TAI={'Giáp':0,'Ất':1,'Bính':2,'Đinh':3,'Mậu':5,'Kỷ':6,'Canh':8,'Tân':9,'Nhâm':11,'Quý':0};
-  const THIEN_THO={'Giáp':6,'Ất':7,'Bính':8,'Đinh':9,'Mậu':11,'Kỷ':0,'Canh':2,'Tân':3,'Nhâm':5,'Quý':6};
   phuTinh['Thiên Quan']=THIEN_QUAN[yearCan];
   phuTinh['Thiên Phúc']=THIEN_PHUC[yearCan];
   phuTinh['Thiên Trù']=THIEN_TRU[yearCan];
-  phuTinh['Thiên Tài']=THIEN_TAI[yearCan];
-  phuTinh['Thiên Thọ']=THIEN_THO[yearCan];
+  // Thiên Tài: từ cung Mệnh khởi Tý đếm thuận tới chi năm. Thiên Thọ: từ cung Thân khởi Tý đếm thuận tới chi năm.
+  phuTinh['Thiên Tài']=(menhChi+yearChiIdx)%12;
+  phuTinh['Thiên Thọ']=(thanChi+yearChiIdx)%12;
 
   // Phá Toái (theo chi năm % 3): Tỵ/Sửu/Dậu
   phuTinh['Phá Toái']=yearChiIdx%3===0?5:(yearChiIdx%3===1?1:9);
 
-  // Quan Sách (chi năm + 5)
-  phuTinh['Quan Sách']=(yearChiIdx+5)%12;
+  // Quan Sách (theo chi năm - 1 cung)
+  phuTinh['Quan Sách']=(yearChiIdx-1+12)%12;
 
-  // Cô Thần, Quả Tú (tam hợp chi năm)
-  if([2,6,10].includes(yearChiIdx)){phuTinh['Cô Thần']=11;phuTinh['Quả Tú']=7}
-  else if([8,0,4].includes(yearChiIdx)){phuTinh['Cô Thần']=5;phuTinh['Quả Tú']=1}
-  else if([5,9,1].includes(yearChiIdx)){phuTinh['Cô Thần']=2;phuTinh['Quả Tú']=10}
-  else if([11,3,7].includes(yearChiIdx)){phuTinh['Cô Thần']=8;phuTinh['Quả Tú']=4}
+  // Cô Thần, Quả Tú (theo mùa - nhóm chi liên tiếp của năm sinh)
+  if([2,3,4].includes(yearChiIdx)){phuTinh['Cô Thần']=5;phuTinh['Quả Tú']=1}      // Dần-Mão-Thìn
+  else if([5,6,7].includes(yearChiIdx)){phuTinh['Cô Thần']=8;phuTinh['Quả Tú']=4} // Tỵ-Ngọ-Mùi
+  else if([8,9,10].includes(yearChiIdx)){phuTinh['Cô Thần']=11;phuTinh['Quả Tú']=7} // Thân-Dậu-Tuất
+  else{phuTinh['Cô Thần']=2;phuTinh['Quả Tú']=10}                                  // Hợi-Tý-Sửu
 
-  // Thiên Hình (tháng ngược từ Dậu T1), Thiên Diêu (thuận từ Sửu T1)
-  phuTinh['Thiên Hình']=(9-month+1+60)%12;
+  // Thiên Hình (thuận từ Dậu tại tháng Giêng), Thiên Diêu (thuận từ Sửu tại tháng Giêng)
+  phuTinh['Thiên Hình']=(9+month-1)%12;
   phuTinh['Thiên Diêu']=(1+month-1)%12;
 
-  // Ân Quang (Văn Xương + ngày - 1), Thiên Quý (Văn Khúc + ngày - 2)
-  phuTinh['Ân Quang']=(VAN_XUONG[hourIdx-1]+day-2+60)%12;
-  phuTinh['Thiên Quý']=(VAN_KHUC[hourIdx-1]+day-3+60)%12;
+  // Ân Quang: từ Văn Xương đếm thuận tới ngày sinh rồi lùi 1. Thiên Quý: từ Văn Khúc đếm nghịch tới ngày sinh rồi tiến 1.
+  phuTinh['Ân Quang']=(VAN_XUONG[hourIdx-1]+day-2+120)%12;
+  phuTinh['Thiên Quý']=(VAN_KHUC[hourIdx-1]-day+2+120)%12;
 
   // ===== VÒNG BÁC SĨ (12 sao theo Lộc Tồn + hướng đại vận) =====
   const VONG_BAC_SI=['Bác Sĩ','Lực Sĩ','Thanh Long','Tiểu Hao','Tướng Quân','Tấu Thư','Phi Liêm','Hỉ Thần','Bệnh Phù','Đại Hao','Phục Binh','Quan Phủ'];
@@ -3337,7 +3337,7 @@ function computeTuViChart(sD,sM,sY,hourIdx,gender){
 
   // ===== VÒNG TRÀNG SINH (12 sao theo Cục + hướng đại vận) =====
   const VONG_TRANG_SINH=['Tràng Sinh','Mộc Dục','Quan Đới','Lâm Quan','Đế Vượng','Suy','Bệnh','Tử','Mộ','Tuyệt','Thai','Dưỡng'];
-  const TRANG_SINH_START={2:8,3:11,4:5,5:8,6:2}; // Thủy:Thân, Mộc:Hợi, Kim:Tỵ, Thổ:Thân, Hỏa:Dần
+  const TRANG_SINH_START={2:8,3:11,4:5,5:5,6:2}; // Thủy:Thân, Mộc:Hợi, Kim:Tỵ, Thổ:Tỵ (Lạc Việt - đồng Kim), Hỏa:Dần
   const tsStart=TRANG_SINH_START[cucInfo.cuc]||8;
 
   // ===== TUẦN & TRIỆT =====
