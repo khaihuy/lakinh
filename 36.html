@@ -427,7 +427,7 @@ son24.forEach((s,i)=>{
   const isSat=Object.values(batSat).flat().includes(s.name);
   const fill=isSat?'#ffd5d5':'#fff';
   H+=`<path d="${arc(a1,a2,R.t3_in,R.t3_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.6"/>`;
-  if(isSat)H+=txt(center,(R.t3_in+R.t3_out)/2,'煞',8,'#c8202a','bold');
+  if(isSat)H+=txt(center,(R.t3_in+R.t3_out)/2,'Sát',7,'#c8202a','bold');
 });
 
 // ===== T4: Bát Lộ Hoàng Tuyền =====
@@ -436,7 +436,7 @@ son24.forEach((s,i)=>{
   const isLo=batLo[s.name]!==undefined;
   const fill=isLo?'#ffe5cc':'#fff';
   H+=`<path d="${arc(a1,a2,R.t4_in,R.t4_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.6"/>`;
-  if(isLo)H+=txt(center,(R.t4_in+R.t4_out)/2,'路',9,'#aa5500','bold');
+  if(isLo)H+=txt(center,(R.t4_in+R.t4_out)/2,'Lộ',7,'#aa5500','bold');
 });
 
 // ===== T5: Cửu Tinh =====
@@ -504,7 +504,7 @@ for(let i=0;i<64;i++){
   const center=i*(360/64),a1=center-(360/128),a2=center+(360/128);
   H+=`<path d="${arc(a1,a2,R.t11_in,R.t11_out)}" fill="${i%2===0?'#f5efd9':'#e8dfc0'}" stroke="#2a2a2a" stroke-width="0.3"/>`;
   // Use unicode hexagram symbols or generic mark
-  H+=txt(center,(R.t11_in+R.t11_out)/2,'卦',7,'#444','normal');
+  H+=txt(center,(R.t11_in+R.t11_out)/2,'Q',6,'#444','normal');
 }
 
 // ===== T12: Nhân Bàn Trung Châm (+7.5°) =====
@@ -561,7 +561,7 @@ son24.forEach((s,i)=>{
   const isCat=tuCat.includes(s.name);
   const fill=isCat?'#ffeb99':'#fafafa';
   H+=`<path d="${arc(a1,a2,R.t17_in,R.t17_out)}" fill="${fill}" stroke="#2a2a2a" stroke-width="0.5"/>`;
-  if(isCat)H+=txt(center,(R.t17_in+R.t17_out)/2,'吉',10,'#b8860b','bold');
+  if(isCat)H+=txt(center,(R.t17_in+R.t17_out)/2,'Cát',8,'#b8860b','bold');
 });
 
 // ===== T18: Thiên Bàn Phùng Châm (-7.5°) =====

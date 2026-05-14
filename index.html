@@ -136,7 +136,27 @@
   .principle-list{font-size:12.5px;color:#ddd;line-height:1.7}
   .principle-list b{color:#ffd700}
   @media(max-width:600px){h1{font-size:22px}.direction-grid{grid-template-columns:repeat(2,1fr)}}
+  /* ===== PDF EXPORT STYLES ===== */
+  .pdf-export-btn{background:linear-gradient(135deg,#dc3545,#b02838)!important;color:#fff!important;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-size:13px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(220,53,69,.3);transition:all .2s}
+  .pdf-export-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(220,53,69,.5)}
+  .pdf-export-bar{display:flex;gap:8px;justify-content:flex-end;margin:10px 0;flex-wrap:wrap}
+  .pdf-loading{display:none;padding:20px;background:rgba(255,215,0,.1);color:#ffd700;text-align:center;border-radius:8px;margin:10px 0}
+  .pdf-loading.active{display:block}
+  /* PDF-friendly page styles */
+  .pdf-page{background:#fff;color:#222;padding:30px;border-radius:8px;margin:0 auto;max-width:800px;font-family:Arial,sans-serif}
+  .pdf-page h1,.pdf-page h2,.pdf-page h3,.pdf-page h4{color:#1a1a2e}
+  .pdf-page .pdf-header{text-align:center;border-bottom:3px double #c8202a;padding-bottom:14px;margin-bottom:18px}
+  .pdf-page .pdf-title{font-size:22px;font-weight:bold;color:#c8202a;margin-bottom:4px}
+  .pdf-page .pdf-subtitle{font-size:13px;color:#666}
+  .pdf-page .pdf-footer{margin-top:20px;border-top:1px solid #ccc;padding-top:10px;font-size:11px;color:#888;text-align:center}
+  @media print{
+    body{background:#fff;color:#000}
+    .tabs,.pdf-export-bar,nav,header,.action,.action.secondary,button:not(.tab){display:none!important}
+    .panel{display:block!important;page-break-before:always}
+    .panel:first-of-type{page-break-before:auto}
+  }
 </style>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -186,6 +206,9 @@
     </div>
 
     <div id="results"></div>
+    <div id="pdfBarLuanTuoi" class="pdf-export-bar" style="display:none">
+      <button class="pdf-export-btn" onclick="exportPDF('results','LuanTuoi','LUẬN TUỔI LẠC VIỆT - Báo Cáo Tổng Hợp')">📄 Xuất PDF lưu trữ / gửi khách</button>
+    </div>
   </div>
 
   <!-- ==================== TAB 2: HOA GIAP TABLE ==================== -->
@@ -300,6 +323,8 @@
       </div>
 
       <div id="dlResult"></div>
+      <!-- Hidden container that combines all results for PDF export -->
+      <div id="diaLyFullReport" style="display:none"></div>
 
       <h3 style="margin-top:18px;color:#ffd700">🏗️ PHÂN CUNG NHÀ - BÁT TRẠCH TRÊN MẶT BẰNG</h3>
       <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Hỗ trợ nhà <b>chữ nhật, hình thang (nở hậu/thắt hậu), chữ L, chữ T, và đa giác tùy chỉnh</b>. Cửa chính ở cạnh phía trên (mặt tiền).</p>
@@ -396,6 +421,9 @@
       </div>
 
       <div id="housePlanResult"></div>
+      <div id="pdfBarDiaLy" class="pdf-export-bar" style="display:none">
+        <button class="pdf-export-btn" onclick="exportPDF('diaLyFullReport','DiaLyNhaO','ĐỊA LÝ NHÀ Ở - Báo Cáo Phong Thủy')">📄 Xuất PDF Địa Lý + Phân Cung Nhà</button>
+      </div>
 
       <h3 style="margin-top:18px;color:#ffd700">📐 OVERLAY LÊN BẢN VẼ CÓ SẴN</h3>
       <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Tải ảnh mặt bằng nhà của bạn (JPG/PNG/PDF dạng ảnh) → công cụ sẽ phủ 8 cung Bát Trạch trong suốt lên trên. Sau khi tải, <b>nhấp chuột vào TÂM NHÀ</b> trên ảnh để định vị, rồi kéo thanh góc để khớp hướng chính xác.</p>
@@ -679,6 +707,9 @@
       </div>
 
       <div id="tuViResult"></div>
+      <div id="pdfBarTuVi" class="pdf-export-bar" style="display:none">
+        <button class="pdf-export-btn" onclick="exportPDF('tuViResult','TuVi','LÁ SỐ TỬ VI LẠC VIỆT - Báo Cáo Luận Giải')">📄 Xuất PDF Lá Số Tử Vi (lưu trữ / gửi khách)</button>
+      </div>
 
       <h3 style="margin-top:18px;color:#ffd700">📋 NGUYÊN TẮC LẠC VIỆT TRONG TỬ VI</h3>
       <div class="principle-list">
@@ -986,6 +1017,7 @@ function analyze(){
   html+='</div>';
 
   document.getElementById('results').innerHTML=html;
+  document.getElementById('pdfBarLuanTuoi').style.display='flex';
   document.getElementById('results').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
@@ -1794,6 +1826,10 @@ function dlAnalyze(){
 
   html+='</div>';
   document.getElementById('dlResult').innerHTML=html;
+  // Cập nhật báo cáo đầy đủ cho PDF export
+  const hpContent=document.getElementById('housePlanResult').innerHTML||'';
+  document.getElementById('diaLyFullReport').innerHTML=html+(hpContent?'<div style="margin-top:16px">'+hpContent+'</div>':'');
+  document.getElementById('pdfBarDiaLy').style.display='flex';
 }
 
 // ============== THƯỚC PHONG THỦY LẠC VIỆT (41cm chu kỳ) ==============
@@ -2766,6 +2802,12 @@ function drawHousePlan(){
   rec+='</div></div>';
 
   document.getElementById('housePlanResult').innerHTML=svg+rec;
+  // Combine dlResult + housePlanResult vào diaLyFullReport để xuất PDF
+  const dlContent=document.getElementById('dlResult').innerHTML||'';
+  document.getElementById('diaLyFullReport').innerHTML=
+    (dlContent?'<div style="margin-bottom:16px">'+dlContent+'</div>':'')
+    +svg+rec;
+  document.getElementById('pdfBarDiaLy').style.display='flex';
 }
 
 // ============== OVERLAY BÁT TRẠCH LÊN BẢN VẼ CÓ SẴN ==============
@@ -3865,6 +3907,96 @@ function tuViAnSao(){
   html+='</div>';
 
   document.getElementById('tuViResult').innerHTML=html;
+  document.getElementById('pdfBarTuVi').style.display='flex';
+}
+
+// ============== PDF EXPORT ==============
+function exportPDF(srcId,filenamePrefix,reportTitle){
+  const src=document.getElementById(srcId);
+  if(!src||!src.innerHTML.trim()){alert('Chưa có dữ liệu để xuất. Vui lòng chạy phân tích trước.');return}
+  // Build print-friendly HTML
+  const now=new Date();
+  const pad=n=>String(n).padStart(2,'0');
+  const dateStr=`${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()}`;
+  const timeStr=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
+  const filename=`${filenamePrefix}_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}.pdf`;
+  // Clone content, làm sáng background cho PDF
+  const container=document.createElement('div');
+  container.className='pdf-page';
+  container.style.cssText='background:#fff;color:#222;padding:24px;font-family:"Times New Roman",Arial,sans-serif;width:780px;line-height:1.5';
+  container.innerHTML=`
+    <div class="pdf-header" style="text-align:center;border-bottom:3px double #c8202a;padding-bottom:14px;margin-bottom:18px">
+      <div style="font-size:13px;color:#666;letter-spacing:2px">PHONG THỦY LẠC VIỆT</div>
+      <div class="pdf-title" style="font-size:22px;font-weight:bold;color:#c8202a;margin:6px 0">${reportTitle}</div>
+      <div class="pdf-subtitle" style="font-size:12px;color:#666">
+        Theo nguyên lý Lạc Việt - Thiên Sứ Nguyễn Vũ Tuấn Anh<br>
+        Ngày xuất báo cáo: ${dateStr} ${timeStr}
+      </div>
+    </div>
+    <div class="pdf-content">${src.innerHTML}</div>
+    <div class="pdf-footer" style="margin-top:22px;border-top:1px solid #ccc;padding-top:10px;font-size:11px;color:#888;text-align:center">
+      Báo cáo này được tạo từ <b>Tool Phong Thủy Lạc Việt</b> · Chỉ mang tính tham khảo · Cần kết hợp với chuyên gia để có kết luận đầy đủ.<br>
+      © ${now.getFullYear()} - Phong Thủy Lạc Việt theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức
+    </div>`;
+  // Đảm bảo text màu tối, background sáng cho PDF
+  container.querySelectorAll('*').forEach(el=>{
+    const cs=getComputedStyle(el);
+    const tag=el.tagName;
+    // Đảo màu chữ trắng/sáng sang tối nếu nền tối
+    if(cs.color){
+      const c=cs.color;
+      // Chữ trắng/vàng nhạt → đen
+      if(c==='rgb(255, 255, 255)'||c==='rgba(255, 255, 255, 1)'||c==='#fff')el.style.color='#000';
+    }
+    // Background đậm → sáng
+    const bg=cs.backgroundColor;
+    if(bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent'){
+      // Kiểm tra độ tối
+      const m=bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+      if(m){
+        const r=+m[1],g=+m[2],b=+m[3];
+        const lum=(r*299+g*587+b*114)/1000;
+        if(lum<128)el.style.background='#f5f5f5';
+      }
+    }
+  });
+  // Tạo container ẩn để render
+  const wrap=document.createElement('div');
+  wrap.style.cssText='position:fixed;left:-9999px;top:0;width:820px;background:#fff';
+  wrap.appendChild(container);
+  document.body.appendChild(wrap);
+
+  // Hiển thị loading
+  const loadingEl=document.createElement('div');
+  loadingEl.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.85);color:#ffd700;padding:24px 40px;border-radius:12px;font-size:16px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.6)';
+  loadingEl.innerHTML='📄 Đang tạo PDF, vui lòng chờ...';
+  document.body.appendChild(loadingEl);
+
+  const opt={
+    margin:[10,10,10,10],
+    filename:filename,
+    image:{type:'jpeg',quality:0.95},
+    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false},
+    jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},
+    pagebreak:{mode:['avoid-all','css','legacy']}
+  };
+
+  if(typeof html2pdf==='undefined'){
+    document.body.removeChild(loadingEl);
+    document.body.removeChild(wrap);
+    alert('Thư viện html2pdf chưa tải xong. Vui lòng kiểm tra kết nối mạng và thử lại sau vài giây.');
+    return;
+  }
+
+  html2pdf().from(container).set(opt).save().then(()=>{
+    document.body.removeChild(loadingEl);
+    document.body.removeChild(wrap);
+  }).catch(err=>{
+    console.error(err);
+    document.body.removeChild(loadingEl);
+    document.body.removeChild(wrap);
+    alert('Lỗi khi xuất PDF: '+err.message+'\n\nThử in (Ctrl+P) → Lưu thành PDF thay vì xuất trực tiếp.');
+  });
 }
 
 // ============== INIT ==============
