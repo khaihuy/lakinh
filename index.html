@@ -561,6 +561,48 @@
       </div>
       <div id="calContainer"></div>
       <p style="font-size:11.5px;color:#aaa;margin-top:6px">💡 Nhấp vào ngày bất kỳ trong lịch để xem chi tiết. Đánh giá dựa trên Sao 28 Tú + Trực 12 + Hoàng Đạo + Tam Nương / Nguyệt Kỵ.</p>
+
+      <h3 style="margin-top:22px;color:#ffd700">⚰️ TÍNH TRÙNG TANG - NHẬP MỘ</h3>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Tính theo phương pháp "bấm đốt tay" dân gian: dựa vào <b>giới tính, tuổi mất, tháng - ngày - giờ mất (âm lịch)</b> để xét người mất có phạm Trùng Tang hay được Nhập Mộ. Nhập tngày mất theo Dương lịch, tool tự đổi sang Âm lịch.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Giới tính người mất</label>
+          <select id="ttGender">
+            <option value="nam">Nam</option>
+            <option value="nu">Nữ</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Năm sinh (Dương lịch)</label>
+          <input type="number" id="ttBirthYear" placeholder="VD: 1950" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Ngày mất (Dương lịch DD/MM/YYYY)</label>
+          <input type="text" id="ttDeathDate" placeholder="vd: 20/03/2026" maxlength="10" oninput="formatDateInput(this)">
+        </div>
+        <div class="form-row">
+          <label>Giờ mất</label>
+          <select id="ttHour">
+            <option value="0">-- Không rõ giờ --</option>
+            <option value="1">Tý (23h-1h)</option>
+            <option value="2">Sửu (1h-3h)</option>
+            <option value="3">Dần (3h-5h)</option>
+            <option value="4">Mão (5h-7h)</option>
+            <option value="5">Thìn (7h-9h)</option>
+            <option value="6">Tỵ (9h-11h)</option>
+            <option value="7">Ngọ (11h-13h)</option>
+            <option value="8">Mùi (13h-15h)</option>
+            <option value="9">Thân (15h-17h)</option>
+            <option value="10">Dậu (17h-19h)</option>
+            <option value="11">Tuất (19h-21h)</option>
+            <option value="12">Hợi (21h-23h)</option>
+          </select>
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="tinhTrungTang()">⚰️ TÍNH TRÙNG TANG</button>
+        </div>
+      </div>
+      <div id="trungTangResult"></div>
     </div>
   </div>
 
@@ -3137,6 +3179,144 @@ function selectCalDay(d,m,y){
   xemNgay();
   // Scroll to result
   document.getElementById('ngayResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ============== TÍNH TRÙNG TANG - NHẬP MỘ ==============
+// Phương pháp "bấm đốt tay" dân gian.
+// 12 cung khởi từ Dần. Nam đếm thuận từ Dần, Nữ đếm nghịch từ Thân.
+// Phân loại theo địa chi cung:
+//   Nhập Mộ   = Thìn, Tuất, Sửu, Mùi (tứ Mộ) → TỐT, "đã vào mộ yên ổn"
+//   Trùng Tang= Dần, Thân, Tỵ, Hợi (tứ Sinh) → XẤU, sợ trùng tang
+//   Thiên Di  = Tý, Ngọ, Mão, Dậu (tứ Vượng) → trung bình, "thiên di - kiếp sát"
+function trungTangLoai(chiIdx){
+  // chiIdx theo CHI_AL: Tý=0,Sửu=1,Dần=2,Mão=3,Thìn=4,Tỵ=5,Ngọ=6,Mùi=7,Thân=8,Dậu=9,Tuất=10,Hợi=11
+  if([4,10,1,7].includes(chiIdx))return{loai:'Nhập Mộ',cls:'good',icon:'🟢'};
+  if([2,8,5,11].includes(chiIdx))return{loai:'Trùng Tang',cls:'bad',icon:'🔴'};
+  return{loai:'Thiên Di',cls:'neutral',icon:'🟡'};
+}
+
+function tinhTrungTang(){
+  const gender=document.getElementById('ttGender').value;
+  const birthY=parseInt(document.getElementById('ttBirthYear').value);
+  const dt=document.getElementById('ttDeathDate').value;
+  const gioIdx=parseInt(document.getElementById('ttHour').value)||0;
+  if(!birthY){alert('Nhập năm sinh người mất');return}
+  if(!dt){alert('Nhập ngày mất theo định dạng DD/MM/YYYY');return}
+  const parsed=parseVNDate(dt);
+  if(!parsed){alert('Ngày mất không hợp lệ. Định dạng đúng: DD/MM/YYYY');return}
+
+  // Đổi sang âm lịch
+  const lunar=getLunar(parsed.d,parsed.m,parsed.y);
+  const thangAm=lunar.month,ngayAm=lunar.day,namAm=lunar.year;
+  // Tuổi mụ = năm mất (âm) - năm sinh + 1
+  const tuoiMu=namAm-birthY+1;
+  if(tuoiMu<1){alert('Năm sinh phải nhỏ hơn năm mất');return}
+
+  const thuan=gender==='nam'; // Nam thuận, Nữ nghịch
+  const dir=thuan?1:-1;
+  // Cung khởi: Nam = Dần (CHI_AL idx 2), Nữ = Thân (idx 8)
+  const khoi=thuan?2:8;
+
+  // ===== Tính cung NĂM (tuổi) =====
+  // offset = (floor(tuổi/10) - 1) + (tuổi % 10)  -- phương pháp bấm tay
+  const chuc=Math.floor(tuoiMu/10),donVi=tuoiMu%10;
+  const offsetNam=(chuc-1)+donVi;
+  const cungNam=((khoi+offsetNam*dir)%12+120)%12;
+  // ===== Tính cung THÁNG: từ cung Năm, đếm tiếp (tháng 1 = cung Năm) =====
+  const cungThang=((cungNam+(thangAm-1)*dir)%12+120)%12;
+  // ===== Tính cung NGÀY: từ cung Tháng, đếm tiếp (ngày 1 = cung Tháng) =====
+  const cungNgay=((cungThang+(ngayAm-1)*dir)%12+120)%12;
+  // ===== Tính cung GIỜ: từ cung Ngày, đếm tiếp (giờ Tý = cung Ngày) =====
+  let cungGio=null;
+  if(gioIdx>0)cungGio=((cungNgay+(gioIdx-1)*dir)%12+120)%12;
+
+  const items=[
+    {label:'NĂM (tuổi '+tuoiMu+')',chi:cungNam},
+    {label:'THÁNG ('+thangAm+' âm)',chi:cungThang},
+    {label:'NGÀY ('+ngayAm+' âm)',chi:cungNgay}
+  ];
+  if(cungGio!==null)items.push({label:'GIỜ ('+CHI_AL[gioIdx-1]+')',chi:cungGio});
+
+  // Đếm
+  let countMo=0,countTrung=0,countDi=0;
+  items.forEach(it=>{
+    const l=trungTangLoai(it.chi);
+    it.info=l;
+    if(l.loai==='Nhập Mộ')countMo++;
+    else if(l.loai==='Trùng Tang')countTrung++;
+    else countDi++;
+  });
+
+  // ===== Render =====
+  let html='<div class="card" style="margin-top:12px"><h2>⚰️ KẾT QUẢ TÍNH TRÙNG TANG</h2>';
+  html+=`<div class="lakinh-mini">
+    <div class="lk-card">
+      <div class="lk-title">THÔNG TIN NGƯỜI MẤT</div>
+      <div class="lk-row"><span>Giới tính:</span><span>${gender==='nam'?'Nam':'Nữ'}</span></div>
+      <div class="lk-row"><span>Năm sinh:</span><span>${birthY}</span></div>
+      <div class="lk-row"><span>Ngày mất (DL):</span><span>${formatVNDate(parsed.d,parsed.m,parsed.y)}</span></div>
+      <div class="lk-row"><span>Ngày mất (ÂL):</span><span>${ngayAm}/${thangAm}${lunar.leap?' (nhuận)':''}/${namAm}</span></div>
+      <div class="lk-row"><span>Tuổi mụ:</span><span><b>${tuoiMu}</b></span></div>
+      <div class="lk-row"><span>Giờ mất:</span><span>${gioIdx>0?CHI_AL[gioIdx-1]:'Không rõ'}</span></div>
+    </div>
+    <div class="lk-card">
+      <div class="lk-title">CÁCH BẤM CUNG</div>
+      <div class="lk-row"><span>Cung khởi:</span><span>${thuan?'Dần (Nam)':'Thân (Nữ)'}</span></div>
+      <div class="lk-row"><span>Chiều đếm:</span><span>${thuan?'Thuận':'Nghịch'}</span></div>
+      <div class="lk-row"><span>Nhập Mộ:</span><span style="color:#4ade80"><b>${countMo}</b></span></div>
+      <div class="lk-row"><span>Trùng Tang:</span><span style="color:#f87171"><b>${countTrung}</b></span></div>
+      <div class="lk-row"><span>Thiên Di:</span><span style="color:#fbbf24"><b>${countDi}</b></span></div>
+    </div>
+  </div>`;
+
+  // Bảng 4 yếu tố
+  html+='<div class="direction-grid" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-top:12px">';
+  items.forEach(it=>{
+    const cls=it.info.cls==='good'?'cat-dai':it.info.cls==='bad'?'hung-dai':'cat';
+    html+=`<div class="dir-cell ${cls}">
+      <span class="dn">${it.label}</span>
+      <b style="font-size:14px">${CHI_AL[it.chi]}</b><br>
+      <span style="font-size:13px">${it.info.icon} ${it.info.loai}</span>
+    </div>`;
+  });
+  html+='</div>';
+
+  // Kết luận
+  let verdict,vcls,vtitle;
+  if(countMo>0){
+    vcls='good';vtitle='✓ ĐƯỢC NHẬP MỘ - KHÔNG LO TRÙNG TANG';
+    verdict=`Có <b>${countMo}</b> yếu tố rơi vào <b>Nhập Mộ</b> (Thìn/Tuất/Sửu/Mùi). Theo phương pháp dân gian, chỉ cần <b>1 trong 4 yếu tố</b> (Năm-Tháng-Ngày-Giờ) gặp Nhập Mộ thì người mất được "an táng vào mộ yên ổn", <b>hóa giải</b> được Trùng Tang. Gia đình có thể an tâm.`;
+    if(countTrung>0)verdict+=`<br><br>Tuy vẫn có ${countTrung} yếu tố Trùng Tang, nhưng đã được Nhập Mộ giải. Nên làm lễ cầu siêu chu đáo cho trọn vẹn.`;
+  }else if(countTrung>0){
+    vcls='bad';vtitle='⚠ PHẠM TRÙNG TANG - CẦN HÓA GIẢI';
+    verdict=`Có <b>${countTrung}</b> yếu tố rơi vào <b>Trùng Tang</b> (Dần/Thân/Tỵ/Hợi) và <b>không có yếu tố Nhập Mộ nào</b> để hóa giải. Theo quan niệm dân gian, đây là trường hợp <b>phạm Trùng Tang</b> - lo ngại trong họ có thể có thêm tang sự.<br><br>
+    <b>Mức độ:</b> ${countTrung>=3?'Nặng (3-4 yếu tố)':countTrung===2?'Trung bình (2 yếu tố)':'Nhẹ (1 yếu tố)'}.<br><br>
+    <b>Cách hóa giải theo dân gian:</b><br>
+    • Mời thầy làm lễ <b>"trấn trùng" / "nhốt trùng"</b> tại chùa hoặc tại nhà.<br>
+    • Gửi vong lên chùa, dùng <b>bộ linh phù trấn trùng tang</b> đặt trong quan tài / mộ phần.<br>
+    • Chọn ngày giờ an táng kỹ, tránh thêm ngày xấu.<br>
+    • Dùng <b>bài vị + chú</b>, làm lễ 49 ngày, 100 ngày chu đáo.<br>
+    • Một số nơi dùng cách "yểm" bằng các vật phẩm theo chỉ dẫn của thầy.`;
+  }else{
+    vcls='neutral';vtitle='○ THIÊN DI - KHÔNG PHẠM TRÙNG TANG';
+    verdict=`Tất cả ${items.length} yếu tố rơi vào <b>Thiên Di</b> (Tý/Ngọ/Mão/Dậu) - không có Trùng Tang cũng không có Nhập Mộ. Đây là trường hợp <b>trung bình</b>: không phạm Trùng Tang, người mất "thiên di" (chuyển dời) bình thường. Gia đình lo hậu sự chu đáo theo lễ nghi là được.`;
+  }
+  html+=`<div class="verdict ${vcls}" style="margin-top:12px"><div class="verdict-title">${vtitle}</div>${verdict}</div>`;
+
+  // Ghi chú
+  html+=`<div style="margin-top:12px;padding:10px 14px;background:rgba(255,193,7,.08);border-left:3px solid #ffc107;border-radius:4px;font-size:11.5px;color:#ccc;line-height:1.7">
+    <b style="color:#ffc107">📚 GIẢI THÍCH:</b><br>
+    • <b>Trùng Tang</b> (重喪): quan niệm dân gian cho rằng người mất vào thời điểm xấu thì trong họ dễ có người mất theo. Đây là <b>tín ngưỡng dân gian</b>, không phải khoa học.<br>
+    • <b>12 cung phân loại:</b> Nhập Mộ = Thìn-Tuất-Sửu-Mùi (tứ Mộ, tốt); Trùng Tang = Dần-Thân-Tỵ-Hợi (tứ Sinh, xấu); Thiên Di = Tý-Ngọ-Mão-Dậu (tứ Vượng, trung bình).<br>
+    • <b>Cách tính:</b> Nam khởi cung Dần đếm thuận, Nữ khởi cung Thân đếm nghịch. Đếm Tuổi → Tháng → Ngày → Giờ (âm lịch), mỗi yếu tố dừng ở 1 cung.<br>
+    • <b>Nguyên tắc giải:</b> chỉ cần 1 trong 4 yếu tố gặp Nhập Mộ là hóa giải được Trùng Tang.<br>
+    • Có nhiều trường phái tính khác nhau (cách đếm tuổi, cách tính tháng...). Kết quả này theo phương pháp "bấm đốt tay" phổ biến nhất - nên tham khảo thêm thầy có kinh nghiệm.<br>
+    • <b>Lời khuyên:</b> Dù kết quả thế nào, điều quan trọng nhất là lo hậu sự chu đáo, sống có đức - <i>"Đức năng thắng số"</i>.
+  </div>`;
+
+  html+='</div>';
+  document.getElementById('trungTangResult').innerHTML=html;
+  document.getElementById('trungTangResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ============== TỬ VI LẠC VIỆT ==============
