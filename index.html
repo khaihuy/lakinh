@@ -156,7 +156,6 @@
     .panel:first-of-type{page-break-before:auto}
   }
 </style>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 </head>
 <body>
 <div class="container">
@@ -207,7 +206,7 @@
 
     <div id="results"></div>
     <div id="pdfBarLuanTuoi" class="pdf-export-bar" style="display:none">
-      <button class="pdf-export-btn" onclick="exportPDF('results','LuanTuoi','LUẬN TUỔI LẠC VIỆT - Báo Cáo Tổng Hợp')">📄 Xuất PDF lưu trữ / gửi khách</button>
+      <button class="pdf-export-btn" onclick="exportPDF('results','LuanTuoi','LUẬN TUỔI LẠC VIỆT - Báo Cáo Tổng Hợp')">🖨 In / Lưu PDF (lưu trữ - gửi khách)</button>
     </div>
   </div>
 
@@ -422,7 +421,7 @@
 
       <div id="housePlanResult"></div>
       <div id="pdfBarDiaLy" class="pdf-export-bar" style="display:none">
-        <button class="pdf-export-btn" onclick="exportPDF('diaLyFullReport','DiaLyNhaO','ĐỊA LÝ NHÀ Ở - Báo Cáo Phong Thủy')">📄 Xuất PDF Địa Lý + Phân Cung Nhà</button>
+        <button class="pdf-export-btn" onclick="exportPDF('diaLyFullReport','DiaLyNhaO','ĐỊA LÝ NHÀ Ở - Báo Cáo Phong Thủy')">🖨 In / Lưu PDF Địa Lý + Phân Cung Nhà</button>
       </div>
 
       <h3 style="margin-top:18px;color:#ffd700">📐 OVERLAY LÊN BẢN VẼ CÓ SẴN</h3>
@@ -708,7 +707,7 @@
 
       <div id="tuViResult"></div>
       <div id="pdfBarTuVi" class="pdf-export-bar" style="display:none">
-        <button class="pdf-export-btn" onclick="exportPDF('tuViResult','TuVi','LÁ SỐ TỬ VI LẠC VIỆT - Báo Cáo Luận Giải')">📄 Xuất PDF Lá Số Tử Vi (lưu trữ / gửi khách)</button>
+        <button class="pdf-export-btn" onclick="exportPDF('tuViResult','TuVi','LÁ SỐ TỬ VI LẠC VIỆT - Báo Cáo Luận Giải')">🖨 In / Lưu PDF Lá Số Tử Vi (lưu trữ - gửi khách)</button>
       </div>
 
       <h3 style="margin-top:18px;color:#ffd700">📋 NGUYÊN TẮC LẠC VIỆT TRONG TỬ VI</h3>
@@ -3910,93 +3909,188 @@ function tuViAnSao(){
   document.getElementById('pdfBarTuVi').style.display='flex';
 }
 
-// ============== PDF EXPORT ==============
+// ============== PDF EXPORT (via Native Print-to-PDF) ==============
+// Mở cửa sổ mới với nội dung đã được làm sạch (chữ đen trên nền trắng),
+// tự động kích hoạt hộp thoại In của trình duyệt → người dùng chọn "Save as PDF".
+// Cách này cho PDF có chữ thật (selectable), Vietnamese hiển thị đúng, không lỗi blank pages.
 function exportPDF(srcId,filenamePrefix,reportTitle){
   const src=document.getElementById(srcId);
   if(!src||!src.innerHTML.trim()){alert('Chưa có dữ liệu để xuất. Vui lòng chạy phân tích trước.');return}
-  // Build print-friendly HTML
   const now=new Date();
   const pad=n=>String(n).padStart(2,'0');
   const dateStr=`${pad(now.getDate())}/${pad(now.getMonth()+1)}/${now.getFullYear()}`;
   const timeStr=`${pad(now.getHours())}:${pad(now.getMinutes())}`;
-  const filename=`${filenamePrefix}_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}.pdf`;
-  // Clone content, làm sáng background cho PDF
-  const container=document.createElement('div');
-  container.className='pdf-page';
-  container.style.cssText='background:#fff;color:#222;padding:24px;font-family:"Times New Roman",Arial,sans-serif;width:780px;line-height:1.5';
-  container.innerHTML=`
-    <div class="pdf-header" style="text-align:center;border-bottom:3px double #c8202a;padding-bottom:14px;margin-bottom:18px">
-      <div style="font-size:13px;color:#666;letter-spacing:2px">PHONG THỦY LẠC VIỆT</div>
-      <div class="pdf-title" style="font-size:22px;font-weight:bold;color:#c8202a;margin:6px 0">${reportTitle}</div>
-      <div class="pdf-subtitle" style="font-size:12px;color:#666">
-        Theo nguyên lý Lạc Việt - Thiên Sứ Nguyễn Vũ Tuấn Anh<br>
-        Ngày xuất báo cáo: ${dateStr} ${timeStr}
-      </div>
-    </div>
-    <div class="pdf-content">${src.innerHTML}</div>
-    <div class="pdf-footer" style="margin-top:22px;border-top:1px solid #ccc;padding-top:10px;font-size:11px;color:#888;text-align:center">
-      Báo cáo này được tạo từ <b>Tool Phong Thủy Lạc Việt</b> · Chỉ mang tính tham khảo · Cần kết hợp với chuyên gia để có kết luận đầy đủ.<br>
-      © ${now.getFullYear()} - Phong Thủy Lạc Việt theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức
-    </div>`;
-  // Đảm bảo text màu tối, background sáng cho PDF
-  container.querySelectorAll('*').forEach(el=>{
-    const cs=getComputedStyle(el);
-    const tag=el.tagName;
-    // Đảo màu chữ trắng/sáng sang tối nếu nền tối
-    if(cs.color){
-      const c=cs.color;
-      // Chữ trắng/vàng nhạt → đen
-      if(c==='rgb(255, 255, 255)'||c==='rgba(255, 255, 255, 1)'||c==='#fff')el.style.color='#000';
-    }
-    // Background đậm → sáng
-    const bg=cs.backgroundColor;
-    if(bg&&bg!=='rgba(0, 0, 0, 0)'&&bg!=='transparent'){
-      // Kiểm tra độ tối
-      const m=bg.match(/rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-      if(m){
-        const r=+m[1],g=+m[2],b=+m[3];
-        const lum=(r*299+g*587+b*114)/1000;
-        if(lum<128)el.style.background='#f5f5f5';
+  const filename=`${filenamePrefix}_${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}_${pad(now.getHours())}${pad(now.getMinutes())}`;
+
+  // Clone nội dung từ src
+  const cloned=src.cloneNode(true);
+
+  // Xóa các badge tròn nhỏ và icon emoji không cần thiết khi in (tùy chọn)
+  // Thay style nền tối/chữ sáng → trắng đen sáng sủa
+  function lighten(el){
+    if(el.nodeType!==1)return;
+    // Xóa inline style cụ thể có khả năng gây tối
+    const st=el.style;
+    if(st){
+      // Background tối → nhạt
+      if(st.background||st.backgroundColor){
+        const bg=st.background||st.backgroundColor;
+        if(/rgba?\(\s*0\s*,\s*0\s*,\s*0/.test(bg)||/#000|#111|#222|#1a1a/i.test(bg)){
+          st.background='#f5f5f5';
+        }else if(/rgba\([^)]+,\s*0?\.\d/.test(bg)){
+          // rgba semi-transparent → giữ nhưng kiểm tra
+          st.background=bg.replace(/rgba\((\d+),\s*(\d+),\s*(\d+),[^)]+\)/,(m,r,g,b)=>{
+            const lum=(+r*299+ +g*587+ +b*114)/1000;
+            return lum<128?'#f0f0f0':`rgb(${r},${g},${b})`;
+          });
+        }
       }
+      // Chữ sáng → đen
+      if(st.color){
+        if(/#fff|#eee|#ddd|255,\s*255,\s*255/i.test(st.color))st.color='#222';
+      }
+      // Border màu vàng nhạt → giữ
     }
+    Array.from(el.children).forEach(lighten);
+  }
+  lighten(cloned);
+
+  // CSS in được tối ưu: chữ đen, nền trắng, page-break nicely
+  const printCSS=`
+    *{box-sizing:border-box}
+    html,body{margin:0;padding:0;background:#fff;color:#000;font-family:"Times New Roman",Georgia,serif;line-height:1.55;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+    body{padding:18px 24px;font-size:13px}
+    h1,h2,h3,h4{color:#000;page-break-after:avoid;margin:14px 0 8px}
+    h1{font-size:22px;color:#b91c1c}
+    h2{font-size:17px;color:#1a1a2e;border-bottom:2px solid #ccc;padding-bottom:4px}
+    h3{font-size:14px;color:#7a1d1d}
+    h4{font-size:13px}
+    p{margin:5px 0}
+    table{border-collapse:collapse;width:100%;margin:8px 0;font-size:12px}
+    table th,table td{border:1px solid #999;padding:4px 8px;text-align:left}
+    table th{background:#f0f0f0}
+    .card{background:#fafafa;border:1px solid #ddd;border-radius:6px;padding:10px 14px;margin:8px 0;page-break-inside:avoid}
+    .verdict{background:#fafafa;border-left:4px solid #999;padding:8px 12px;margin:8px 0;page-break-inside:avoid;border-radius:4px}
+    .verdict.good{border-left-color:#16a34a;background:#f0fdf4}
+    .verdict.bad{border-left-color:#dc2626;background:#fef2f2}
+    .verdict.info,.verdict.neutral{border-left-color:#0ea5e9;background:#f0f9ff}
+    .verdict-title{font-weight:bold;color:#1a1a2e;margin-bottom:5px;font-size:13.5px}
+    .person-card{background:#fafafa;border:1px solid #ddd;border-radius:6px;padding:10px;margin:6px 0;page-break-inside:avoid}
+    .who{font-weight:bold;color:#7a1d1d;margin-bottom:4px}
+    .info{display:grid;grid-template-columns:auto 1fr;gap:3px 10px;font-size:12px}
+    .info span:nth-child(odd){color:#666}
+    .info span:nth-child(even){color:#000;font-weight:bold}
+    .badge{display:inline-block;padding:1px 6px;border-radius:8px;font-size:10px;font-weight:bold;border:1px solid #999;background:#f0f0f0;color:#222}
+    .b-thuy{background:#cfe2ff;color:#0a3a8a;border-color:#9ac0ff}
+    .b-moc{background:#d4edda;color:#155724;border-color:#a3d9b1}
+    .b-hoa{background:#f8d7da;color:#721c24;border-color:#e9a4ac}
+    .b-tho{background:#fff3cd;color:#7a5b00;border-color:#f0d68c}
+    .b-kim{background:#e2e3e5;color:#333;border-color:#aaa}
+    .b-duong{background:#fff;color:#222;border-color:#999}
+    .b-am{background:#333;color:#fff;border-color:#000}
+    .lakinh-mini{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:8px 0}
+    .lk-card{background:#fafafa;border:1px solid #ddd;border-radius:6px;padding:8px 12px;font-size:12px;page-break-inside:avoid}
+    .lk-title{font-weight:bold;color:#7a1d1d;margin-bottom:4px;border-bottom:1px solid #ccc;padding-bottom:3px}
+    .lk-row{display:flex;justify-content:space-between;padding:2px 0;border-bottom:1px dotted #ddd;font-size:11.5px}
+    .direction-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:8px 0}
+    .dir-cell{padding:6px;border-radius:4px;border:1px solid #aaa;background:#fafafa;font-size:11px;text-align:center;page-break-inside:avoid}
+    .dir-cell.cat,.dir-cell.cat-dai{background:#dcfce7;border-color:#16a34a}
+    .dir-cell.hung,.dir-cell.hung-dai{background:#fee2e2;border-color:#dc2626}
+    .dn{display:block;font-weight:bold;font-size:11px;color:#1a1a2e;margin-bottom:2px}
+    svg{max-width:100%;height:auto;display:block;margin:6px auto;page-break-inside:avoid}
+    /* ===== Tử Vi chart (12 cung 4x4 grid) — bản in ===== */
+    .tuvi-chart{display:grid;grid-template-columns:repeat(4,1fr);grid-template-rows:repeat(4,1fr);gap:3px;background:#1a1a2e;border:2px solid #b8860b;border-radius:6px;padding:3px;margin:10px 0;aspect-ratio:1;page-break-inside:avoid;page-break-before:auto;width:100%}
+    .tuvi-cung{background:#fffef5;color:#1a1a1a;padding:18px 5px 18px 5px;border-radius:4px;font-size:9px;line-height:1.25;min-height:0;position:relative;overflow:hidden;border:1px solid #999}
+    .tuvi-cung.menh{background:#fff9c4;border:1.5px solid #b8860b}
+    .tuvi-cung.than{background:#dcedc8;border:1.5px solid #4d7c0f}
+    .tuvi-cung.than.menh{background:#fff9c4;border:1.5px solid #b8860b}
+    .tuvi-cung.tuan::before{content:'TUẦN';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(-25deg);font-size:34px;font-weight:900;color:rgba(13,71,161,.13);pointer-events:none;letter-spacing:3px;z-index:0}
+    .tuvi-cung.triet::after{content:'TRIỆT';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%) rotate(25deg);font-size:34px;font-weight:900;color:rgba(183,28,28,.13);pointer-events:none;letter-spacing:3px;z-index:0}
+    .tuvi-center{grid-column:2/4;grid-row:2/4;background:#fffef5;padding:10px;border-radius:5px;font-size:11px;line-height:1.6;color:#1a1a1a;display:flex;flex-direction:column;justify-content:center;border:1.5px solid #b8860b}
+    .tuvi-center b{color:#b91c1c}
+    .tv-c-head{position:absolute;top:2px;left:4px;right:4px;display:flex;justify-content:space-between;align-items:baseline;font-size:10px;border-bottom:1px solid rgba(200,32,42,.5);padding-bottom:2px;z-index:2}
+    .tv-c-name{color:#b91c1c;font-weight:bold;letter-spacing:.2px}
+    .tv-chi{color:#1565c0;font-size:9px;font-weight:bold}
+    .tv-stars{display:flex;flex-direction:column;gap:1px;font-size:9.5px;margin-top:2px;position:relative;z-index:2}
+    .tv-cs{color:#1a1a1a;font-weight:bold}
+    .tv-ps{color:#1565c0;font-size:9px;font-weight:500}
+    .tv-ts{color:#5d4037;font-size:8.5px}
+    .tv-hoa{font-weight:bold;padding:0 2px;border-radius:2px}
+    .tv-loc{color:#fff;background:#2e7d32}
+    .tv-quyen{color:#fff;background:#1565c0}
+    .tv-khoa{color:#fff;background:#6a1b9a}
+    .tv-ky{color:#fff;background:#c62828}
+    .tv-dv{position:absolute;bottom:2px;left:4px;font-size:8px;color:#666;z-index:2;font-weight:500}
+    .tv-dv.current{color:#fff;font-weight:bold;background:#b8860b;padding:1px 5px;border-radius:3px}
+    .tv-tt-mark{position:absolute;bottom:2px;right:4px;font-size:8px;font-weight:bold;z-index:3}
+    .tv-tt-mark .tn{color:#fff;background:#1565c0;padding:1px 4px;border-radius:3px}
+    .tv-tt-mark .tr{color:#fff;background:#c62828;padding:1px 4px;border-radius:3px;margin-left:2px}
+    /* Đại Vận grid */
+    .principle-list p{font-size:11.5px;margin:3px 0;padding-left:8px}
+    /* Header in PDF */
+    .pdf-header{text-align:center;border-bottom:3px double #b91c1c;padding-bottom:10px;margin-bottom:12px}
+    .pdf-brand{font-size:11px;color:#666;letter-spacing:2px}
+    .pdf-title{font-size:20px;font-weight:bold;color:#b91c1c;margin:4px 0}
+    .pdf-subtitle{font-size:11px;color:#666}
+    .pdf-footer{margin-top:16px;border-top:1px solid #ccc;padding-top:6px;font-size:10px;color:#666;text-align:center}
+    /* Print rules */
+    @page{size:A4 portrait;margin:14mm 14mm 14mm 14mm}
+    @media print{
+      .no-print{display:none!important}
+      .print-only{display:block!important}
+      body{padding:0}
+    }
+    @media screen{
+      body{max-width:780px;margin:0 auto;padding:20px;background:#f5f5f5}
+      .print-controls{position:fixed;top:10px;right:10px;display:flex;gap:8px;z-index:1000}
+      .print-controls button{background:#b91c1c;color:#fff;border:none;padding:10px 18px;font-size:13px;font-weight:bold;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.2)}
+      .print-controls button:hover{background:#991b1b}
+      .print-controls button.secondary{background:#374151}
+    }
+  `;
+
+  // HTML hoàn chỉnh cho cửa sổ mới
+  const htmlOutput=`<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>${reportTitle} - ${filename}</title>
+<style>${printCSS}</style>
+</head>
+<body>
+<div class="print-controls no-print">
+  <button onclick="window.print()">🖨 In / Lưu PDF</button>
+  <button class="secondary" onclick="window.close()">✕ Đóng</button>
+</div>
+<div class="pdf-header">
+  <div class="pdf-brand">PHONG THỦY LẠC VIỆT</div>
+  <div class="pdf-title">${reportTitle}</div>
+  <div class="pdf-subtitle">Theo nguyên lý Lạc Việt - Thiên Sứ Nguyễn Vũ Tuấn Anh<br>Ngày xuất báo cáo: ${dateStr} ${timeStr}</div>
+</div>
+<div class="pdf-content">${cloned.innerHTML}</div>
+<div class="pdf-footer">
+  Báo cáo này được tạo từ <b>Tool Phong Thủy Lạc Việt</b> · Chỉ mang tính tham khảo · Cần kết hợp với chuyên gia để có kết luận đầy đủ.<br>
+  © ${now.getFullYear()} - Phong Thủy Lạc Việt theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức
+</div>
+<script>
+  // Tự động mở hộp thoại in sau khi trang load xong
+  window.addEventListener('load',function(){
+    document.title=${JSON.stringify(filename)};
+    setTimeout(function(){window.print()},500);
   });
-  // Tạo container ẩn để render
-  const wrap=document.createElement('div');
-  wrap.style.cssText='position:fixed;left:-9999px;top:0;width:820px;background:#fff';
-  wrap.appendChild(container);
-  document.body.appendChild(wrap);
+<\/script>
+</body>
+</html>`;
 
-  // Hiển thị loading
-  const loadingEl=document.createElement('div');
-  loadingEl.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(0,0,0,.85);color:#ffd700;padding:24px 40px;border-radius:12px;font-size:16px;z-index:9999;box-shadow:0 4px 20px rgba(0,0,0,.6)';
-  loadingEl.innerHTML='📄 Đang tạo PDF, vui lòng chờ...';
-  document.body.appendChild(loadingEl);
-
-  const opt={
-    margin:[10,10,10,10],
-    filename:filename,
-    image:{type:'jpeg',quality:0.95},
-    html2canvas:{scale:2,useCORS:true,backgroundColor:'#ffffff',logging:false},
-    jsPDF:{unit:'mm',format:'a4',orientation:'portrait',compress:true},
-    pagebreak:{mode:['avoid-all','css','legacy']}
-  };
-
-  if(typeof html2pdf==='undefined'){
-    document.body.removeChild(loadingEl);
-    document.body.removeChild(wrap);
-    alert('Thư viện html2pdf chưa tải xong. Vui lòng kiểm tra kết nối mạng và thử lại sau vài giây.');
+  // Mở cửa sổ mới
+  const win=window.open('','_blank','width=900,height=1000');
+  if(!win){
+    alert('Trình duyệt đã chặn cửa sổ pop-up. Vui lòng cho phép pop-up cho trang này và thử lại.\n\nHoặc bạn có thể bấm Ctrl+P (Cmd+P trên Mac) để in trang hiện tại.');
     return;
   }
-
-  html2pdf().from(container).set(opt).save().then(()=>{
-    document.body.removeChild(loadingEl);
-    document.body.removeChild(wrap);
-  }).catch(err=>{
-    console.error(err);
-    document.body.removeChild(loadingEl);
-    document.body.removeChild(wrap);
-    alert('Lỗi khi xuất PDF: '+err.message+'\n\nThử in (Ctrl+P) → Lưu thành PDF thay vì xuất trực tiếp.');
-  });
+  win.document.open();
+  win.document.write(htmlOutput);
+  win.document.close();
 }
 
 // ============== INIT ==============
