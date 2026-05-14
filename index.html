@@ -557,9 +557,10 @@
         <span style="background:rgba(255,193,7,.12)">Trung bình</span>
         <span style="background:rgba(255,152,0,.18)">Hung nhẹ</span>
         <span style="background:rgba(231,76,60,.28)">Đại hung</span>
+        <span style="color:#c8202a;font-weight:bold">T.Nương / N.Kỵ = ngày kiêng kỵ dân gian</span>
       </div>
       <div id="calContainer"></div>
-      <p style="font-size:11.5px;color:#aaa;margin-top:6px">💡 Nhấp vào ngày bất kỳ trong lịch để xem chi tiết. Đánh giá dựa trên Sao 28 Tú + Trực 12 + Hoàng Đạo trong ngày.</p>
+      <p style="font-size:11.5px;color:#aaa;margin-top:6px">💡 Nhấp vào ngày bất kỳ trong lịch để xem chi tiết. Đánh giá dựa trên Sao 28 Tú + Trực 12 + Hoàng Đạo + Tam Nương / Nguyệt Kỵ.</p>
     </div>
   </div>
 
@@ -2061,6 +2062,21 @@ function formatVNDate(d,m,y){
   return`${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
 }
 
+// ===== Ngày Tam Nương & Nguyệt Kỵ (theo NGÀY ÂM LỊCH) =====
+// Tam Nương sát: mùng 3, 7, 13, 18, 22, 27 âm lịch
+// Nguyệt Kỵ: mùng 5, 14, 23 âm lịch ("mùng năm, mười bốn, hai ba")
+const TAM_NUONG_DAYS=[3,7,13,18,22,27];
+const NGUYET_KY_DAYS=[5,14,23];
+function checkTamNuongNguyetKy(lunarDay){
+  const r={tamNuong:false,nguyetKy:false,tamNuongOrder:0};
+  if(TAM_NUONG_DAYS.includes(lunarDay)){
+    r.tamNuong=true;
+    r.tamNuongOrder=TAM_NUONG_DAYS.indexOf(lunarDay)+1;
+  }
+  if(NGUYET_KY_DAYS.includes(lunarDay))r.nguyetKy=true;
+  return r;
+}
+
 function xemNgay(today){
   let d,m,y;
   if(today){
@@ -2182,6 +2198,26 @@ function xemNgay(today){
   html+=`<div class="verdict ${trucCat?'good':'bad'}" style="margin-top:8px"><div class="verdict-title">🎯 TRỰC: ${truc}</div>
     ${trucMeaning[truc]||''}<br>
     <small style="color:#aaa">12 Trực luân chuyển theo tiết khí. Trực Kiến tại chi ngày trùng kiến tháng (${CHI_AL[kienChi]}).</small></div>`;
+
+  // ===== Tam Nương & Nguyệt Kỵ =====
+  const tnnk=checkTamNuongNguyetKy(lunar.day);
+  if(tnnk.tamNuong||tnnk.nguyetKy){
+    html+='<div class="verdict bad" style="margin-top:8px"><div class="verdict-title">⚠ NGÀY KIÊNG KỴ DÂN GIAN</div>';
+    if(tnnk.tamNuong){
+      const tnNote=['Nương Nga Hoàng','Nương Nữ Anh','Nương Muội Hỉ','Nương Đát Kỷ','Nương Bao Tự','Nương Đắc Kỷ'][tnnk.tamNuongOrder-1]||'';
+      html+=`🔴 <b>NGÀY TAM NƯƠNG SÁT</b> (mùng ${lunar.day} âm lịch - ngày thứ ${tnnk.tamNuongOrder}/6)<br>
+        <small style="color:#ccc">Theo dân gian, Tam Nương sát rơi vào mùng <b>3, 7, 13, 18, 22, 27</b> âm lịch - kiêng làm việc trọng đại: cưới hỏi, khởi công xây nhà, khai trương, xuất hành xa, ký kết. Tục truyền liên quan ${tnNote}. <i>"Mùng 3, mùng 7 chớ đi; 13, 18 cũng thì chớ nên"</i>.</small><br>`;
+    }
+    if(tnnk.nguyetKy){
+      html+=`🔴 <b>NGÀY NGUYỆT KỴ</b> (mùng ${lunar.day} âm lịch)<br>
+        <small style="color:#ccc">Nguyệt Kỵ rơi vào mùng <b>5, 14, 23</b> âm lịch (cộng các chữ số đều bằng 5 - "ngày con nước"). <i>"Mùng năm, mười bốn, hai ba; đi chơi cũng thiệt nữa là đi buôn"</i>. Kiêng xuất hành, cưới hỏi, khai trương, động thổ, mua sắm lớn.</small><br>`;
+    }
+    html+='<small style="color:#aaa;display:block;margin-top:4px">💡 Đây là kiêng kỵ theo <b>tín ngưỡng dân gian</b>, không thuộc hệ thống 28 Tú - 12 Trực. Nếu bắt buộc phải làm việc vào ngày này, nên chọn giờ Hoàng Đạo tốt để hóa giải bớt.</small>';
+    html+='</div>';
+  }else{
+    html+=`<div class="verdict good" style="margin-top:8px"><div class="verdict-title">✓ KHÔNG PHẠM TAM NƯƠNG / NGUYỆT KỴ</div>
+      Ngày mùng ${lunar.day} âm lịch không thuộc Tam Nương sát (3,7,13,18,22,27) hay Nguyệt Kỵ (5,14,23).</div>`;
+  }
 
   // 12 Hoàng Đạo + Quẻ Lạc Việt Độn Toán
   html+='<h3 style="margin-top:14px;color:#ffd700">⏰ 12 GIỜ HOÀNG ĐẠO &amp; QUẺ LẠC VIỆT ĐỘN TOÁN</h3>';
@@ -3032,13 +3068,17 @@ function scoreDay(d,m,y){
   const pat=GIO_HD_PAT[chiDay%6];
   let catH=0;
   for(let i=0;i<12;i++)if(pat[i]==='1')catH++;
+  // Tam Nương & Nguyệt Kỵ
+  const tnnk=checkTamNuongNguyetKy(lunar.day);
   // Score
   let score=0;
   if(tu.cat==='Tốt')score+=2;
   else if(tu.cat==='Xấu')score-=2;
   score+=trucCat?1:-1;
   if(catH>=6)score+=0;else score-=1;
-  return{score,tu,truc,trucCat,jd,lunar,chiDay,catH};
+  if(tnnk.tamNuong)score-=2;
+  if(tnnk.nguyetKy)score-=2;
+  return{score,tu,truc,trucCat,jd,lunar,chiDay,catH,tamNuong:tnnk.tamNuong,nguyetKy:tnnk.nguyetKy};
 }
 
 function buildCalendar(y,m){
@@ -3059,11 +3099,17 @@ function buildCalendar(y,m){
     else cls='d-bad';
     const isToday=(d===today.getDate()&&m===today.getMonth()+1&&y===today.getFullYear());
     const canN=CAN_AL[(s.jd+9)%10],chiN=CHI_AL[(s.jd+1)%12];
-    const tip=`${canN} ${chiN} · Sao ${s.tu.name} (${s.tu.cat}) · Trực ${s.truc}${s.trucCat?' (cát)':' (hung)'} · ${s.catH}/12 giờ Hoàng Đạo`;
+    let kyMark='';
+    if(s.tamNuong&&s.nguyetKy)kyMark=' · ⚠ Tam Nương + Nguyệt Kỵ';
+    else if(s.tamNuong)kyMark=' · ⚠ Tam Nương sát';
+    else if(s.nguyetKy)kyMark=' · ⚠ Nguyệt Kỵ';
+    const tip=`${canN} ${chiN} · Sao ${s.tu.name} (${s.tu.cat}) · Trực ${s.truc}${s.trucCat?' (cát)':' (hung)'} · ${s.catH}/12 giờ Hoàng Đạo${kyMark}`;
+    const kyBadge=(s.tamNuong||s.nguyetKy)?`<div class="cal-ky" style="font-size:8px;color:#c8202a;font-weight:bold">${s.tamNuong&&s.nguyetKy?'TN+NK':s.tamNuong?'T.Nương':'N.Kỵ'}</div>`:'';
     html+=`<td class="${cls} ${isToday?'today':''}" onclick="selectCalDay(${d},${m},${y})" title="${tip}">
       <div class="cal-d">${d}</div>
       <div class="cal-l">${s.lunar.day}/${s.lunar.month}</div>
       <div class="cal-cc">${s.tu.name.substring(0,3)}</div>
+      ${kyBadge}
     </td>`;
     if((d+startDow)%7===0&&d<daysInMonth)html+='</tr><tr>';
   }
