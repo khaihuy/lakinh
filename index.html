@@ -710,6 +710,34 @@
         <button class="pdf-export-btn" onclick="exportPDF('tuViResult','TuVi','LÁ SỐ TỬ VI LẠC VIỆT - Báo Cáo Luận Giải')">🖨 In / Lưu PDF Lá Số Tử Vi (lưu trữ - gửi khách)</button>
       </div>
 
+      <h3 style="margin-top:22px;color:#ffd700">👶 CHỌN GIỜ SINH - SO SÁNH LÁ SỐ THEO NGÀY DỰ SINH</h3>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Dành cho gia đình chuẩn bị đón em bé (sinh mổ chủ động). Nhập ngày dự sinh → công cụ lập lá số Tử Vi cho từng <b>ngày × 12 giờ</b> trong khoảng thời gian, chấm điểm chất lượng để chọn giờ tốt nhất. Bấm vào ô để xem lá số chi tiết.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Ngày dự sinh (DD/MM/YYYY)</label>
+          <input type="text" id="cgsDate" placeholder="vd: 11/03/2026" maxlength="10" oninput="formatDateInput(this)">
+        </div>
+        <div class="form-row">
+          <label>Giới tính bé</label>
+          <select id="cgsGender">
+            <option value="nam">Nam (Trai)</option>
+            <option value="nu">Nữ (Gái)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Số ngày trước dự sinh</label>
+          <input type="number" id="cgsBefore" value="7" min="0" max="20" step="1">
+        </div>
+        <div class="form-row">
+          <label>Số ngày sau dự sinh</label>
+          <input type="number" id="cgsAfter" value="3" min="0" max="20" step="1">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="chonGioSinh()">🔍 LẬP BẢNG SO SÁNH</button>
+        </div>
+      </div>
+      <div id="cgsResult"></div>
+
       <h3 style="margin-top:18px;color:#ffd700">📋 NGUYÊN TẮC LẠC VIỆT TRONG TỬ VI</h3>
       <div class="principle-list">
         <p>🔸 <b>Bản Mệnh</b>: nạp âm Lạc Thư Hoa Giáp (đã đổi Thủy-Hỏa). Vd: Bính Tý cổ Hán "Giản Hạ Thủy" → Lạc Việt "Giản Hạ Hỏa".</p>
@@ -3186,16 +3214,7 @@ function daiVan(cuc,menhChi,gender,yearCan){
   return{vans,direction};
 }
 
-function tuViAnSao(){
-  const dt=document.getElementById('tvDate').value;
-  if(!dt){alert('Nhập ngày sinh theo định dạng DD/MM/YYYY');return}
-  const parsedTV=parseVNDate(dt);
-  if(!parsedTV){alert('Ngày sinh không hợp lệ. Định dạng đúng: DD/MM/YYYY (vd: 15/08/1990)');return}
-  const sY=parsedTV.y,sM=parsedTV.m,sD=parsedTV.d;
-  const hourIdx=parseInt(document.getElementById('tvHour').value);
-  const gender=document.getElementById('tvGender').value;
-  const name=document.getElementById('tvName').value.trim();
-
+function computeTuViChart(sD,sM,sY,hourIdx,gender){
   // Chuyển sang âm lịch
   const lunar=getLunar(sD,sM,sY);
   const month=lunar.month,day=lunar.day,lunarYear=lunar.year;
@@ -3373,6 +3392,83 @@ function tuViAnSao(){
     }
   }
 
+  return {sD,sM,sY,hourIdx,gender,lunar,month,day,lunarYear,yearCanIdx,yearChiIdx,yearCan,yearChi,yearSex,banMenh,banMenhEl,menhChi,thanChi,cucInfo,tvPos,stars,phuTinh,tuanPositions,trietPositions,tuHoa,dv,age,currentDV,cungs};
+}
+
+// ===== Chấm điểm chất lượng lá số (0-100) =====
+function scoreTuViChart(TV){
+  const luongTinh=['Tử Vi','Thiên Phủ','Thái Dương','Thái Âm','Thiên Đồng','Thiên Lương','Thiên Tướng','Thiên Cơ'];
+  const acTinh=['Phá Quân','Thất Sát','Liêm Trinh','Cự Môn','Tham Lang','Vũ Khúc'];
+  const catPhu=['Lộc Tồn','Thiên Mã','Tả Phụ','Hữu Bật','Văn Xương','Văn Khúc','Thiên Khôi','Thiên Việt','Hồng Loan','Thiên Hỉ','Ân Quang','Thiên Quý','Tam Thai','Bát Tọa','Long Trì','Phượng Các','Thiên Quan','Thiên Phúc'];
+  const hungPhu=['Kình Dương','Đà La','Địa Không','Địa Kiếp','Hỏa Tinh','Linh Tinh','Thiên Hình','Thiên Diêu','Cô Thần','Quả Tú','Phá Toái','Bạch Hổ','Tang Môn','Tuế Phá'];
+  let score=50;
+  const detail=[];
+  const menhCung=TV.cungs.find(c=>c.chi===TV.menhChi);
+  const thanCung=TV.cungs.find(c=>c.chi===TV.thanChi);
+  const taiBach=TV.cungs.find(c=>c.name==='Tài Bạch');
+  const quanLoc=TV.cungs.find(c=>c.name==='Quan Lộc');
+  const phucDuc=TV.cungs.find(c=>c.name==='Phúc Đức');
+  const thienDi=TV.cungs.find(c=>c.name==='Thiên Di');
+  function cungScore(cung,weight,label){
+    if(!cung)return;
+    let s=0;
+    for(const st of cung.stars){
+      if(luongTinh.includes(st))s+=2;
+      if(acTinh.includes(st))s-=1.2;
+    }
+    if(cung.stars.length===0)s-=1; // vô chính diệu
+    for(const ps of cung.phuTinh){
+      if(catPhu.includes(ps))s+=0.6;
+      if(hungPhu.includes(ps))s-=0.7;
+    }
+    // Tứ Hóa
+    for(const st of [...cung.stars,...cung.phuTinh]){
+      if(TV.tuHoa.Lộc===st)s+=2.5;
+      if(TV.tuHoa.Quyền===st)s+=2;
+      if(TV.tuHoa.Khoa===st)s+=1.5;
+      if(TV.tuHoa.Kỵ===st)s-=2.5;
+    }
+    // Tuần Triệt
+    if(TV.tuanPositions.includes(cung.chi))s-=2;
+    if(TV.trietPositions.includes(cung.chi))s-=2.5;
+    score+=s*weight;
+    detail.push({label,raw:s,weighted:+(s*weight).toFixed(1)});
+  }
+  cungScore(menhCung,3,'Mệnh');
+  cungScore(thanCung,1.5,'Thân');
+  cungScore(quanLoc,1.5,'Quan Lộc');
+  cungScore(taiBach,1.5,'Tài Bạch');
+  cungScore(phucDuc,1.2,'Phúc Đức');
+  cungScore(thienDi,1,'Thiên Di');
+  // Cách cục đặc biệt ở Mệnh
+  if(menhCung){
+    const ss=new Set(menhCung.stars);
+    if(ss.has('Tử Vi')&&ss.has('Thiên Phủ')){score+=5;detail.push({label:'Cách Tử Phủ',raw:5,weighted:5})}
+    if(ss.has('Thái Dương')&&ss.has('Thái Âm')){score+=3;detail.push({label:'Cách Nhật Nguyệt',raw:3,weighted:3})}
+    if(ss.has('Thất Sát')&&ss.has('Phá Quân')){score-=2;detail.push({label:'Cách Sát Phá',raw:-2,weighted:-2})}
+  }
+  score=Math.max(0,Math.min(100,Math.round(score)));
+  let rank,cls;
+  if(score>=78){rank='Rất Tốt';cls='good'}
+  else if(score>=64){rank='Tốt';cls='good'}
+  else if(score>=50){rank='Khá';cls='neutral'}
+  else if(score>=38){rank='Trung Bình';cls='neutral'}
+  else{rank='Yếu';cls='bad'}
+  return{score,rank,cls,detail};
+}
+
+function tuViAnSao(){
+  const dt=document.getElementById('tvDate').value;
+  if(!dt){alert('Nhập ngày sinh theo định dạng DD/MM/YYYY');return}
+  const parsedTV=parseVNDate(dt);
+  if(!parsedTV){alert('Ngày sinh không hợp lệ. Định dạng đúng: DD/MM/YYYY (vd: 15/08/1990)');return}
+  const sY=parsedTV.y,sM=parsedTV.m,sD=parsedTV.d;
+  const hourIdx=parseInt(document.getElementById('tvHour').value);
+  const gender=document.getElementById('tvGender').value;
+  const name=document.getElementById('tvName').value.trim();
+  const _TV=computeTuViChart(sD,sM,sY,hourIdx,gender);
+  const {lunar,month,day,lunarYear,yearCanIdx,yearChiIdx,yearCan,yearChi,yearSex,banMenh,banMenhEl,menhChi,thanChi,cucInfo,tvPos,stars,phuTinh,tuanPositions,trietPositions,tuHoa,dv,age,currentDV,cungs}=_TV;
+
   // Render
   let html='<div class="card"><h2>📜 LÁ SỐ TỬ VI'+(name?' - '+name.toUpperCase():'')+'</h2>';
 
@@ -3397,7 +3493,7 @@ function tuViAnSao(){
           <div style="text-align:center;font-size:14px;color:#c8202a;font-weight:bold;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #c8202a;padding-bottom:4px">${name?name.toUpperCase():'LÁ SỐ TỬ VI LẠC VIỆT'}</div>
           <div style="font-size:12px;color:#1a1a1a;line-height:1.7">
             ☀ Sinh: <b style="color:#1565c0">${sD}/${sM}/${sY}</b> (Dương) — <b style="color:#1565c0">${day}/${month}/${lunarYear}</b> (Âm)<br>
-            ⏰ Giờ: <b style="color:#1565c0">${CHI_AL[hourIdx-1]}</b> (${(hourIdx-1)*2+23 < 24 ? (hourIdx-1)*2+23 : (hourIdx-1)*2-1}h-${(hourIdx*2+1)%24}h)<br>
+            ⏰ Giờ: <b style="color:#1565c0">${CHI_AL[hourIdx-1]}</b> (${((hourIdx-1)*2+23)%24}h-${((hourIdx-1)*2+1)%24}h)<br>
             ⚥ Giới: <b>${gender==='nam'?'Nam':'Nữ'}</b><br>
             🐉 Năm: <b style="color:#c8202a">${yearCan} ${yearChi}</b><br>
             💎 Bản Mệnh: <b style="color:#c8202a">${banMenh}</b> (${banMenhEl})<br>
@@ -3736,15 +3832,15 @@ function tuViAnSao(){
 
     let warn='';
     if(isTuan)warn+='<br>⚠ <b style="color:#2196f3">TUẦN</b> - cung bị Tuần, nửa đầu đời (trước 30t) sự việc tại cung khó thành; hậu vận khả quan.';
-    if(isTriet)warn+='<br>⚠ <b style="color:#e74c3c">TRIỆT</b> - cung bị Triệt, có biến cố lớn về chủ đề cung (đặc biệt tuổi trẻ).';
-    if(kyAt)warn+='<br>⚠ <b style="color:#c62828">Hóa Kỵ tại cung</b> - chủ đề cung có trắc trở, vướng mắc.';
+    if(isTriet)warn+='<br>⚠ <b style="color:#e74c3c">TRIỆT</b> - cung bị Triệt, có biến cố lớn về phương diện cung này (đặc biệt tuổi trẻ).';
+    if(kyAt)warn+='<br>⚠ <b style="color:#c62828">Hóa Kỵ tại cung</b> - việc liên quan đến cung này gặp trắc trở, vướng mắc.';
     if(locAt&&kyAt)warn+='<br>💡 Lộc - Kỵ đồng cung: "Song Kỵ song Lộc" - lúc được lúc mất, biến động lớn.';
 
     // Tổng kết
     let verdict='';
-    if(cls==='good')verdict='<span style="color:#4ade80">✓ <b>Cát Cách</b>: chủ đề cung này thuận lợi, phát triển tốt.</span>';
-    else if(cls==='bad')verdict='<span style="color:#f87171">✗ <b>Cẩn Trọng</b>: chủ đề cung này gặp trở ngại, cần hóa giải hoặc tránh.</span>';
-    else verdict='<span style="color:#fbbf24">○ <b>Trung Tính</b>: chủ đề cung này bình thường, không nổi bật.</span>';
+    if(cls==='good')verdict='<span style="color:#4ade80">✓ <b>Cát Cách</b>: phương diện cung này thuận lợi, phát triển tốt.</span>';
+    else if(cls==='bad')verdict='<span style="color:#f87171">✗ <b>Cẩn Trọng</b>: phương diện cung này gặp trở ngại, cần hóa giải hoặc lưu ý.</span>';
+    else verdict='<span style="color:#fbbf24">○ <b>Bình Thường</b>: phương diện cung này ổn định, không nổi bật.</span>';
 
     return `<div class="verdict ${cls}" style="margin-top:8px"><div class="verdict-title">${title} tại cung ${cung.chiName}</div>
       <div style="font-size:13px;margin:6px 0">${note}</div>
@@ -3863,7 +3959,7 @@ function tuViAnSao(){
     <div style="margin-top:10px;padding:8px 12px;background:rgba(231,76,60,.08);border-left:3px solid #e74c3c;border-radius:4px">
       <b style="color:#e74c3c">⚠ TUẦN - TRIỆT:</b><br>
       Tuần đóng tại: <b>${tuanPositions.map(c=>CHI_AL[c]).join(', ')}</b> · Triệt đóng tại: <b>${trietPositions.map(c=>CHI_AL[c]).join(', ')}</b>.<br>
-      Cung nào dính Tuần/Triệt thì chủ đề cung đó dễ <b>"đầu voi đuôi chuột"</b>, đặc biệt nửa đầu cuộc đời. Hậu vận có thể tốt hơn nếu Triệt đứng sớm.
+      Cung nào dính Tuần/Triệt thì việc liên quan cung đó dễ <b>"đầu voi đuôi chuột"</b>, đặc biệt nửa đầu cuộc đời. Hậu vận có thể tốt hơn nếu Triệt đứng sớm.
     </div>
 
     <div style="margin-top:10px;padding:8px 12px;background:rgba(156,39,176,.08);border-left:3px solid #9c27b0;border-radius:4px">
@@ -3907,6 +4003,136 @@ function tuViAnSao(){
 
   document.getElementById('tuViResult').innerHTML=html;
   document.getElementById('pdfBarTuVi').style.display='flex';
+}
+
+// ============== CHỌN GIỜ SINH - SO SÁNH LÁ SỐ ==============
+const CGS_HOURS=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+const CGS_HOUR_RANGE=['23h-1h','1h-3h','3h-5h','5h-7h','7h-9h','9h-11h','11h-13h','13h-15h','15h-17h','17h-19h','19h-21h','21h-23h'];
+let cgsData=[]; // lưu kết quả để click xem chi tiết
+
+function chonGioSinh(){
+  const dt=document.getElementById('cgsDate').value;
+  if(!dt){alert('Nhập ngày dự sinh theo định dạng DD/MM/YYYY');return}
+  const parsed=parseVNDate(dt);
+  if(!parsed){alert('Ngày dự sinh không hợp lệ. Định dạng đúng: DD/MM/YYYY');return}
+  const gender=document.getElementById('cgsGender').value;
+  const before=Math.max(0,Math.min(20,parseInt(document.getElementById('cgsBefore').value)||7));
+  const after=Math.max(0,Math.min(20,parseInt(document.getElementById('cgsAfter').value)||3));
+
+  // Tạo danh sách ngày
+  const baseDate=new Date(parsed.y,parsed.m-1,parsed.d);
+  const dates=[];
+  for(let i=-before;i<=after;i++){
+    const d=new Date(baseDate);
+    d.setDate(d.getDate()+i);
+    dates.push({d:d.getDate(),m:d.getMonth()+1,y:d.getFullYear(),offset:i,dow:d.getDay()});
+  }
+
+  // Tính toàn bộ: dates × 12 giờ
+  cgsData=[];
+  let best={score:-1};
+  const cells=[]; // {dateIdx, hourIdx, score, rank, cls}
+  dates.forEach((dateObj,di)=>{
+    for(let h=1;h<=12;h++){
+      let chart,sc;
+      try{
+        chart=computeTuViChart(dateObj.d,dateObj.m,dateObj.y,h,gender);
+        sc=scoreTuViChart(chart);
+      }catch(e){
+        sc={score:0,rank:'Lỗi',cls:'bad',detail:[]};
+        chart=null;
+      }
+      const entry={di,h,dateObj,score:sc.score,rank:sc.rank,cls:sc.cls,chart,menhStars:chart?(chart.cungs.find(c=>c.chi===chart.menhChi)||{stars:[]}).stars:[]};
+      cgsData.push(entry);
+      cells.push(entry);
+      if(sc.score>best.score)best=entry;
+    }
+  });
+
+  // Màu theo điểm
+  function scoreColor(s){
+    if(s>=78)return{bg:'#1b5e20',fg:'#fff'};
+    if(s>=64)return{bg:'#66bb6a',fg:'#0a2e0a'};
+    if(s>=50)return{bg:'#fff59d',fg:'#5d4037'};
+    if(s>=38)return{bg:'#ffb74d',fg:'#5d2c00'};
+    return{bg:'#ef5350',fg:'#fff'};
+  }
+  const DOW=['CN','T2','T3','T4','T5','T6','T7'];
+
+  // Build bảng: hàng = 12 giờ, cột = ngày
+  let html='<div class="card" style="margin-top:12px"><h2>📊 BẢNG SO SÁNH LÁ SỐ THEO NGÀY × GIỜ</h2>';
+  html+=`<p style="font-size:12px;color:#ccc">Ngày dự sinh: <b style="color:#ffd700">${formatVNDate(parsed.d,parsed.m,parsed.y)}</b> · Giới tính: <b>${gender==='nam'?'Nam':'Nữ'}</b> · Quét ${dates.length} ngày × 12 giờ = ${dates.length*12} lá số</p>`;
+  html+='<div style="overflow-x:auto;margin-top:10px"><table style="border-collapse:collapse;font-size:11px;min-width:100%">';
+  // Header: ngày
+  html+='<tr><th style="position:sticky;left:0;background:#1a1a2e;color:#ffd700;padding:5px 8px;border:1px solid #444;z-index:2">Giờ \\ Ngày</th>';
+  dates.forEach((do_,di)=>{
+    const isBase=do_.offset===0;
+    html+=`<th style="padding:4px 5px;border:1px solid #444;background:${isBase?'#5a3a10':'#1a1a2e'};color:${isBase?'#ffd700':'#ccc'};min-width:46px;text-align:center;font-size:10px">
+      ${DOW[do_.dow]}<br><b>${String(do_.d).padStart(2,'0')}/${String(do_.m).padStart(2,'0')}</b>${isBase?'<br><span style="font-size:8px">dự sinh</span>':''}
+    </th>`;
+  });
+  html+='</tr>';
+  // Rows: 12 giờ
+  for(let h=1;h<=12;h++){
+    html+=`<tr><th style="position:sticky;left:0;background:#1a1a2e;color:#ffd700;padding:4px 8px;border:1px solid #444;text-align:left;z-index:1;white-space:nowrap">${CGS_HOURS[h-1]}<br><span style="font-size:8px;color:#888">${CGS_HOUR_RANGE[h-1]}</span></th>`;
+    dates.forEach((do_,di)=>{
+      const entry=cells.find(c=>c.di===di&&c.h===h);
+      const col=scoreColor(entry.score);
+      const isBest=entry===best;
+      html+=`<td onclick="cgsViewDetail(${di},${h})" title="${CGS_HOURS[h-1]} ${String(do_.d).padStart(2,'0')}/${String(do_.m).padStart(2,'0')} - ${entry.rank} (${entry.score}đ)${entry.menhStars.length?' - Mệnh: '+entry.menhStars.join(', '):' - Mệnh vô chính diệu'}"
+        style="padding:4px 3px;border:1px solid #444;background:${col.bg};color:${col.fg};text-align:center;cursor:pointer;font-weight:bold;${isBest?'outline:3px solid #ffd700;outline-offset:-3px':''}">
+        ${entry.score}${isBest?'<br>⭐':''}
+      </td>`;
+    });
+    html+='</tr>';
+  }
+  html+='</table></div>';
+
+  // Chú thích màu
+  html+=`<div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:10px;font-size:11px">
+    <span style="padding:3px 8px;background:#1b5e20;color:#fff;border-radius:4px">≥78: Rất Tốt</span>
+    <span style="padding:3px 8px;background:#66bb6a;color:#0a2e0a;border-radius:4px">64-77: Tốt</span>
+    <span style="padding:3px 8px;background:#fff59d;color:#5d4037;border-radius:4px">50-63: Khá</span>
+    <span style="padding:3px 8px;background:#ffb74d;color:#5d2c00;border-radius:4px">38-49: Trung Bình</span>
+    <span style="padding:3px 8px;background:#ef5350;color:#fff;border-radius:4px">&lt;38: Yếu</span>
+    <span style="padding:3px 8px;border:2px solid #ffd700;border-radius:4px;color:#ffd700">⭐ = Điểm cao nhất</span>
+  </div>`;
+
+  // Top 5 đề xuất
+  const sorted=[...cells].sort((a,b)=>b.score-a.score).slice(0,5);
+  html+='<h3 style="color:#ffd700;margin-top:16px">🏆 TOP 5 GIỜ SINH TỐT NHẤT</h3>';
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:6px">';
+  sorted.forEach((e,i)=>{
+    const col=scoreColor(e.score);
+    html+=`<div onclick="cgsViewDetail(${e.di},${e.h})" style="cursor:pointer;background:rgba(255,255,255,.04);border:1px solid ${col.bg};border-left:4px solid ${col.bg};border-radius:6px;padding:8px 10px">
+      <div style="font-size:12px"><b style="color:#ffd700">#${i+1}</b> · <b>${e.score}đ</b> - ${e.rank}</div>
+      <div style="font-size:12.5px;color:#fff;margin:3px 0"><b>Giờ ${CGS_HOURS[e.h-1]}</b> (${CGS_HOUR_RANGE[e.h-1]})</div>
+      <div style="font-size:11.5px;color:#ccc">Ngày ${String(e.dateObj.d).padStart(2,'0')}/${String(e.dateObj.m).padStart(2,'0')}/${e.dateObj.y}${e.dateObj.offset===0?' (dự sinh)':e.dateObj.offset>0?' (+'+e.dateObj.offset+'n)':' ('+e.dateObj.offset+'n)'}</div>
+      <div style="font-size:10.5px;color:#aaa;margin-top:3px">Mệnh: ${e.menhStars.length?e.menhStars.join(', '):'Vô chính diệu'}</div>
+      <div style="font-size:10px;color:#888;margin-top:2px">👆 Bấm để xem lá số chi tiết</div>
+    </div>`;
+  });
+  html+='</div>';
+
+  html+='<div id="cgsDetailView" style="margin-top:14px"></div>';
+  html+='</div>';
+
+  document.getElementById('cgsResult').innerHTML=html;
+  document.getElementById('cgsResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// Xem chi tiết lá số 1 ô → đổ vào form Tử Vi chính và lập lá số
+function cgsViewDetail(di,h){
+  const entry=cgsData.find(c=>c.di===di&&c.h===h);
+  if(!entry)return;
+  const gender=document.getElementById('cgsGender').value;
+  // Đổ vào form Tử Vi phía trên
+  document.getElementById('tvDate').value=formatVNDate(entry.dateObj.d,entry.dateObj.m,entry.dateObj.y);
+  document.getElementById('tvHour').value=h;
+  document.getElementById('tvGender').value=gender;
+  document.getElementById('tvName').value='Bé sinh '+formatVNDate(entry.dateObj.d,entry.dateObj.m,entry.dateObj.y)+' giờ '+CGS_HOURS[h-1];
+  tuViAnSao();
+  document.getElementById('tuViResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ============== PDF EXPORT (via Native Print-to-PDF) ==============
