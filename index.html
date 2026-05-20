@@ -135,7 +135,66 @@
   details p{font-size:12.5px;color:#ccc;padding:6px 0 6px 16px;line-height:1.6}
   .principle-list{font-size:12.5px;color:#ddd;line-height:1.7}
   .principle-list b{color:#ffd700}
-  @media(max-width:600px){h1{font-size:22px}.direction-grid{grid-template-columns:repeat(2,1fr)}}
+  /* ============ RESPONSIVE / THÂN THIỆN MOBILE ============ */
+  @media(max-width:768px){
+    body{padding:10px}
+    .container{max-width:100%}
+    h1{font-size:20px;letter-spacing:1px}
+    .subtitle{font-size:11px;line-height:1.4}
+    header{margin-bottom:12px}
+    /* Tabs: cuộn ngang 1 hàng, kiểu app mobile */
+    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:4px;padding-bottom:6px;margin-bottom:14px;position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#1a1a2e,#16213e);scrollbar-width:thin;scrollbar-color:rgba(255,215,0,.5) transparent}
+    .tabs::-webkit-scrollbar{height:4px}
+    .tabs::-webkit-scrollbar-thumb{background:rgba(255,215,0,.5);border-radius:2px}
+    .tab{padding:9px 14px;font-size:12px;white-space:nowrap;flex-shrink:0;letter-spacing:0;border-bottom-width:3px}
+    .card{padding:13px 14px;border-radius:10px}
+    .card h2{font-size:16px}
+    .card h3{font-size:14px}
+    /* Form 1 cột, input đủ to (font 16px chống iOS auto-zoom) */
+    .form-grid{grid-template-columns:1fr;gap:10px}
+    .form-row input,.form-row select{padding:11px 12px;font-size:16px}
+    /* Nút full-width dễ bấm */
+    button.action{width:100%;padding:13px;margin:5px 0;font-size:15px}
+    .child-item button.action,.zoom-controls button{width:auto}
+    .pdf-export-bar{flex-direction:column}
+    .pdf-export-btn{width:100%;justify-content:center;padding:12px}
+    /* Lưới xếp dọc */
+    .lakinh-mini{grid-template-columns:1fr;gap:10px}
+    .direction-grid{grid-template-columns:repeat(2,1fr);gap:6px}
+    .person-card .info{grid-template-columns:1fr 1fr}
+    /* Bảng cuộn ngang mượt */
+    .table-wrap{max-height:62vh;overflow:auto;-webkit-overflow-scrolling:touch}
+    table.hoa-giap{font-size:11px}
+    table.hoa-giap th,table.hoa-giap td{padding:5px 6px}
+    .filter-bar{flex-direction:column;align-items:stretch}
+    .filter-bar input,.filter-bar select{width:100%}
+    /* Lịch tháng gọn lại */
+    table.cal-table td{height:46px;padding:3px 2px}
+    .cal-d{font-size:14px}
+    .cal-l{font-size:9px}
+    .cal-cc{font-size:8px}
+    .cal-nav{gap:4px}
+    .cal-nav button{padding:7px 9px;font-size:11px;flex:1;min-width:0}
+    .cal-legend{font-size:10px;gap:5px}
+    /* Tử Vi chart */
+    .tuvi-chart{gap:2px;padding:2px}
+    /* Thước & các bảng dài */
+    .external-link{display:block;text-align:center;margin:6px 0}
+    details p{padding-left:10px}
+  }
+  @media(max-width:430px){
+    body{padding:8px}
+    h1{font-size:17px;letter-spacing:.5px}
+    .subtitle{font-size:10px}
+    .tab{font-size:11px;padding:8px 11px}
+    .card{padding:11px 11px}
+    .direction-grid{grid-template-columns:1fr 1fr;gap:5px}
+    .person-card .info{grid-template-columns:1fr}
+    table.cal-table td{height:42px}
+    .cal-d{font-size:13px}
+    .tuvi-cung{font-size:8px;padding:15px 3px}
+    .tuvi-center{font-size:10px;padding:7px}
+  }
   /* ===== PDF EXPORT STYLES ===== */
   .pdf-export-btn{background:linear-gradient(135deg,#dc3545,#b02838)!important;color:#fff!important;display:inline-flex;align-items:center;gap:6px;padding:8px 16px;font-size:13px;font-weight:bold;border:none;border-radius:6px;cursor:pointer;box-shadow:0 2px 8px rgba(220,53,69,.3);transition:all .2s}
   .pdf-export-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgba(220,53,69,.5)}
@@ -599,6 +658,10 @@
           </select>
         </div>
         <div class="form-row">
+          <label>Giờ mất chính xác (HH:MM) <span style="color:#888;font-size:11px">- tùy chọn, ưu tiên</span></label>
+          <input type="text" id="ttHourPrecise" placeholder="vd: 23:15" maxlength="5" oninput="formatHHMM(this)">
+        </div>
+        <div class="form-row">
           <label>Ngày an táng dự kiến (DD/MM/YYYY) <span style="color:#888;font-size:11px">- tùy chọn, để tư vấn giờ hạ huyệt</span></label>
           <input type="text" id="ttBurialDate" placeholder="vd: 23/03/2026" maxlength="10" oninput="formatDateInput(this)">
         </div>
@@ -741,6 +804,10 @@
           </select>
         </div>
         <div class="form-row">
+          <label>Giờ sinh chính xác (HH:MM) <span style="color:#888;font-size:11px">- tùy chọn, ưu tiên cao</span></label>
+          <input type="text" id="tvHourPrecise" placeholder="vd: 23:15 (tự hiệu chỉnh theo tháng)" maxlength="5" oninput="formatHHMM(this)">
+        </div>
+        <div class="form-row">
           <label>Giới tính</label>
           <select id="tvGender">
             <option value="nam">Nam</option>
@@ -751,6 +818,7 @@
           <button class="action" onclick="tuViAnSao()">🌟 LẬP LÁ SỐ</button>
         </div>
       </div>
+      <p style="font-size:11.5px;color:#aaa;margin-top:-6px">💡 Nếu nhập <b>HH:MM</b> chính xác, tool sẽ tự xác định Chi giờ theo <b>"giờ chuẩn theo tháng âm"</b> (Equation of Time + múi giờ VN). Quan trọng cho trường hợp sinh sát biên giờ (vd: 23:15 tháng 1 = giờ Hợi, không phải Tý).</p>
 
       <div id="tuViResult"></div>
       <div id="pdfBarTuVi" class="pdf-export-bar" style="display:none">
@@ -2089,6 +2157,74 @@ const VITHAN_DESC={
  'Câu Trận':'Có Tật Bệnh (xấu)'
 };
 
+// ===== 28 Tú: nên làm / kiêng cữ (tóm tắt) =====
+const TU28_DETAIL=[
+ {nen:'Cưới hỏi, xây dựng, may áo mới, khai trương',kieng:'An táng, đào huyệt'},          // Giốc - TB
+ {nen:'(ít việc tốt) cầu tài nhỏ',kieng:'Cưới hỏi, khai trương, xây dựng, mọi việc lớn'},   // Cang - Xấu
+ {nen:'(ít việc tốt)',kieng:'Cưới hỏi, xây dựng, an táng, ký kết'},                          // Đê - Xấu
+ {nen:'Cưới hỏi, làm nhà, an táng, khai trương, mọi việc',kieng:'(hầu như không kỵ)'},      // Phòng - Tốt
+ {nen:'Tế lễ, cầu phúc',kieng:'Kiện tụng, tang lễ, xây dựng, cưới hỏi'},                     // Tâm - Xấu
+ {nen:'Cưới hỏi, xây dựng, khai trương, an táng, mọi việc',kieng:'(ít kỵ)'},                 // Vỹ - Tốt
+ {nen:'Khai trương, làm ăn, đào giếng, xây dựng',kieng:'An táng'},                            // Cơ - Tốt
+ {nen:'Mọi việc, đào giếng, làm ruộng, khai trương',kieng:'(ít kỵ)'},                         // Đẩu - Tốt
+ {nen:'Cầu tài nhỏ',kieng:'Cưới hỏi, mọi việc lớn, xây dựng'},                                // Ngưu - Xấu
+ {nen:'May vá, học hành',kieng:'Tang lễ, kiện tụng, cưới hỏi, tranh chấp'},                   // Nữ - Xấu
+ {nen:'(ít việc tốt)',kieng:'Khai trương, cưới hỏi, xây dựng, mọi việc'},                     // Hư - Xấu
+ {nen:'Đắp đê, xây tường',kieng:'Lên cao, đi thuyền, an táng'},                               // Nguy - TB
+ {nen:'Cưới hỏi, xây dựng, khai trương, dọn nhà',kieng:'(ít kỵ)'},                            // Thất - Tốt
+ {nen:'Cưới hỏi, xây dựng, an táng, khai trương',kieng:'(ít kỵ)'},                            // Bích - Tốt
+ {nen:'Xây dựng, làm nhà, khai móng',kieng:'May áo, an táng'},                                // Khuê - TB
+ {nen:'Cưới hỏi, xây dựng, xuất hành, khai trương',kieng:'(ít kỵ)'},                          // Lâu - Tốt
+ {nen:'Mọi việc, khai trương, an táng, làm ruộng',kieng:'(ít kỵ)'},                           // Vị - Tốt
+ {nen:'Cầu tài',kieng:'Chôn cất, xây dựng, cưới hỏi, mở kho'},                                // Mão - Xấu
+ {nen:'Cưới hỏi, xây dựng, an táng, mọi việc',kieng:'(ít kỵ)'},                               // Tất - Tốt
+ {nen:'(ít việc tốt)',kieng:'Mọi việc, cưới hỏi, xây dựng, an táng'},                         // Chủy - Xấu
+ {nen:'Xây dựng, đi xa, làm ruộng',kieng:'Cưới hỏi, an táng'},                                // Sâm - TB
+ {nen:'Xây dựng, gieo trồng, cúng tế',kieng:'An táng, may áo'},                               // Tỉnh - TB
+ {nen:'An táng',kieng:'Cưới hỏi, khai trương, xây dựng, mọi việc'},                           // Quỷ - Xấu
+ {nen:'(ít việc tốt)',kieng:'Cưới hỏi, an táng, đi thuyền, xây dựng'},                        // Liễu - Xấu
+ {nen:'Làm nhà, cưới hỏi (vừa phải), nhập học',kieng:'An táng'},                              // Tinh - TB
+ {nen:'Cưới hỏi, khai trương, mọi việc, cầu tài',kieng:'(ít kỵ)'},                            // Trương - Tốt
+ {nen:'Gieo trồng',kieng:'Cưới hỏi, xây dựng, an táng, lên quan'},                            // Dực - Xấu
+ {nen:'Cưới hỏi, xây dựng, mua đất, xuất hành',kieng:'(ít kỵ)'}                               // Chẩn - Tốt
+];
+
+// ===== THẦN SÁT (cát/hung) theo tháng âm + can-chi ngày =====
+// Thiên Đức (theo tháng → giá trị can hoặc chi của ngày)
+const THIEN_DUC=[{t:'can',v:'Đinh'},{t:'chi',v:'Thân'},{t:'can',v:'Nhâm'},{t:'can',v:'Tân'},{t:'chi',v:'Hợi'},{t:'can',v:'Giáp'},{t:'can',v:'Quý'},{t:'chi',v:'Dần'},{t:'can',v:'Bính'},{t:'can',v:'Ất'},{t:'chi',v:'Tỵ'},{t:'can',v:'Canh'}];
+// Nguyệt Đức (theo tháng → can ngày)
+const NGUYET_DUC=['Bính','Giáp','Nhâm','Canh','Bính','Giáp','Nhâm','Canh','Bính','Giáp','Nhâm','Canh'];
+// Thiên Ân: 15 can-chi cố định (luôn cát)
+const THIEN_AN=['Giáp Tý','Ất Sửu','Bính Dần','Đinh Mão','Mậu Thìn','Kỷ Mão','Canh Thìn','Tân Tỵ','Nhâm Ngọ','Quý Mùi','Kỷ Dậu','Canh Tuất','Tân Hợi','Nhâm Tý','Quý Sửu'];
+// Thụ Tử (theo tháng → chi ngày, kiêng an táng/khởi sự)
+const THU_TU_CHI=['Tuất','Thìn','Hợi','Tỵ','Tý','Ngọ','Sửu','Mùi','Dần','Thân','Mão','Dậu'];
+// Dương Công Kỵ Nhật (ngày âm cố định mỗi tháng; tháng 7 có 2 ngày)
+const DUONG_CONG={1:[13],2:[11],3:[9],4:[7],5:[5],6:[3],7:[1,29],8:[27],9:[25],10:[23],11:[21],12:[19]};
+
+// Tính thần sát của 1 ngày → trả về {cat:[], hung:[], adj}
+function getThanSat(canDay,chiDay,lunarMonth,lunarDay){
+  // canDay, chiDay: tên (vd 'Giáp','Tý'). lunarMonth 1-12, lunarDay 1-30.
+  const cat=[],hung=[];let adj=0;
+  const mi=(lunarMonth-1+12)%12;
+  // Thiên Đức
+  const td=THIEN_DUC[mi];
+  if((td.t==='can'&&td.v===canDay)||(td.t==='chi'&&td.v===chiDay)){cat.push('Thiên Đức');adj+=2;}
+  // Nguyệt Đức
+  if(NGUYET_DUC[mi]===canDay){cat.push('Nguyệt Đức');adj+=2;}
+  // Thiên Ân
+  if(THIEN_AN.includes(canDay+' '+chiDay)){cat.push('Thiên Ân');adj+=1;}
+  // ===== Hung =====
+  // Nguyệt Phá: chi ngày xung chi tháng
+  const chiThangIdx=(lunarMonth+1)%12; // tháng 1=Dần(2)
+  const chiDayIdx=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'].indexOf(chiDay);
+  if(chiDayIdx===(chiThangIdx+6)%12){hung.push('Nguyệt Phá');adj-=3;}
+  // Thụ Tử
+  if(THU_TU_CHI[mi]===chiDay){hung.push('Thụ Tử');adj-=2;}
+  // Dương Công Kỵ Nhật
+  if((DUONG_CONG[lunarMonth]||[]).includes(lunarDay)){hung.push('Dương Công Kỵ');adj-=3;}
+  return{cat,hung,adj};
+}
+
 // ===== Helper: Vietnamese date format DD/MM/YYYY =====
 function formatDateInput(el){
   let v=el.value.replace(/[^\d]/g,'');
@@ -2106,6 +2242,51 @@ function parseVNDate(str){
 }
 function formatVNDate(d,m,y){
   return`${String(d).padStart(2,'0')}/${String(m).padStart(2,'0')}/${y}`;
+}
+// HH:MM input formatter
+function formatHHMM(el){
+  let v=el.value.replace(/[^\d]/g,'');
+  if(v.length>=2)v=v.slice(0,2)+':'+v.slice(2,4);
+  el.value=v;
+}
+function parseHHMM(str){
+  if(!str)return null;
+  const p=str.split(':');
+  if(p.length!==2)return null;
+  const h=+p[0],m=+p[1];
+  if(isNaN(h)||isNaN(m)||h<0||h>23||m<0||m>59)return null;
+  return{h,m};
+}
+
+// ===== Bảng giờ chính theo tháng âm lịch =====
+// Hiệu chỉnh thời gian theo Equation of Time + múi giờ Việt Nam.
+// Ranh giới các giờ Chi xê dịch theo tháng âm so với civil chuẩn (Tý=23h-1h).
+// Shift (phút) = giờ Tý bắt đầu sau 23:00 chuẩn bao nhiêu phút (âm = trước).
+const THANG_SHIFT_MINUTES=[20,0,30,40,80,40,30,0,20,0,-20,0]; // index 0-11 = tháng 1-12
+// Chuyển giờ:phút thực tế + tháng âm → chỉ số giờ Chi (1=Tý, 2=Sửu, ..., 12=Hợi)
+function clockToGioChi(hour,minute,lunarMonth){
+  if(lunarMonth<1||lunarMonth>12)lunarMonth=2; // fallback chuẩn
+  const shift=THANG_SHIFT_MINUTES[lunarMonth-1];
+  let totalMin=hour*60+(minute||0)-shift;
+  totalMin=((totalMin%1440)+1440)%1440;
+  // Tý civil bắt đầu 23:00 (1380 phút). Cộng 60 để Tý-midpoint = mốc 0.
+  return Math.floor(((totalMin+60)%1440)/120)+1;
+}
+function gioChiName(idx){return['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'][idx-1]}
+function lookupGioChi(lunarMonth){
+  const el=document.getElementById('ngayLookupTime');
+  const out=document.getElementById('ngayLookupResult');
+  if(!el||!out)return;
+  const v=el.value.trim();
+  if(!v||v.length<3){out.textContent='';return}
+  const pp=parseHHMM(v);
+  if(!pp){out.innerHTML='<span style="color:#f87171">Sai định dạng (cần HH:MM)</span>';return}
+  const idx=clockToGioChi(pp.h,pp.m,lunarMonth);
+  const shift=THANG_SHIFT_MINUTES[(lunarMonth-1+12)%12];
+  const startMin=(((idx-1)*120+23*60+shift)%1440+1440)%1440;
+  const endMin=(startMin+119)%1440;
+  const _fmt=mn=>String(Math.floor(mn/60)).padStart(2,'0')+':'+String(mn%60).padStart(2,'0');
+  out.innerHTML=`→ Giờ <b style="color:#ffd700">${gioChiName(idx)}</b> (${_fmt(startMin)}-${_fmt(endMin)}, tháng ${lunarMonth} shift ${shift>=0?'+':''}${shift}p)`;
 }
 
 // ===== Ngày Tam Nương & Nguyệt Kỵ (theo NGÀY ÂM LỊCH) =====
@@ -2153,9 +2334,13 @@ function xemNgay(today){
   const naTh=napAmFromCC(canTh,chiTh);
   const naNa=napAmFromCC(canNa,chiNa);
 
+  // Thần sát cát/hung + điểm tổng (dùng scoreDay)
+  const dayScore=scoreDay(d,m,y);
+
   // 28 Tú: index = (jd + offset) % 28, offset hiệu chỉnh theo anchor
   const tuIdx=(jd+11)%28;
   const tu=TU28[tuIdx];
+  const tuDetail=TU28_DETAIL[tuIdx]||{nen:'',kieng:''};
 
   // Tiết Khí: ước tính theo ngày Dương lịch (mỗi tiết ~15 ngày, tiết đầu tháng ~ngày 4-8, tiết giữa tháng ~ngày 19-23)
   // 12 tiết "tiết" (đứng đầu tháng) đánh dấu chuyển tháng âm:
@@ -2194,16 +2379,22 @@ function xemNgay(today){
   // Công thức shift cho VITHAN12 (đã được kiểm chứng với data trang gốc):
   // shift = (4 - 2*(chi%6) + 12) % 12
   const vtShift=((4-2*(chiDayIdx%6))%12+12)%12;
+  // Áp dụng bảng "giờ chuẩn theo tháng âm" (Equation of Time + múi giờ VN)
+  const ngayShift=THANG_SHIFT_MINUTES[(lunar.month-1+12)%12];
+  function fmtTime(min){const h=Math.floor(min/60),mm=min%60;return String(h).padStart(2,'0')+'h'+(mm?String(mm).padStart(2,'0'):'00')}
   const giobl=[];
   for(let i=0;i<12;i++){
     const chi=CHI_AL[i];
     const vt=VITHAN12[(vtShift+i)%12];
     const isHD=pat[i]==='1';
-    const start=(i*2+23)%24,end=(i*2+1)%24;
+    // Khoảng giờ chuẩn theo tháng (Tý civil khởi 23:00 + shift)
+    const startMin=((i*120+23*60+ngayShift)%1440+1440)%1440;
+    const endMin=(startMin+119)%1440;
+    const hoursStr=fmtTime(startMin)+'-'+fmtTime(endMin);
     // Tính quẻ Lạc Việt Độn Toán cho giờ này
     const gioIdx=i+1; // 1=Tý, 2=Sửu, ..., 12=Hợi
     const q=donQue(canNa,chiNa,lunar.month,lunar.day,gioIdx);
-    giobl.push({chi,vt,isHD,desc:VITHAN_DESC[vt]||'',hours:`${start}h-${end}h`,cat:VITHAN_CAT[vt],que:q.bm.name+' '+q.ln.name,queBm:q.bm.name,queLn:q.ln.name,queBmEl:q.bm.el,queLnEl:q.ln.el});
+    giobl.push({chi,vt,isHD,desc:VITHAN_DESC[vt]||'',hours:hoursStr,cat:VITHAN_CAT[vt],que:q.bm.name+' '+q.ln.name,queBm:q.bm.name,queLn:q.ln.name,queBmEl:q.bm.el,queLnEl:q.ln.el});
   }
 
   let html='<div class="card"><h2>KẾT QUẢ XEM NGÀY '+d+'/'+m+'/'+y+'</h2>';
@@ -2228,15 +2419,29 @@ function xemNgay(today){
     </div>
   </div>`;
 
+  // ===== ĐÁNH GIÁ TỔNG QUAN NGÀY (nới ngưỡng) =====
+  const sc=dayScore.score;
+  let dayVerdict,dayCls,dayStar;
+  if(sc>=4){dayVerdict='RẤT TỐT - Đại Cát';dayCls='good';dayStar='★★★★★'}
+  else if(sc>=2){dayVerdict='TỐT - Cát';dayCls='good';dayStar='★★★★'}
+  else if(sc>=0){dayVerdict='DÙNG ĐƯỢC - Bình hòa';dayCls='neutral';dayStar='★★★'}
+  else if(sc>=-2){dayVerdict='KÉM - Cân nhắc, chọn giờ tốt';dayCls='neutral';dayStar='★★'}
+  else{dayVerdict='XẤU - Nên tránh việc lớn';dayCls='bad';dayStar='★'}
+  html+=`<div class="verdict ${dayCls}" style="margin-top:12px"><div class="verdict-title">📋 ĐÁNH GIÁ TỔNG QUAN: ${dayVerdict}</div>
+    <div style="font-size:18px;letter-spacing:3px;color:${dayCls==='good'?'#4ade80':dayCls==='bad'?'#f87171':'#fbbf24'}">${dayStar}</div>
+    <div style="font-size:12px;margin-top:4px">Điểm tổng hợp: <b>${sc>=0?'+':''}${sc}</b> (28 Tú + Trực + Hoàng Đạo + Tam Nương/Nguyệt Kỵ + Thần sát)</div>
+    <small style="color:#aaa">Ngưỡng: ≥+4 Rất tốt · +2÷+3 Tốt · 0÷+1 Dùng được · -1÷-2 Kém · ≤-3 Xấu</small></div>`;
+
   // Tiết Khí
-  html+=`<div class="verdict info" style="margin-top:12px"><div class="verdict-title">🌿 TIẾT KHÍ: ${currentTiet}</div>
+  html+=`<div class="verdict info" style="margin-top:8px"><div class="verdict-title">🌿 TIẾT KHÍ: ${currentTiet}</div>
     Tháng kiến: <b>${CHI_AL[kienChi]}</b> · Chi ngày: <b>${chiN}</b></div>`;
 
-  // Sao 28 Tú
+  // Sao 28 Tú (kèm nên làm / kiêng cữ)
   const tuCls=tu.cat==='Tốt'?'good':tu.cat==='Xấu'?'bad':'neutral';
   html+=`<div class="verdict ${tuCls}" style="margin-top:8px"><div class="verdict-title">⭐ SAO 28 TÚ: ${tu.name}</div>
     <b>Tướng tinh:</b> con ${tu.animal} · <b>Cấp độ:</b> ${tu.cat}<br>
-    <small style="color:#aaa">Tra cứu chi tiết "nên làm/kiêng cữ" của sao này trên trang gốc Địa Lý Lạc Việt.</small></div>`;
+    <span style="color:#4ade80">✓ <b>Nên:</b> ${tuDetail.nen}</span><br>
+    <span style="color:#f87171">✗ <b>Kiêng:</b> ${tuDetail.kieng}</span></div>`;
 
   // Trực
   const trucMeaning={'Kiến':'Khởi động, xuất hành (tốt)','Trừ':'Tẩy uế, chữa bệnh (tốt)','Mãn':'Đủ đầy, mua bán, gặt hái','Bình':'Cân bằng, sửa chữa','Định':'Yên định, an cư','Chấp':'Giữ, ký kết','Phá':'Đại kỵ tạo dựng (xấu)','Nguy':'Cẩn trọng (xấu)','Thành':'Xong việc, đại lợi','Thâu':'Cất giữ, gặt lúa','Khai':'Mở thông, khởi tạo (tốt)','Bế':'Đóng kín, xây tường'};
@@ -2265,8 +2470,43 @@ function xemNgay(today){
       Ngày mùng ${lunar.day} âm lịch không thuộc Tam Nương sát (3,7,13,18,22,27) hay Nguyệt Kỵ (5,14,23).</div>`;
   }
 
+  // ===== Thần sát Cát / Hung =====
+  const TS_DESC={
+    'Thiên Đức':'Cát thần lớn - tốt mọi việc, hóa giải hung tinh',
+    'Nguyệt Đức':'Cát thần - lợi cầu phúc, khởi sự, hôn nhân',
+    'Thiên Ân':'Ngày Trời ban ơn - tốt cầu phúc, ban thưởng, hỉ sự',
+    'Nguyệt Phá':'Đại hung - chi ngày xung chi tháng, kỵ xây dựng, cưới hỏi, khởi sự',
+    'Thụ Tử':'Hung - kỵ an táng, khởi công, cưới hỏi (chỉ tốt cho săn bắt, đánh dẹp)',
+    'Dương Công Kỵ':'Đại hung - 13 ngày Dương Công kỵ trong năm, kỵ mọi việc trọng đại'
+  };
+  if(dayScore.thanSatCat.length||dayScore.thanSatHung.length){
+    html+='<div class="lakinh-mini" style="margin-top:8px">';
+    if(dayScore.thanSatCat.length){
+      html+='<div class="lk-card" style="border-color:#4caf50"><div class="lk-title" style="color:#8bc34a">🟢 CÁT THẦN</div>';
+      dayScore.thanSatCat.forEach(t=>{html+=`<div style="font-size:12px;padding:3px 0"><b style="color:#8bc34a">${t}</b><br><span style="color:#bbb;font-size:11px">${TS_DESC[t]||''}</span></div>`});
+      html+='</div>';
+    }
+    if(dayScore.thanSatHung.length){
+      html+='<div class="lk-card" style="border-color:#e74c3c"><div class="lk-title" style="color:#ef9a9a">🔴 HUNG THẦN</div>';
+      dayScore.thanSatHung.forEach(t=>{html+=`<div style="font-size:12px;padding:3px 0"><b style="color:#ef9a9a">${t}</b><br><span style="color:#bbb;font-size:11px">${TS_DESC[t]||''}</span></div>`});
+      html+='</div>';
+    }
+    html+='</div>';
+  }else{
+    html+=`<div class="verdict info" style="margin-top:8px"><div class="verdict-title">⚖ THẦN SÁT</div>Ngày này không có Cát thần lớn (Thiên Đức, Nguyệt Đức, Thiên Ân) cũng không có Hung thần lớn (Nguyệt Phá, Thụ Tử, Dương Công Kỵ).</div>`;
+  }
+
   // 12 Hoàng Đạo + Quẻ Lạc Việt Độn Toán
   html+='<h3 style="margin-top:14px;color:#ffd700">⏰ 12 GIỜ HOÀNG ĐẠO &amp; QUẺ LẠC VIỆT ĐỘN TOÁN</h3>';
+  html+=`<p style="font-size:12px;color:#aaa;margin-bottom:8px">Khoảng giờ hiển thị theo <b>"giờ chuẩn theo tháng âm"</b> (Equation of Time + múi giờ VN). Tháng ${lunar.month} âm shift: <b style="color:${ngayShift>0?'#fbbf24':ngayShift<0?'#4ade80':'#aaa'}">${ngayShift>=0?'+':''}${ngayShift} phút</b> so với civil chuẩn (Tý=23h-1h). Quan trọng cho trường hợp sát biên giờ.</p>`;
+  // Tra cứu giờ chính xác → giờ Chi
+  html+=`<div style="background:rgba(255,215,0,.06);border:1px dashed rgba(255,215,0,.3);border-radius:6px;padding:10px 14px;margin-bottom:10px">
+    <b style="color:#ffd700">🔍 TRA CỨU NHANH:</b> Nhập giờ:phút chính xác → biết là giờ Chi nào:
+    <div style="display:flex;gap:8px;align-items:center;margin-top:6px;flex-wrap:wrap">
+      <input type="text" id="ngayLookupTime" placeholder="HH:MM (vd: 23:15)" maxlength="5" oninput="formatHHMM(this);lookupGioChi(${lunar.month})" style="padding:6px 10px;border-radius:4px;border:1px solid rgba(255,215,0,.4);background:rgba(0,0,0,.3);color:#fff;width:140px">
+      <span id="ngayLookupResult" style="font-size:13px;color:#fff"></span>
+    </div>
+  </div>`;
   html+='<div class="direction-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr))">';
   giobl.forEach(g=>{
     const cls=g.cat?'cat-dai':g.isHD?'cat':'hung';
@@ -3116,6 +3356,9 @@ function scoreDay(d,m,y){
   for(let i=0;i<12;i++)if(pat[i]==='1')catH++;
   // Tam Nương & Nguyệt Kỵ
   const tnnk=checkTamNuongNguyetKy(lunar.day);
+  // Thần sát cát/hung
+  const canDayName=CAN_AL[(jd+9)%10],chiDayName=CHI_AL[chiDay];
+  const ts=getThanSat(canDayName,chiDayName,lunar.month,lunar.day);
   // Score
   let score=0;
   if(tu.cat==='Tốt')score+=2;
@@ -3124,7 +3367,8 @@ function scoreDay(d,m,y){
   if(catH>=6)score+=0;else score-=1;
   if(tnnk.tamNuong)score-=2;
   if(tnnk.nguyetKy)score-=2;
-  return{score,tu,truc,trucCat,jd,lunar,chiDay,catH,tamNuong:tnnk.tamNuong,nguyetKy:tnnk.nguyetKy};
+  score+=ts.adj; // cộng thần sát cát, trừ thần sát hung
+  return{score,tu,truc,trucCat,jd,lunar,chiDay,catH,tamNuong:tnnk.tamNuong,nguyetKy:tnnk.nguyetKy,thanSatCat:ts.cat,thanSatHung:ts.hung};
 }
 
 function buildCalendar(y,m){
@@ -3138,10 +3382,10 @@ function buildCalendar(y,m){
   for(let d=1;d<=daysInMonth;d++){
     const s=scoreDay(d,m,y);
     let cls='';
-    if(s.score>=3)cls='d-good';
-    else if(s.score>=1)cls='d-good-light';
-    else if(s.score>=-1)cls='d-neutral';
-    else if(s.score>=-3)cls='d-bad-light';
+    if(s.score>=4)cls='d-good';
+    else if(s.score>=2)cls='d-good-light';
+    else if(s.score>=0)cls='d-neutral';
+    else if(s.score>=-2)cls='d-bad-light';
     else cls='d-bad';
     const isToday=(d===today.getDate()&&m===today.getMonth()+1&&y===today.getFullYear());
     const canN=CAN_AL[(s.jd+9)%10],chiN=CHI_AL[(s.jd+1)%12];
@@ -3149,7 +3393,8 @@ function buildCalendar(y,m){
     if(s.tamNuong&&s.nguyetKy)kyMark=' · ⚠ Tam Nương + Nguyệt Kỵ';
     else if(s.tamNuong)kyMark=' · ⚠ Tam Nương sát';
     else if(s.nguyetKy)kyMark=' · ⚠ Nguyệt Kỵ';
-    const tip=`${canN} ${chiN} · Sao ${s.tu.name} (${s.tu.cat}) · Trực ${s.truc}${s.trucCat?' (cát)':' (hung)'} · ${s.catH}/12 giờ Hoàng Đạo${kyMark}`;
+    const tsMark=(s.thanSatCat&&s.thanSatCat.length?' · 🟢'+s.thanSatCat.join(','):'')+(s.thanSatHung&&s.thanSatHung.length?' · 🔴'+s.thanSatHung.join(','):'');
+    const tip=`${canN} ${chiN} (điểm ${s.score>=0?'+':''}${s.score}) · Sao ${s.tu.name} (${s.tu.cat}) · Trực ${s.truc}${s.trucCat?' (cát)':' (hung)'} · ${s.catH}/12 giờ HĐ${kyMark}${tsMark}`;
     const kyBadge=(s.tamNuong||s.nguyetKy)?`<div class="cal-ky" style="font-size:8px;color:#c8202a;font-weight:bold">${s.tamNuong&&s.nguyetKy?'TN+NK':s.tamNuong?'T.Nương':'N.Kỵ'}</div>`:'';
     html+=`<td class="${cls} ${isToday?'today':''}" onclick="selectCalDay(${d},${m},${y})" title="${tip}">
       <div class="cal-d">${d}</div>
@@ -3203,7 +3448,7 @@ function tinhTrungTang(){
   const gender=document.getElementById('ttGender').value;
   const birthY=parseInt(document.getElementById('ttBirthYear').value);
   const dt=document.getElementById('ttDeathDate').value;
-  const gioIdx=parseInt(document.getElementById('ttHour').value)||0;
+  let gioIdx=parseInt(document.getElementById('ttHour').value)||0;
   if(!birthY){alert('Nhập năm sinh người mất');return}
   if(!dt){alert('Nhập ngày mất theo định dạng DD/MM/YYYY');return}
   const parsed=parseVNDate(dt);
@@ -3212,6 +3457,16 @@ function tinhTrungTang(){
   // Đổi sang âm lịch
   const lunar=getLunar(parsed.d,parsed.m,parsed.y);
   const thangAm=lunar.month,ngayAm=lunar.day,namAm=lunar.year;
+  // Nếu có giờ mất chính xác (HH:MM), hiệu chỉnh theo bảng giờ chuẩn theo tháng
+  let ttPreciseInfo=null;
+  const ttPrec=document.getElementById('ttHourPrecise').value.trim();
+  if(ttPrec){
+    const pp=parseHHMM(ttPrec);
+    if(!pp){alert('Giờ mất chính xác sai định dạng. Đúng: HH:MM');return}
+    const oldGio=gioIdx;
+    gioIdx=clockToGioChi(pp.h,pp.m,thangAm);
+    ttPreciseInfo={hhmm:String(pp.h).padStart(2,'0')+':'+String(pp.m).padStart(2,'0'),shift:THANG_SHIFT_MINUTES[thangAm-1],chi:gioChiName(gioIdx),overrideOld:oldGio&&oldGio!==gioIdx?gioChiName(oldGio):null};
+  }
   // Tuổi mụ = năm mất (âm) - năm sinh + 1
   const tuoiMu=namAm-birthY+1;
   if(tuoiMu<1){alert('Năm sinh phải nhỏ hơn năm mất');return}
@@ -3261,7 +3516,7 @@ function tinhTrungTang(){
       <div class="lk-row"><span>Ngày mất (DL):</span><span>${formatVNDate(parsed.d,parsed.m,parsed.y)}</span></div>
       <div class="lk-row"><span>Ngày mất (ÂL):</span><span>${ngayAm}/${thangAm}${lunar.leap?' (nhuận)':''}/${namAm}</span></div>
       <div class="lk-row"><span>Tuổi mụ:</span><span><b>${tuoiMu}</b></span></div>
-      <div class="lk-row"><span>Giờ mất:</span><span>${gioIdx>0?CHI_AL[gioIdx-1]:'Không rõ'}</span></div>
+      <div class="lk-row"><span>Giờ mất:</span><span>${gioIdx>0?CHI_AL[gioIdx-1]:'Không rõ'}${ttPreciseInfo?` <small style="color:#4ade80">(từ ${ttPreciseInfo.hhmm}, shift ${ttPreciseInfo.shift>=0?'+':''}${ttPreciseInfo.shift}p${ttPreciseInfo.overrideOld?', khỏi '+ttPreciseInfo.overrideOld:''})</small>`:''}</span></div>
     </div>
     <div class="lk-card">
       <div class="lk-title">CÁCH BẤM CUNG</div>
@@ -3347,8 +3602,12 @@ function tinhTrungTang(){
         if(xungNgay)pt-=2;
         if(ttLoai.loai==='Nhập Mộ')pt+=2;
         else if(ttLoai.loai==='Trùng Tang')pt-=2;
-        const start=(i*2+23)%24,end=(i*2+1)%24;
-        hourRows.push({i,chi:CHI_AL[i],isHD,vt,isVtCat,xungTuoi,xungNgay,ttLoai,pt,hours:`${start}h-${end}h`});
+        // Giờ chuẩn theo tháng âm của ngày an táng
+        const bShift=THANG_SHIFT_MINUTES[(bLunar.month-1+12)%12];
+        const sMin=((i*120+23*60+bShift)%1440+1440)%1440;
+        const eMin=(sMin+119)%1440;
+        const _fmt=m=>String(Math.floor(m/60)).padStart(2,'0')+'h'+(m%60?String(m%60).padStart(2,'0'):'00');
+        hourRows.push({i,chi:CHI_AL[i],isHD,vt,isVtCat,xungTuoi,xungNgay,ttLoai,pt,hours:_fmt(sMin)+'-'+_fmt(eMin)});
       }
       const ranked=[...hourRows].sort((a,b)=>b.pt-a.pt);
       const best=ranked.filter(h=>h.pt>=3&&!h.xungTuoi);
@@ -3799,9 +4058,20 @@ function tuViAnSao(){
   const parsedTV=parseVNDate(dt);
   if(!parsedTV){alert('Ngày sinh không hợp lệ. Định dạng đúng: DD/MM/YYYY (vd: 15/08/1990)');return}
   const sY=parsedTV.y,sM=parsedTV.m,sD=parsedTV.d;
-  const hourIdx=parseInt(document.getElementById('tvHour').value);
+  let hourIdx=parseInt(document.getElementById('tvHour').value);
   const gender=document.getElementById('tvGender').value;
   const name=document.getElementById('tvName').value.trim();
+  // Ưu tiên: nếu có HH:MM chính xác, dùng bảng giờ chuẩn theo tháng âm
+  let preciseInfo=null;
+  const precStr=document.getElementById('tvHourPrecise').value.trim();
+  if(precStr){
+    const pp=parseHHMM(precStr);
+    if(!pp){alert('Giờ sinh chính xác sai định dạng. Đúng: HH:MM (vd: 23:15)');return}
+    const lunarTmp=getLunar(sD,sM,sY);
+    const oldHourIdx=hourIdx;
+    hourIdx=clockToGioChi(pp.h,pp.m,lunarTmp.month);
+    preciseInfo={hhmm:String(pp.h).padStart(2,'0')+':'+String(pp.m).padStart(2,'0'),lunarMonth:lunarTmp.month,shift:THANG_SHIFT_MINUTES[lunarTmp.month-1],chi:gioChiName(hourIdx),overrideOld:oldHourIdx!==hourIdx?gioChiName(oldHourIdx):null};
+  }
   const _TV=computeTuViChart(sD,sM,sY,hourIdx,gender);
   const {lunar,month,day,lunarYear,yearCanIdx,yearChiIdx,yearCan,yearChi,yearSex,banMenh,banMenhEl,menhChi,thanChi,cucInfo,tvPos,stars,phuTinh,tuanPositions,trietPositions,tuHoa,dv,age,currentDV,cungs}=_TV;
 
@@ -3829,7 +4099,7 @@ function tuViAnSao(){
           <div style="text-align:center;font-size:14px;color:#c8202a;font-weight:bold;margin-bottom:8px;letter-spacing:1px;text-transform:uppercase;border-bottom:2px solid #c8202a;padding-bottom:4px">${name?name.toUpperCase():'LÁ SỐ TỬ VI LẠC VIỆT'}</div>
           <div style="font-size:12px;color:#1a1a1a;line-height:1.7">
             ☀ Sinh: <b style="color:#1565c0">${sD}/${sM}/${sY}</b> (Dương) — <b style="color:#1565c0">${day}/${month}/${lunarYear}</b> (Âm)<br>
-            ⏰ Giờ: <b style="color:#1565c0">${CHI_AL[hourIdx-1]}</b> (${((hourIdx-1)*2+23)%24}h-${((hourIdx-1)*2+1)%24}h)<br>
+            ⏰ Giờ: <b style="color:#1565c0">${CHI_AL[hourIdx-1]}</b> (${((hourIdx-1)*2+23)%24}h-${((hourIdx-1)*2+1)%24}h)${preciseInfo?` <span style="font-size:11px;color:#2e7d32">[từ ${preciseInfo.hhmm}, tháng ${preciseInfo.lunarMonth} shift ${preciseInfo.shift>=0?'+':''}${preciseInfo.shift}p${preciseInfo.overrideOld?', đã hiệu chỉnh khỏi giờ '+preciseInfo.overrideOld:''}]</span>`:''}<br>
             ⚥ Giới: <b>${gender==='nam'?'Nam':'Nữ'}</b><br>
             🐉 Năm: <b style="color:#c8202a">${yearCan} ${yearChi}</b><br>
             💎 Bản Mệnh: <b style="color:#c8202a">${banMenh}</b> (${banMenhEl})<br>
