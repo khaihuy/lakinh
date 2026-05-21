@@ -11,10 +11,16 @@
   header{text-align:center;margin-bottom:18px}
   h1{font-size:28px;color:#ffd700;text-shadow:2px 2px 4px rgba(0,0,0,.5);letter-spacing:2px;margin-bottom:4px}
   .subtitle{font-size:13px;color:#ccc}
-  .tabs{display:flex;gap:8px;margin-bottom:18px;border-bottom:2px solid rgba(255,215,0,.3);flex-wrap:wrap}
-  .tab{padding:11px 22px;background:transparent;border:none;color:#aaa;font-size:14px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;font-family:inherit;letter-spacing:1px}
+  .tab-groups{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
+  .grp{padding:9px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.25);color:#ccc;font-size:13.5px;font-weight:bold;cursor:pointer;border-radius:10px;font-family:inherit;letter-spacing:.3px}
+  .grp.active{background:linear-gradient(135deg,#ffd700,#ff8c00);color:#1a1a2e;border-color:#ffd700}
+  .grp:hover{color:#fff}
+  .grp.active:hover{color:#1a1a2e}
+  .tabs{display:flex;gap:8px;margin-bottom:18px;border-bottom:2px solid rgba(255,215,0,.3);flex-wrap:wrap;padding-bottom:2px}
+  .tab{padding:10px 18px;background:transparent;border:none;color:#aaa;font-size:13.5px;font-weight:bold;cursor:pointer;border-bottom:3px solid transparent;font-family:inherit;letter-spacing:.5px}
   .tab.active{color:#ffd700;border-bottom-color:#ffd700;background:rgba(255,215,0,.08)}
   .tab:hover{color:#ffd700}
+  .tab.grp-hidden{display:none}
   .panel{display:none}
   .panel.active{display:block}
   .card{background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.25);border-radius:12px;padding:18px 22px;margin-bottom:14px}
@@ -142,8 +148,11 @@
     h1{font-size:20px;letter-spacing:1px}
     .subtitle{font-size:11px;line-height:1.4}
     header{margin-bottom:12px}
-    /* Tabs: cuộn ngang 1 hàng, kiểu app mobile */
-    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:4px;padding-bottom:6px;margin-bottom:14px;position:sticky;top:0;z-index:50;background:linear-gradient(135deg,#1a1a2e,#16213e);scrollbar-width:thin;scrollbar-color:rgba(255,215,0,.5) transparent}
+    /* Nhóm tab: lưới 2 cột gọn trên mobile */
+    .tab-groups{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+    .grp{padding:8px 6px;font-size:11.5px;border-radius:8px;text-align:center}
+    /* Tabs con: cuộn ngang 1 hàng, kiểu app mobile */
+    .tabs{flex-wrap:nowrap;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:4px;padding-bottom:6px;margin-bottom:14px;scrollbar-width:thin;scrollbar-color:rgba(255,215,0,.5) transparent}
     .tabs::-webkit-scrollbar{height:4px}
     .tabs::-webkit-scrollbar-thumb{background:rgba(255,215,0,.5);border-radius:2px}
     .tab{padding:9px 14px;font-size:12px;white-space:nowrap;flex-shrink:0;letter-spacing:0;border-bottom-width:3px}
@@ -220,19 +229,26 @@
 <div class="container">
   <header>
     <h1>LUẬN TUỔI LẠC VIỆT &middot; HOA GIÁP &middot; LA KINH</h1>
-    <div class="subtitle">Công cụ 9-trong-1 · La Kinh · Thước · Địa Lý · Luận Tuổi · Hoa Giáp · Xem Ngày · Độn Toán · <b style="color:#ffcc66">Tử Vi</b> · Nguyên Lý - theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức</div>
+    <div class="subtitle">Công cụ tổng hợp · La Kinh · Thước · Địa Lý · Luận Tuổi · Hoa Giáp · Xem Ngày · Độn Toán · <b style="color:#ffcc66">Tử Vi</b> · Sinh con &amp; Đặt tên · Nguyên Lý - theo Thiên Sứ Nguyễn Vũ Tuấn Anh, Vương Đạo Hạnh &amp; Hồ Ngọc Đức</div>
   </header>
 
+  <nav class="tab-groups">
+    <button class="grp active" data-grp="g1">🏠 Nhà ở &amp; Phong thủy</button>
+    <button class="grp" data-grp="g2">👤 Con người &amp; Vận mệnh</button>
+    <button class="grp" data-grp="g3">📅 Ngày giờ &amp; Bói toán</button>
+    <button class="grp" data-grp="g4">📚 Tra cứu &amp; Lý thuyết</button>
+  </nav>
   <nav class="tabs">
-    <button class="tab active" data-tab="lakinh">🧭 LA KINH &amp; HƯỚNG NHÀ</button>
-    <button class="tab" data-tab="thuoc">📏 THƯỚC LẠC VIỆT</button>
-    <button class="tab" data-tab="dialy">🏠 ĐỊA LÝ NHÀ Ở</button>
-    <button class="tab" data-tab="calc">⚖ LUẬN TUỔI</button>
-    <button class="tab" data-tab="hoagiap">📜 LẠC THƯ HOA GIÁP</button>
-    <button class="tab" data-tab="ngay">📅 XEM NGÀY</button>
-    <button class="tab" data-tab="docton">🔮 ĐỘN TOÁN</button>
-    <button class="tab" data-tab="tuvi">🌟 TỬ VI</button>
-    <button class="tab" data-tab="guide">📖 NGUYÊN LÝ</button>
+    <button class="tab active" data-tab="lakinh" data-grp="g1">🧭 La Kinh &amp; Hướng nhà</button>
+    <button class="tab" data-tab="thuoc" data-grp="g1">📏 Thước Lạc Việt</button>
+    <button class="tab" data-tab="dialy" data-grp="g1">🏠 Địa Lý Nhà Ở</button>
+    <button class="tab" data-tab="calc" data-grp="g2">⚖ Luận Tuổi</button>
+    <button class="tab" data-tab="tuvi" data-grp="g2">🌟 Tử Vi</button>
+    <button class="tab" data-tab="dattien" data-grp="g2">👶 Sinh Con &amp; Đặt Tên</button>
+    <button class="tab" data-tab="ngay" data-grp="g3">📅 Xem Ngày</button>
+    <button class="tab" data-tab="docton" data-grp="g3">🔮 Độn Toán &amp; Số</button>
+    <button class="tab" data-tab="hoagiap" data-grp="g4">📜 Lạc Thư Hoa Giáp</button>
+    <button class="tab" data-tab="guide" data-grp="g4">📖 Nguyên Lý &amp; Từ điển</button>
   </nav>
 
   <!-- ==================== TAB 1: CALCULATOR ==================== -->
@@ -266,6 +282,26 @@
     <div id="results"></div>
     <div id="pdfBarLuanTuoi" class="pdf-export-bar" style="display:none">
       <button class="pdf-export-btn" onclick="exportPDF('results','LuanTuoi','LUẬN TUỔI LẠC VIỆT - Báo Cáo Tổng Hợp')">🖨 In / Lưu PDF (lưu trữ - gửi khách)</button>
+    </div>
+
+    <div class="card">
+      <h2>🧧 CHỌN TUỔI XÔNG ĐẤT ĐẦU NĂM</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Tìm con giáp/tuổi hợp để xông đất (đạp đất) cho gia chủ trong năm mới: hợp Thiên Can - Địa Chi - Mệnh, không xung khắc gia chủ, không xung Thái Tuế, không phạm Tam Tai.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Năm sinh gia chủ</label>
+          <input type="number" id="xdYear" placeholder="VD: 1985" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Năm mới (xông đất)</label>
+          <input type="number" id="xdNewYear" placeholder="VD: 2026" min="2020" max="2100">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="xongDat()">🧧 TÌM TUỔI XÔNG ĐẤT</button>
+        </div>
+      </div>
+      <div id="xdResult"></div>
+      <div class="pdf-export-bar"><button class="pdf-export-btn" onclick="exportPDF('xdResult','XongDat','CHỌN TUỔI XÔNG ĐẤT')">🖨 In / Lưu PDF</button></div>
     </div>
   </div>
 
@@ -330,6 +366,26 @@
 
   <!-- ==================== TAB 4: ĐỊA LÝ NHÀ Ở ==================== -->
   <div class="panel" id="panel-dialy">
+    <div class="card">
+      <h2>🏗️ XEM TUỔI LÀM NHÀ (Kim Lâu · Hoang Ốc · Tam Tai)</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Kiểm tra gia chủ có được động thổ/xây nhà trong năm dự định không, theo 3 hạn truyền thống. Nếu phạm → gợi ý mượn tuổi hoặc chờ năm khác.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Năm sinh gia chủ (Dương lịch)</label>
+          <input type="number" id="lnYear" placeholder="VD: 1985" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Năm dự định làm nhà</label>
+          <input type="number" id="lnBuildYear" placeholder="VD: 2026" min="2020" max="2100">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="xemTuoiLamNha()">🏗️ KIỂM TRA TUỔI LÀM NHÀ</button>
+        </div>
+      </div>
+      <div id="lnResult"></div>
+      <div class="pdf-export-bar" style="display:none" id="pdfBarLN"><button class="pdf-export-btn" onclick="exportPDF('lnResult','TuoiLamNha','XEM TUỔI LÀM NHÀ')">🖨 In / Lưu PDF</button></div>
+    </div>
+
     <div class="card">
       <h2>SƠN - HƯỚNG - TỌA - TRẠCH (Địa Lý Lạc Việt)</h2>
       <p style="font-size:13px;color:#ccc;margin-bottom:12px">Nhập hướng cửa chính nhà bạn để xác định <b>Sơn</b>, <b>Tọa</b>, <b>Trạch</b> và tương tác Bát Trạch với gia chủ. Theo định nghĩa của Thiên Sứ Nguyễn Vũ Tuấn Anh.</p>
@@ -554,10 +610,18 @@
 
       <div id="thuocResult"></div>
 
-      <h3 style="margin-top:18px;color:#ffd700">📊 BẢNG THƯỚC 41CM (1 CHU KỲ)</h3>
-      <div class="table-wrap" style="max-height:500px">
+      <h3 style="margin-top:18px;color:#ffd700">📊 BẢNG THƯỚC ĐỐI CHIẾU 0 → 5M</h3>
+      <div class="filter-bar">
+        <input type="number" id="thuocFilterCm" placeholder="🔍 Nhảy tới kích thước (cm), vd: 227" step="1" oninput="scrollToThuocRow()" style="flex:1;min-width:180px">
+        <select id="thuocFilterCat" onchange="filterThuocList()">
+          <option value="">Hiện tất cả</option>
+          <option value="cat">Chỉ CÁT</option>
+          <option value="hung">Chỉ HUNG</option>
+        </select>
+      </div>
+      <div class="table-wrap" style="max-height:600px">
         <table class="hoa-giap">
-          <thead><tr><th>Vị trí (cm)</th><th>Nhóm</th><th>Tiểu cung</th><th>Cát/Hung</th></tr></thead>
+          <thead><tr><th>cm</th><th>Chu kỳ</th><th>Nhóm</th><th>Tiểu cung</th><th>Cát/Hung</th></tr></thead>
           <tbody id="thuocTable"></tbody>
         </table>
       </div>
@@ -591,6 +655,20 @@
           <label>Ngày Dương lịch (DD/MM/YYYY)</label>
           <input type="text" id="ngayDate" placeholder="vd: 14/05/2026" maxlength="10" oninput="formatDateInput(this)">
         </div>
+        <div class="form-row">
+          <label>Xem cho việc</label>
+          <select id="ngayViec">
+            <option value="">-- Tổng quát --</option>
+            <option value="cuoi">Cưới hỏi</option>
+            <option value="dongtho">Động thổ / Xây dựng</option>
+            <option value="khaitruong">Khai trương / Mở hàng</option>
+            <option value="nhaptrach">Nhập trạch (về nhà mới)</option>
+            <option value="antang">An táng</option>
+            <option value="caitang">Cải táng / Sửa mộ</option>
+            <option value="xuathanh">Xuất hành / Đi xa</option>
+            <option value="kyket">Ký kết / Giao dịch</option>
+          </select>
+        </div>
         <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
           <button class="action" onclick="xemNgay()">XEM NGÀY</button>
         </div>
@@ -600,6 +678,28 @@
       </div>
 
       <div id="ngayResult"></div>
+      <div class="pdf-export-bar"><button class="pdf-export-btn" onclick="exportPDF('ngayResult','XemNgay','XEM NGÀY TỐT XẤU')">🖨 In / Lưu PDF kết quả ngày</button></div>
+
+      <h3 style="margin-top:18px;color:#ffd700">🔎 LỌC NGÀY TỐT HỢP TUỔI (trong khoảng thời gian)</h3>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:8px">Quét nhiều ngày, loại ngày xung tuổi/Tam Tai, xếp hạng ngày tốt nhất cho việc đã chọn ở trên.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Năm sinh gia chủ (lọc xung tuổi)</label>
+          <input type="number" id="locYear" placeholder="VD: 1985 (tùy chọn)" min="1900" max="2100">
+        </div>
+        <div class="form-row">
+          <label>Từ ngày (DD/MM/YYYY)</label>
+          <input type="text" id="locFrom" placeholder="vd: 01/06/2026" maxlength="10" oninput="formatDateInput(this)">
+        </div>
+        <div class="form-row">
+          <label>Đến ngày (DD/MM/YYYY)</label>
+          <input type="text" id="locTo" placeholder="vd: 30/06/2026" maxlength="10" oninput="formatDateInput(this)">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="locNgayTot()">🔎 LỌC NGÀY TỐT</button>
+        </div>
+      </div>
+      <div id="locResult"></div>
 
       <h3 style="margin-top:18px;color:#ffd700">📆 LỊCH THÁNG - NGÀY TỐT XẤU</h3>
       <div class="cal-nav">
@@ -736,6 +836,23 @@
 
       <div id="docToanResult"></div>
 
+      <h3 style="margin-top:22px;color:#ffd700">🔢 CHỌN SIM SỐ ĐẸP (theo chủ sim)</h3>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:8px">Sim 10 số: <b>5 số đầu</b> luận theo <b>Bát Môn</b> (8 cửa Hà Đồ - Hậu Thiên Lạc Việt), <b>5 số sau</b> luận theo <b>Lục Nhâm</b> (6 cung). Kết hợp <b>mệnh chủ sim</b> (nạp âm Lạc Thư Hoa Giáp) để xét tương sinh.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Số sim (10 chữ số)</label>
+          <input type="text" id="soInput" placeholder="VD: 0987 654 321">
+        </div>
+        <div class="form-row">
+          <label>Năm sinh chủ sim</label>
+          <input type="number" id="soOwnerYear" placeholder="VD: 1990" min="1900" max="2100">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="xemSo()">🔢 PHÂN TÍCH SIM</button>
+        </div>
+      </div>
+      <div id="soResult"></div>
+
       <h3 style="margin-top:18px;color:#ffd700">📋 ĐỒ HÌNH BÁT MÔN &amp; LỤC NHÂM</h3>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:8px">
         <div class="lk-card">
@@ -814,19 +931,56 @@
             <option value="nu">Nữ</option>
           </select>
         </div>
+        <div class="form-row">
+          <label>Năm xem vận (Lưu Niên/Tiểu Hạn)</label>
+          <input type="number" id="tvViewYear" placeholder="VD: 2026 (mặc định năm nay)" min="1900" max="2200">
+        </div>
         <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
           <button class="action" onclick="tuViAnSao()">🌟 LẬP LÁ SỐ</button>
         </div>
       </div>
       <p style="font-size:11.5px;color:#aaa;margin-top:-6px">💡 Nếu nhập <b>HH:MM</b> chính xác, tool sẽ tự xác định Chi giờ theo <b>"giờ chuẩn theo tháng âm"</b> (Equation of Time + múi giờ VN). Quan trọng cho trường hợp sinh sát biên giờ (vd: 23:15 tháng 1 = giờ Hợi, không phải Tý).</p>
+      <details style="margin-top:8px;background:rgba(231,76,60,.08);border:1px solid rgba(231,76,60,.3);border-radius:8px;padding:8px 12px">
+        <summary style="color:#ff9090;font-weight:bold">❓ Đổi cách tính giờ thì lá số Tử Vi có thay đổi không?</summary>
+        <p style="font-size:12.5px;color:#ddd;line-height:1.7;margin-top:6px">
+          <b style="color:#ff9090">CÓ — thay đổi rất lớn, gần như toàn bộ lá số.</b> Giờ sinh quyết định trực tiếp:<br>
+          • <b>Cung Mệnh &amp; cung Thân</b> (tính theo tháng + giờ) → đổi giờ là đổi cung Mệnh.<br>
+          • <b>Cục</b> (Thủy/Mộc/Kim/Thổ/Hỏa) — phụ thuộc nạp âm tại cung Mệnh → đổi theo.<br>
+          • <b>Vị trí Tử Vi</b> &amp; <b>toàn bộ 14 chính tinh</b> (phụ thuộc Cục).<br>
+          • Các sao theo giờ: Văn Xương/Khúc, Địa Không/Kiếp, Hỏa/Linh Tinh, Thai Phụ/Phong Cáo...<br>
+          • <b>Đại Vận</b> (khởi từ cung Mệnh + Cục).<br><br>
+          <b>Ví dụ thực tế</b> (cùng ngày 14/02/2025, Nam):<br>
+          • Giờ <b>Tý</b>: Mệnh tại Dần, Cục Thổ Ngũ, Mệnh có <b>Tử Vi + Thiên Phủ</b><br>
+          • Giờ <b>Sửu</b>: Mệnh tại Sửu, Cục Thủy Nhị, Mệnh có <b>Liêm Trinh + Thất Sát</b><br>
+          • Giờ <b>Ngọ</b>: Mệnh tại Thân, Cục Hỏa Lục, Mệnh <b>vô chính diệu</b><br><br>
+          → Đây chính là lý do <b>phải xác định giờ thật chính xác</b>. Một em bé sinh lúc 23:15 tháng 1 âm: nếu tính sai thành giờ Tý sẽ ra lá số hoàn toàn khác so với giờ Hợi đúng. Vì vậy nên dùng ô <b>"Giờ sinh chính xác (HH:MM)"</b> để tool hiệu chỉnh theo giờ chuẩn từng tháng.
+        </p>
+      </details>
 
       <div id="tuViResult"></div>
       <div id="pdfBarTuVi" class="pdf-export-bar" style="display:none">
         <button class="pdf-export-btn" onclick="exportPDF('tuViResult','TuVi','LÁ SỐ TỬ VI LẠC VIỆT - Báo Cáo Luận Giải')">🖨 In / Lưu PDF Lá Số Tử Vi (lưu trữ - gửi khách)</button>
       </div>
 
-      <h3 style="margin-top:22px;color:#ffd700">👶 CHỌN GIỜ SINH - SO SÁNH LÁ SỐ THEO NGÀY DỰ SINH</h3>
-      <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Dành cho gia đình chuẩn bị đón em bé (sinh mổ chủ động). Nhập ngày dự sinh → công cụ lập lá số Tử Vi cho từng <b>ngày × 12 giờ</b> trong khoảng thời gian, chấm điểm chất lượng để chọn giờ tốt nhất. Bấm vào ô để xem lá số chi tiết.</p>
+      <p style="font-size:12px;color:#888;margin-top:14px">👶 Tính năng <b>Chọn giờ sinh cho bé</b> đã chuyển sang tab <b>"👶 SINH CON & ĐẶT TÊN"</b>.</p>
+
+      <h3 style="margin-top:18px;color:#ffd700">📋 NGUYÊN TẮC LẠC VIỆT TRONG TỬ VI</h3>
+      <div class="principle-list">
+        <p>🔸 <b>Bản Mệnh</b>: nạp âm Lạc Thư Hoa Giáp (đã đổi Thủy-Hỏa). Vd: Bính Tý cổ Hán "Giản Hạ Thủy" → Lạc Việt "Giản Hạ Hỏa".</p>
+        <p>🔸 <b>Cục</b>: dựa trên nạp âm của tháng tại cung Mệnh, theo Lạc Thư Hoa Giáp Lạc Việt. Do Thủy-Hỏa đổi chỗ nên nhiều tuổi có Cục khác Tử Vi cổ Hán.</p>
+        <p>🔸 <b>14 Chính Tinh</b>: vẫn theo quy tắc cổ điển (Tử Vi tinh + Thiên Phủ tinh).</p>
+        <p>🔸 <b>Tứ Hóa</b>: Hóa Lộc - Quyền - Khoa - Kỵ theo Thiên Can năm sinh.</p>
+        <p>🔸 <b>Đại Vận</b>: 10 năm/cung. Dương Nam-Âm Nữ thuận; Âm Nam-Dương Nữ nghịch.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== TAB: SINH CON & ĐẶT TÊN ==================== -->
+  <div class="panel" id="panel-dattien">
+    <!-- PHẦN 1: CHỌN GIỜ SINH -->
+    <div class="card">
+      <h2>👶 CHỌN GIỜ SINH CHO BÉ (theo ngày dự sinh)</h2>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:10px">Dành cho gia đình chuẩn bị đón em bé (sinh mổ chủ động). Nhập ngày dự sinh → công cụ lập lá số Tử Vi cho từng <b>ngày × 12 giờ</b>, chấm điểm để chọn giờ tốt nhất. Bấm vào ô để xem lá số chi tiết.</p>
       <div class="form-grid">
         <div class="form-row">
           <label>Ngày dự sinh (DD/MM/YYYY)</label>
@@ -834,10 +988,7 @@
         </div>
         <div class="form-row">
           <label>Giới tính bé</label>
-          <select id="cgsGender">
-            <option value="nam">Nam (Trai)</option>
-            <option value="nu">Nữ (Gái)</option>
-          </select>
+          <select id="cgsGender"><option value="nam">Nam (Trai)</option><option value="nu">Nữ (Gái)</option></select>
         </div>
         <div class="form-row">
           <label>Số ngày trước dự sinh</label>
@@ -852,20 +1003,85 @@
         </div>
       </div>
       <div id="cgsResult"></div>
+    </div>
 
-      <h3 style="margin-top:18px;color:#ffd700">📋 NGUYÊN TẮC LẠC VIỆT TRONG TỬ VI</h3>
+    <!-- PHẦN 2: ĐẶT TÊN CON -->
+    <div class="card">
+      <h2>📝 ĐẶT TÊN CON THEO TỨ TRỤ (BÁT TỰ)</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Lập Tứ Trụ → phân tích ngũ hành + Dụng Thần. Nhập <b>tên bố mẹ thích</b> để kiểm tra hợp mệnh; tool sẽ gợi ý nếu chưa phù hợp.</p>
+      <div class="form-grid">
+        <div class="form-row">
+          <label>Họ <span style="color:#f87171">*bắt buộc</span></label>
+          <input type="text" id="dtHo" placeholder="vd: Nguyễn">
+        </div>
+        <div class="form-row">
+          <label>Tên đệm <span style="color:#888;font-size:11px">(tùy chọn)</span></label>
+          <input type="text" id="dtDem" placeholder="vd: Văn / Thị / Gia">
+        </div>
+        <div class="form-row">
+          <label>Tên <span style="color:#888;font-size:11px">(tùy chọn - tên bố mẹ thích)</span></label>
+          <input type="text" id="dtTen" placeholder="vd: Minh / Anh / Bảo">
+        </div>
+        <div class="form-row">
+          <label>Giới tính bé</label>
+          <select id="dtGender"><option value="nam">Nam (Trai)</option><option value="nu">Nữ (Gái)</option></select>
+        </div>
+        <div class="form-row">
+          <label>Ngày sinh Dương lịch (DD/MM/YYYY)</label>
+          <input type="text" id="dtDate" placeholder="vd: 20/05/2026" maxlength="10" oninput="formatDateInput(this)">
+        </div>
+        <div class="form-row">
+          <label>Giờ sinh</label>
+          <select id="dtnHour">
+            <option value="1">Tý (23h-1h)</option><option value="2">Sửu (1h-3h)</option><option value="3">Dần (3h-5h)</option>
+            <option value="4">Mão (5h-7h)</option><option value="5">Thìn (7h-9h)</option><option value="6">Tỵ (9h-11h)</option>
+            <option value="7" selected>Ngọ (11h-13h)</option><option value="8">Mùi (13h-15h)</option><option value="9">Thân (15h-17h)</option>
+            <option value="10">Dậu (17h-19h)</option><option value="11">Tuất (19h-21h)</option><option value="12">Hợi (21h-23h)</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label>Giờ sinh chính xác (HH:MM) <span style="color:#888;font-size:11px">- tùy chọn, ưu tiên</span></label>
+          <input type="text" id="dtnHourPrecise" placeholder="vd: 23:15" maxlength="5" oninput="formatHHMM(this)">
+        </div>
+        <div class="form-row" style="display:flex;flex-direction:column;justify-content:end">
+          <button class="action" onclick="datTenCon()">📝 PHÂN TÍCH &amp; GỢI Ý TÊN</button>
+        </div>
+      </div>
+      <div id="dtResult"></div>
+      <div id="pdfBarDatTen" class="pdf-export-bar" style="display:none">
+        <button class="pdf-export-btn" onclick="exportPDF('dtResult','DatTen','ĐẶT TÊN CON THEO TỨ TRỤ - Báo Cáo')">🖨 In / Lưu PDF</button>
+      </div>
+
+      <h3 style="margin-top:18px;color:#ffd700">📋 NGUYÊN TẮC ĐẶT TÊN THEO NGŨ HÀNH</h3>
       <div class="principle-list">
-        <p>🔸 <b>Bản Mệnh</b>: nạp âm Lạc Thư Hoa Giáp (đã đổi Thủy-Hỏa). Vd: Bính Tý cổ Hán "Giản Hạ Thủy" → Lạc Việt "Giản Hạ Hỏa".</p>
-        <p>🔸 <b>Cục</b>: dựa trên nạp âm của tháng tại cung Mệnh, theo Lạc Thư Hoa Giáp Lạc Việt. Do Thủy-Hỏa đổi chỗ nên nhiều tuổi có Cục khác Tử Vi cổ Hán.</p>
-        <p>🔸 <b>14 Chính Tinh</b>: vẫn theo quy tắc cổ điển (Tử Vi tinh + Thiên Phủ tinh).</p>
-        <p>🔸 <b>Tứ Hóa</b>: Hóa Lộc - Quyền - Khoa - Kỵ theo Thiên Can năm sinh.</p>
-        <p>🔸 <b>Đại Vận</b>: 10 năm/cung. Dương Nam-Âm Nữ thuận; Âm Nam-Dương Nữ nghịch.</p>
+        <p>🔸 <b>Tứ Trụ (Bát Tự)</b>: 4 trụ Năm-Tháng-Ngày-Giờ, mỗi trụ 1 Thiên Can + 1 Địa Chi = 8 chữ.</p>
+        <p>🔸 <b>Nhật Chủ</b>: Thiên Can của trụ Ngày — đại diện cho bản thân đứa bé.</p>
+        <p>🔸 <b>Vượng/Nhược</b>: xét Nhật Chủ mạnh hay yếu dựa vào số lượng hành sinh-trợ vs hành khắc-tiết.</p>
+        <p>🔸 <b>Dụng Thần</b>: hành cần bổ. Nhật Chủ nhược → bổ hành sinh/trợ (Ấn, Tỷ). Nhật Chủ vượng → bổ hành khắc/tiết (Tài, Quan, Thực Thương).</p>
+        <p>🔸 <b>Đặt tên</b>: chọn chữ có ngũ hành = Dụng Thần để cân bằng lá số, hỗ trợ vận mệnh đứa trẻ.</p>
+        <p style="color:#ffcc66">⚠ Đây là tham khảo theo lý học. Tên hay còn cần đẹp về âm, nghĩa, hợp văn hóa gia đình.</p>
       </div>
     </div>
   </div>
 
   <!-- ==================== TAB 9: GUIDE ==================== -->
   <div class="panel" id="panel-guide">
+    <div class="card">
+      <h2>⏰ BẢNG GIỜ CHUẨN THEO THÁNG ÂM LỊCH</h2>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:8px">Bảng đối chiếu khoảng giờ thực tế của 12 giờ Chi theo từng tháng âm lịch (hiệu chỉnh Equation of Time + múi giờ VN). Dùng để xác định đúng giờ Chi cho ca sinh sát biên. Mỗi tháng các giờ xê dịch theo cùng một lượng (shift).</p>
+      <div id="gioRefTable" style="overflow-x:auto"></div>
+      <p style="font-size:11.5px;color:#888;margin-top:8px">📌 Shift theo tháng âm: T1 +20p · T2 0 · T3 +30p · T4 +40p · T5 +80p · T6 +40p · T7 +30p · T8 0 · T9 +20p · T10 0 · T11 -20p · T12 0. (Tý chuẩn civil = 23h-1h)</p>
+    </div>
+
+    <div class="card">
+      <h2>📖 TỪ ĐIỂN THUẬT NGỮ PHONG THỦY LẠC VIỆT</h2>
+      <div class="filter-bar">
+        <input type="text" id="glossarySearch" placeholder="🔍 Tìm thuật ngữ... (vd: Tam Tai, Dụng Thần, Hậu Thiên)" oninput="filterGlossary()" style="flex:1;min-width:200px">
+        <span style="font-size:12px;color:#aaa">Tổng: <span id="glossaryCount">0</span> mục</span>
+      </div>
+      <div id="glossaryList" style="max-height:480px;overflow-y:auto;margin-top:8px"></div>
+    </div>
+
     <div class="card">
       <h2>NGUYÊN LÝ "LUẬN TUỔI LẠC VIỆT"</h2>
 
@@ -1083,15 +1299,31 @@ const CUUTINH={
   'Lục Sát':  {star:'Văn Khúc',el:'Dương Thủy',  cls:'Thứ Hung',  cuc:'Thủy cục',months:'Thân-Tý-Thìn',desc:'Tai họa, bệnh tật, ly tán'}
 };
 
-// ============== TABS ==============
-document.querySelectorAll('.tab').forEach(t=>{
-  t.addEventListener('click',()=>{
-    document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
-    document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
-    t.classList.add('active');
-    document.getElementById('panel-'+t.dataset.tab).classList.add('active');
+// ============== TABS (nhóm + tab) ==============
+function showTab(t){
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  const p=document.getElementById('panel-'+t.dataset.tab);if(p)p.classList.add('active');
+}
+function showGroup(grp,activateFirst){
+  document.querySelectorAll('.grp').forEach(g=>g.classList.toggle('active',g.dataset.grp===grp));
+  let first=null;
+  document.querySelectorAll('.tab').forEach(t=>{
+    const inGrp=t.dataset.grp===grp;
+    t.classList.toggle('grp-hidden',!inGrp);
+    if(inGrp&&!first)first=t;
   });
+  if(activateFirst&&first)showTab(first);
+}
+document.querySelectorAll('.grp').forEach(g=>{
+  g.addEventListener('click',()=>showGroup(g.dataset.grp,true));
 });
+document.querySelectorAll('.tab').forEach(t=>{
+  t.addEventListener('click',()=>showTab(t));
+});
+// Khởi tạo: hiện nhóm 1
+showGroup('g1',false);
 
 // ============== CHILDREN INPUT ==============
 let childCount=0;
@@ -1691,6 +1923,162 @@ function filterHoaGiap(){
   document.getElementById('hgCount').textContent=count;
 }
 
+// ============== XEM TUỔI LÀM NHÀ (Kim Lâu - Hoang Ốc - Tam Tai) ==============
+function xemTuoiLamNha(){
+  const sy=parseInt(document.getElementById('lnYear').value);
+  const by=parseInt(document.getElementById('lnBuildYear').value);
+  if(!sy){alert('Nhập năm sinh gia chủ');return}
+  if(!by){alert('Nhập năm dự định làm nhà');return}
+  if(by<=sy){alert('Năm làm nhà phải sau năm sinh');return}
+  const tuoiMu=by-sy+1;
+  // ===== Kim Lâu (tuổi mụ mod 9) =====
+  let kl=tuoiMu%9; if(kl===0)kl=9;
+  const KL_MAP={1:'Kim Lâu Thân — hại chính gia chủ',3:'Kim Lâu Thê — hại vợ/chồng',6:'Kim Lâu Tử — hại con cái',8:'Kim Lâu Lục Súc — hại tài sản, vật nuôi'};
+  const klPham=KL_MAP[kl]!==undefined;
+  // ===== Hoang Ốc (6 cung, bấm tay từ 10 tuổi tại Nhất Cát) =====
+  const HO_CUNG=['Nhất Cát','Nhì Nghi','Tam Địa Sát','Tứ Tấn Tài','Ngũ Thọ Tử','Lục Hoang Ốc'];
+  const HO_GOOD=[true,true,false,true,false,false];
+  const HO_DESC=['Tốt - mọi sự hanh thông','Tốt - thuận lợi','Xấu - tai họa đất đai','Tốt - tiến tài lộc','Xấu - hao người','Xấu - nhà hoang, lụi bại'];
+  const hoIdx=((tuoiMu-10)%6+6)%6;
+  const hoPham=!HO_GOOD[hoIdx];
+  // ===== Tam Tai (theo Tam Hợp cục của tuổi) =====
+  const chiSinh=CHI[(sy+8)%12];
+  const cuc=TAM_HOP[chiSinh];
+  const ttArr=TAM_TAI[cuc]||[];
+  const chiBuild=CHI[(by+8)%12];
+  const ttPham=ttArr.includes(chiBuild);
+  const ttOrder=ttArr.indexOf(chiBuild)+1;
+
+  const phamCount=(klPham?1:0)+(hoPham?1:0)+(ttPham?1:0);
+  let html='<div class="card" style="margin-top:12px"><h2>🏗️ KẾT QUẢ XEM TUỔI LÀM NHÀ</h2>';
+  html+=`<p style="font-size:13px;color:#ccc">Gia chủ sinh năm <b>${sy}</b> (${CAN[(sy+6)%10]} ${chiSinh}) · Làm nhà năm <b>${by}</b> (${CAN[(by+6)%10]} ${chiBuild}) · <b>Tuổi mụ: ${tuoiMu}</b></p>`;
+  html+='<div class="direction-grid" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-top:10px">';
+  // Kim Lâu
+  html+=`<div class="dir-cell ${klPham?'hung-dai':'cat-dai'}">
+    <span class="dn">${klPham?'🔴':'🟢'} KIM LÂU</span>
+    <b style="font-size:13px">${klPham?'PHẠM':'Không phạm'}</b><br>
+    <small>Số Kim Lâu: ${kl}</small>${klPham?`<br><small style="color:#ffcccc">${KL_MAP[kl]}</small>`:''}
+  </div>`;
+  // Hoang Ốc
+  html+=`<div class="dir-cell ${hoPham?'hung-dai':'cat-dai'}">
+    <span class="dn">${hoPham?'🔴':'🟢'} HOANG ỐC</span>
+    <b style="font-size:13px">${HO_CUNG[hoIdx]}</b><br>
+    <small>${HO_DESC[hoIdx]}</small>
+  </div>`;
+  // Tam Tai
+  html+=`<div class="dir-cell ${ttPham?'hung-dai':'cat-dai'}">
+    <span class="dn">${ttPham?'🔴':'🟢'} TAM TAI</span>
+    <b style="font-size:13px">${ttPham?'PHẠM ('+ttOrder+'/3)':'Không phạm'}</b><br>
+    <small>Cục ${cuc} · Tam Tai: ${ttArr.join('-')}</small>
+  </div>`;
+  html+='</div>';
+
+  // Kết luận
+  let vcls,vtitle,vtext;
+  if(phamCount===0){
+    vcls='good';vtitle='✓ TUỔI ĐẸP - ĐƯỢC LÀM NHÀ';
+    vtext=`Năm ${by}, gia chủ tuổi ${tuoiMu} <b>không phạm</b> cả Kim Lâu, Hoang Ốc lẫn Tam Tai. Rất thuận lợi để động thổ, xây nhà. Nên chọn thêm <b>ngày-giờ tốt</b> (tab Xem Ngày) để khởi công.`;
+  }else if(phamCount===1&&ttPham){
+    vcls='neutral';vtitle='⚠ CHỈ PHẠM TAM TAI - CÓ THỂ CÂN NHẮC';
+    vtext=`Chỉ phạm Tam Tai (năm thứ ${ttOrder}/3). Theo nhiều thầy, Tam Tai <b>kỵ động thổ - khởi công</b> nhưng nhẹ hơn Kim Lâu/Hoang Ốc. Nếu cần làm gấp: chọn ngày giờ thật tốt, làm lễ động thổ cẩn thận, hoặc <b>mượn tuổi</b> người không phạm.`;
+  }else{
+    vcls='bad';vtitle='⚠ PHẠM HẠN - NÊN MƯỢN TUỔI HOẶC CHỜ NĂM KHÁC';
+    const list=[];if(klPham)list.push('Kim Lâu');if(hoPham)list.push('Hoang Ốc');if(ttPham)list.push('Tam Tai');
+    vtext=`Năm ${by} phạm: <b>${list.join(', ')}</b>. Theo truyền thống, không nên đứng tên động thổ năm này.<br><br>
+    <b>Cách hóa giải:</b><br>
+    • <b>Mượn tuổi</b>: nhờ người thân/bạn (nam, không phạm 3 hạn trên năm ${by}) đứng ra động thổ, dâng sớ, bán nhà tượng trưng. Gia chủ tránh mặt lúc động thổ.<br>
+    • Hoặc <b>chờ năm khác</b> không phạm hạn.`;
+  }
+  html+=`<div class="verdict ${vcls}" style="margin-top:12px"><div class="verdict-title">${vtitle}</div>${vtext}</div>`;
+
+  // Gợi ý năm đẹp gần nhất (quét 6 năm tới)
+  const goodYears=[];
+  for(let yy=by;yy<by+8&&goodYears.length<5;yy++){
+    const tm=yy-sy+1;let k=tm%9;if(k===0)k=9;
+    const klP=KL_MAP[k]!==undefined;
+    const hi=((tm-10)%6+6)%6;const hoP=!HO_GOOD[hi];
+    const cb=CHI[(yy+8)%12];const ttP=ttArr.includes(cb);
+    if(!klP&&!hoP&&!ttP)goodYears.push(yy+' (tuổi '+tm+')');
+  }
+  if(goodYears.length){
+    html+=`<div class="verdict good" style="margin-top:8px"><div class="verdict-title">📅 NĂM ĐẸP LÀM NHÀ GẦN NHẤT (không phạm 3 hạn)</div>${goodYears.join(' · ')}</div>`;
+  }
+
+  html+=`<div style="margin-top:10px;padding:10px 14px;background:rgba(255,193,7,.08);border-left:3px solid #ffc107;border-radius:4px;font-size:11.5px;color:#ccc;line-height:1.7">
+    <b style="color:#ffc107">📚 GIẢI THÍCH:</b><br>
+    • <b>Kim Lâu</b>: tuổi mụ chia 9 dư 1/3/6/8 → phạm (hại Thân/Thê/Tử/Súc).<br>
+    • <b>Hoang Ốc</b>: bấm 6 cung từ 10 tuổi - rơi vào Địa Sát/Thọ Tử/Hoang Ốc là xấu. (Hoang Ốc có dị bản giữa các phái - nên đối chiếu thêm.)<br>
+    • <b>Tam Tai</b>: 3 năm hạn của mỗi Tam Hợp cục - kỵ việc lớn (xây nhà, cưới hỏi, khai trương).<br>
+    • Người làm nhà (đứng tên động thổ) thường là <b>nam, gia chủ</b>. Phụ nữ làm chủ hộ cũng xét tương tự.
+  </div>`;
+  html+='</div>';
+  document.getElementById('lnResult').innerHTML=html;
+  document.getElementById('pdfBarLN').style.display='flex';
+  document.getElementById('lnResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ============== XÔNG ĐẤT ĐẦU NĂM ==============
+const LUC_HOP={'Tý':'Sửu','Sửu':'Tý','Dần':'Hợi','Hợi':'Dần','Mão':'Tuất','Tuất':'Mão','Thìn':'Dậu','Dậu':'Thìn','Tỵ':'Thân','Thân':'Tỵ','Ngọ':'Mùi','Mùi':'Ngọ'};
+function xongDat(){
+  const gy=parseInt(document.getElementById('xdYear').value);
+  const ny=parseInt(document.getElementById('xdNewYear').value);
+  if(!gy){alert('Nhập năm sinh gia chủ');return}
+  if(!ny){alert('Nhập năm mới');return}
+  const gcChi=CHI[(gy+8)%12], gcCan=CAN[(gy+6)%10];
+  const newChi=CHI[(ny+8)%12], newCan=CAN[(ny+6)%10];
+  const gcCuc=TAM_HOP[gcChi], newCuc=TAM_HOP[newChi];
+  const gcHop=TAM_HOP_GROUP[gcCuc], newHop=TAM_HOP_GROUP[newCuc];
+  // Đánh giá 12 con giáp
+  const rows=CHI.map(chi=>{
+    let s=0;const note=[];
+    if(chi!==gcChi&&gcHop.includes(chi)){s+=3;note.push('Tam Hợp gia chủ');}
+    if(LUC_HOP[gcChi]===chi){s+=2;note.push('Lục Hợp gia chủ');}
+    if(newHop.includes(chi)){s+=2;note.push('Tam Hợp năm mới');}
+    if(LUC_HOP[newChi]===chi){s+=1;note.push('Lục Hợp năm mới');}
+    if(LUC_XUNG_FULL[gcChi]===chi){s-=5;note.push('XUNG gia chủ');}
+    if(LUC_HAI_FULL[gcChi]===chi){s-=3;note.push('Hại gia chủ');}
+    if(LUC_XUNG_FULL[newChi]===chi){s-=4;note.push('Xung Thái Tuế (năm mới)');}
+    if(chi===newChi){s-=2;note.push('Cùng tuổi Thái Tuế');}
+    // Tam Tai năm mới?
+    const cucC=TAM_HOP[chi];
+    if((TAM_TAI[cucC]||[]).includes(newChi)){s-=3;note.push('Phạm Tam Tai năm mới');}
+    return{chi,s,note};
+  });
+  rows.sort((a,b)=>b.s-a.s);
+  // Năm sinh gần đây cho mỗi chi (người trưởng thành 20-65 tuổi)
+  function recentYears(chi){
+    const ci=CHI.indexOf(chi);const out=[];
+    for(let yy=ny-1;yy>=ny-65;yy--){if((yy+8)%12===ci){const age=ny-yy;if(age>=18&&age<=70)out.push(yy+' ('+age+'t)');}if(out.length>=3)break;}
+    return out;
+  }
+  let html='<div class="card" style="margin-top:12px"><h2>🧧 KẾT QUẢ CHỌN TUỔI XÔNG ĐẤT</h2>';
+  html+=`<p style="font-size:13px;color:#ccc">Gia chủ <b>${gcCan} ${gcChi}</b> (${gy}) · Năm mới <b>${newCan} ${newChi}</b> (${ny})</p>`;
+  const good=rows.filter(r=>r.s>=3);
+  const bad=rows.filter(r=>r.s<0);
+  html+='<h3 style="color:#4ade80;margin-top:10px">🟢 TUỔI NÊN XÔNG ĐẤT</h3>';
+  if(good.length){
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px">';
+    good.forEach(r=>{
+      html+=`<div style="background:rgba(76,175,80,.1);border-left:4px solid #2e7d32;border-radius:6px;padding:8px 12px">
+        <b style="color:#4ade80;font-size:14px">Tuổi ${r.chi}</b> <span style="color:#ffd700">(+${r.s}đ)</span><br>
+        <small style="color:#ccc">${r.note.filter(n=>!n.includes('XUNG')&&!n.includes('Hại')&&!n.includes('Tam Tai')).join(', ')}</small><br>
+        <small style="color:#888">Năm sinh: ${recentYears(r.chi).join(', ')||'—'}</small>
+      </div>`;
+    });
+    html+='</div>';
+  }else html+='<p style="color:#aaa">Không có tuổi nào đạt điểm cao rõ rệt. Ưu tiên tuổi Tam Hợp/Lục Hợp gia chủ, không xung khắc.</p>';
+  html+='<h3 style="color:#f87171;margin-top:12px">🔴 TUỔI NÊN TRÁNH</h3>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:6px">';
+  bad.forEach(r=>{html+=`<span style="background:rgba(231,76,60,.12);border:1px solid #c62828;border-radius:8px;padding:4px 10px;font-size:12.5px"><b>${r.chi}</b> <small style="color:#ff9090">(${r.note.filter(n=>n.includes('XUNG')||n.includes('Hại')||n.includes('Tam Tai')||n.includes('Thái Tuế')).join(', ')})</small></span>`;});
+  html+='</div>';
+  html+=`<div style="margin-top:10px;padding:8px 12px;background:rgba(255,193,7,.08);border-left:3px solid #ffc107;border-radius:4px;font-size:11.5px;color:#ccc;line-height:1.7">
+    <b style="color:#ffc107">Lưu ý:</b> Người xông đất nên là <b>nam giới</b>, tính tình vui vẻ, gia đình hòa thuận, công việc thuận lợi, không có tang. Ngoài hợp tuổi, nên xét thêm mệnh (nạp âm) tương sinh gia chủ. Tránh người đang phạm Tam Tai/Kim Lâu năm đó.
+  </div>`;
+  html+='</div>';
+  document.getElementById('xdResult').innerHTML=html;
+  document.getElementById('xdResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
 // ============== BAT TRACH ==============
 function calcBatTrach(){
   const y=parseInt(document.getElementById('ownerYear').value);
@@ -2072,20 +2460,64 @@ function buildThuocTable(){
   const tb=document.getElementById('thuocTable');
   if(!tb)return;
   let html='';
-  let lastGroup='';
-  THUOC_LV.forEach(it=>{
-    const showGroup=it.group!==lastGroup;
+  const MAX=500;
+  for(let cm=0;cm<=MAX;cm++){
+    const i=cm%41;
+    const cyc=Math.floor(cm/41)+1;
+    const it=THUOC_LV[i];
     const color=THUOC_GROUP_COLOR[it.group];
-    const bg=it.cat?'rgba(76,175,80,.08)':'rgba(231,76,60,.08)';
-    html+=`<tr style="background:${bg}">
-      <td><b>${it.cm}-${it.cm}.99</b></td>
-      <td>${showGroup?`<b style="color:${color}">${it.group}</b>`:''}</td>
+    const bg=it.cat?'rgba(76,175,80,.10)':'rgba(231,76,60,.10)';
+    html+=`<tr id="thr${cm}" data-cat="${it.cat?'cat':'hung'}" style="background:${bg}">
+      <td><b>${cm}</b></td>
+      <td style="color:#888;font-size:11px">${cyc} (vạch ${i})</td>
+      <td><b style="color:${color}">${it.group}</b></td>
       <td>${it.name}${it.meaning?' <small style="color:#aaa">('+it.meaning+')</small>':''}</td>
       <td><span class="badge" style="background:${color};color:#fff">${it.cat?'CÁT':'HUNG'}</span></td>
     </tr>`;
-    lastGroup=it.group;
-  });
+  }
   tb.innerHTML=html;
+}
+function scrollToThuocRow(){
+  const v=parseInt(document.getElementById('thuocFilterCm').value);
+  document.querySelectorAll('[id^="thr"]').forEach(el=>{el.style.outline='';});
+  if(isNaN(v)||v<0||v>500)return;
+  const el=document.getElementById('thr'+v);
+  if(el){el.style.outline='3px solid #ffd700';el.scrollIntoView({behavior:'smooth',block:'center'});}
+}
+function filterThuocList(){
+  const f=document.getElementById('thuocFilterCat').value;
+  document.querySelectorAll('[id^="thr"]').forEach(el=>{
+    el.style.display=(!f||el.dataset.cat===f)?'':'none';
+  });
+}
+
+// Bảng giờ chuẩn theo tháng âm (12 giờ × 12 tháng) cho tab Nguyên Lý
+function buildGioRefTable(){
+  const c=document.getElementById('gioRefTable');
+  if(!c)return;
+  const gioNames=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
+  function fmt(min){min=((min%1440)+1440)%1440;const h=Math.floor(min/60),m=min%60;return h+'g'+(m?String(m).padStart(2,'0'):'00')}
+  let html='<table style="border-collapse:collapse;font-size:10px;min-width:100%;text-align:center">';
+  // Header tháng
+  html+='<tr><th style="position:sticky;left:0;background:#1a1a2e;color:#ffd700;padding:5px 8px;border:1px solid #444;z-index:2">Giờ\\Tháng</th>';
+  for(let m=1;m<=12;m++){
+    const sh=THANG_SHIFT_MINUTES[m-1];
+    html+=`<th style="padding:4px 5px;border:1px solid #444;background:#1a1a2e;color:#ffd700;min-width:64px">${m}<br><span style="font-size:8px;color:${sh>0?'#fbbf24':sh<0?'#4ade80':'#888'}">${sh>=0?'+':''}${sh}p</span></th>`;
+  }
+  html+='</tr>';
+  // Mỗi hàng = 1 giờ Chi
+  for(let g=0;g<12;g++){
+    html+=`<tr><th style="position:sticky;left:0;background:#1a1a2e;color:#ffd700;padding:4px 8px;border:1px solid #444;z-index:1;text-align:left">${gioNames[g]}</th>`;
+    for(let m=1;m<=12;m++){
+      const sh=THANG_SHIFT_MINUTES[m-1];
+      const startMin=g*120+23*60+sh; // Tý civil 23:00 + shift, mỗi giờ +120p
+      const endMin=startMin+119;
+      html+=`<td style="padding:4px 5px;border:1px solid #444;background:${g%2===0?'rgba(255,255,255,.03)':'transparent'};white-space:nowrap;font-size:9.5px">${fmt(startMin)}-${fmt(endMin)}</td>`;
+    }
+    html+='</tr>';
+  }
+  html+='</table>';
+  c.innerHTML=html;
 }
 
 // ============== ÂM LỊCH HỒ NGỌC ĐỨC ==============
@@ -2096,6 +2528,32 @@ const TK21_DATA=[0x46c960,0x2ed954,0x54d4a0,0x3eda50,0x2a7552,0x4e56a0,0x38a7a7,
 const CAN_AL=['Giáp','Ất','Bính','Đinh','Mậu','Kỷ','Canh','Tân','Nhâm','Quý'];
 const CHI_AL=['Tý','Sửu','Dần','Mão','Thìn','Tỵ','Ngọ','Mùi','Thân','Dậu','Tuất','Hợi'];
 function jdn(d,m,y){const a=Math.floor((14-m)/12),yy=y+4800-a,mm=m+12*a-3;return d+Math.floor((153*mm+2)/5)+365*yy+Math.floor(yy/4)-Math.floor(yy/100)+Math.floor(yy/400)-32045}
+// ===== TIẾT KHÍ THIÊN VĂN (Jean Meeus) =====
+// Kinh độ hoàng đạo biểu kiến của mặt trời (độ) tại Julian Day
+function sunEclipticLong(jd){
+  const T=(jd-2451545.0)/36525;
+  const L0=280.46646+36000.76983*T+0.0003032*T*T;
+  const M=357.52911+35999.05029*T-0.0001537*T*T;
+  const Mr=M*Math.PI/180;
+  const C=(1.914602-0.004817*T-0.000014*T*T)*Math.sin(Mr)+(0.019993-0.000101*T)*Math.sin(2*Mr)+0.000289*Math.sin(3*Mr);
+  const omega=125.04-1934.136*T;
+  const lambda=L0+C-0.00569-0.00478*Math.sin(omega*Math.PI/180);
+  return ((lambda%360)+360)%360;
+}
+const TIET24_NAMES=['Lập Xuân','Vũ Thủy','Kinh Trập','Xuân Phân','Thanh Minh','Cốc Vũ','Lập Hạ','Tiểu Mãn','Mang Chủng','Hạ Chí','Tiểu Thử','Đại Thử','Lập Thu','Xử Thử','Bạch Lộ','Thu Phân','Hàn Lộ','Sương Giáng','Lập Đông','Tiểu Tuyết','Đại Tuyết','Đông Chí','Tiểu Hàn','Đại Hàn'];
+// Thông tin tháng can-chi theo tiết khí thực (kinh độ mặt trời tại trưa giờ VN)
+function monthInfoByTiet(d,m,y){
+  const jd=jdn(d,m,y)-0.5+(12-7)/24; // trưa 12h giờ VN (UTC+7) → JD UT
+  const lam=sunEclipticLong(jd);
+  const idx24=Math.floor(((lam-315+360)%360)/15); // 0=Lập Xuân
+  const monthNum=Math.floor(((lam-315+360)%360)/30)+1; // 1=Dần
+  const chiIdx=(monthNum+1)%12; // Dần=2
+  let yearForPillar;
+  if(m>=3)yearForPillar=y;
+  else if(m===1)yearForPillar=y-1;
+  else yearForPillar=(lam>=315&&lam<360)?y:y-1; // tháng 2: sau Lập Xuân→y
+  return{monthNum,chiIdx,lambda:lam,yearForPillar,tietName:TIET24_NAMES[idx24]};
+}
 function decodeLY(y,k){const ml=[29,30],rm=[],ly=[];const off=k>>17,lm=k&0xf,lml=ml[k>>16&0x1],snj=jdn(1,1,y);let cj=snj+off,j=k>>4;for(let i=0;i<12;i++){rm[11-i]=ml[j&0x1];j>>=1}if(lm==0){for(let m=1;m<=12;m++){ly.push({day:1,month:m,year:y,leap:0,jd:cj});cj+=rm[m-1]}}else{for(let m=1;m<=lm;m++){ly.push({day:1,month:m,year:y,leap:0,jd:cj});cj+=rm[m-1]}ly.push({day:1,month:lm,year:y,leap:1,jd:cj});cj+=lml;for(let m=lm+1;m<=12;m++){ly.push({day:1,month:m,year:y,leap:0,jd:cj});cj+=rm[m-1]}}return ly}
 function getYearInfo(y){let k;if(y<1900)k=TK19_DATA[y-1800];else if(y<2000)k=TK20_DATA[y-1900];else if(y<2100)k=TK21_DATA[y-2000];return decodeLY(y,k)}
 function findLunar(jd,ly){let i=ly.length-1;while(jd<ly[i].jd)i--;return{day:ly[i].day+(jd-ly[i].jd),month:ly[i].month,year:ly[i].year,leap:ly[i].leap,jd}}
@@ -2342,31 +2800,10 @@ function xemNgay(today){
   const tu=TU28[tuIdx];
   const tuDetail=TU28_DETAIL[tuIdx]||{nen:'',kieng:''};
 
-  // Tiết Khí: ước tính theo ngày Dương lịch (mỗi tiết ~15 ngày, tiết đầu tháng ~ngày 4-8, tiết giữa tháng ~ngày 19-23)
-  // 12 tiết "tiết" (đứng đầu tháng) đánh dấu chuyển tháng âm:
-  // Lập Xuân(2/4)→Dần, Kinh Trập(3/6)→Mão, Thanh Minh(4/5)→Thìn, Lập Hạ(5/5)→Tỵ,
-  // Mang Chủng(6/6)→Ngọ, Tiểu Thử(7/7)→Mùi, Lập Thu(8/8)→Thân, Bạch Lộ(9/8)→Dậu,
-  // Hàn Lộ(10/8)→Tuất, Lập Đông(11/7)→Hợi, Đại Tuyết(12/7)→Tý, Tiểu Hàn(1/6)→Sửu
-  const TIET_DATES=[[1,6,'Tiểu Hàn',1],[1,20,'Đại Hàn',1],[2,4,'Lập Xuân',2],[2,19,'Vũ Thủy',2],[3,6,'Kinh Trập',3],[3,21,'Xuân Phân',3],[4,5,'Thanh Minh',4],[4,20,'Cốc Vũ',4],[5,5,'Lập Hạ',5],[5,21,'Tiểu Mãn',5],[6,6,'Mang Chủng',6],[6,21,'Hạ Chí',6],[7,7,'Tiểu Thử',7],[7,23,'Đại Thử',7],[8,8,'Lập Thu',8],[8,23,'Xử Thử',8],[9,8,'Bạch Lộ',9],[9,23,'Thu Phân',9],[10,8,'Hàn Lộ',10],[10,23,'Sương Giáng',10],[11,7,'Lập Đông',11],[11,22,'Tiểu Tuyết',11],[12,7,'Đại Tuyết',0],[12,22,'Đông Chí',0]];
-  // Find current tiết
-  let currentTiet='',kienIdx=0;
-  for(let i=TIET_DATES.length-1;i>=0;i--){
-    const [tm,td,name,k]=TIET_DATES[i];
-    if(m>tm||(m===tm&&d>=td)){currentTiet=name;kienIdx=k;break}
-  }
-  if(!currentTiet){currentTiet='Tiểu Hàn năm trước';kienIdx=1}
-  // Kiến tháng chỉ chuyển ở các "tiết" đứng đầu tháng (12 tiết chính), không đổi ở giữa tháng
-  // Map tiết đầu tháng → kiến chi index
-  const KIEN_BY_TIET={'Tiểu Hàn':1,'Lập Xuân':2,'Kinh Trập':3,'Thanh Minh':4,'Lập Hạ':5,'Mang Chủng':6,'Tiểu Thử':7,'Lập Thu':8,'Bạch Lộ':9,'Hàn Lộ':10,'Lập Đông':11,'Đại Tuyết':0};
-  // Find latest "tiết chính" before current date
-  let kienChi=1;
-  const tietChinh=['Tiểu Hàn','Lập Xuân','Kinh Trập','Thanh Minh','Lập Hạ','Mang Chủng','Tiểu Thử','Lập Thu','Bạch Lộ','Hàn Lộ','Lập Đông','Đại Tuyết'];
-  for(let i=TIET_DATES.length-1;i>=0;i--){
-    const [tm,td,name,k]=TIET_DATES[i];
-    if((m>tm||(m===tm&&d>=td)) && tietChinh.includes(name)){kienChi=KIEN_BY_TIET[name];break}
-  }
-  // Nếu chưa qua Tiểu Hàn năm nay (đầu tháng 1), kiến = Tý (năm trước)
-  if(m===1&&d<6)kienChi=0;
+  // Tiết Khí THIÊN VĂN (kinh độ mặt trời - Jean Meeus) - chính xác ngày giao tiết
+  const mInfo=monthInfoByTiet(d,m,y);
+  const currentTiet=mInfo.tietName;
+  const kienChi=mInfo.chiIdx; // kiến tháng theo tiết khí thực
 
   // 12 Trực: Trực Kiến ở chi ngày trùng với kiến tháng, từ đó cộng dồn
   const chiDayIdx=(jd+1)%12;
@@ -2431,6 +2868,18 @@ function xemNgay(today){
     <div style="font-size:18px;letter-spacing:3px;color:${dayCls==='good'?'#4ade80':dayCls==='bad'?'#f87171':'#fbbf24'}">${dayStar}</div>
     <div style="font-size:12px;margin-top:4px">Điểm tổng hợp: <b>${sc>=0?'+':''}${sc}</b> (28 Tú + Trực + Hoàng Đạo + Tam Nương/Nguyệt Kỵ + Thần sát)</div>
     <small style="color:#aaa">Ngưỡng: ≥+4 Rất tốt · +2÷+3 Tốt · 0÷+1 Dùng được · -1÷-2 Kém · ≤-3 Xấu</small></div>`;
+
+  // Đánh giá theo VIỆC cụ thể (nếu chọn)
+  const viecSel=document.getElementById('ngayViec').value;
+  if(viecSel){
+    const ev=evalViec(dayScore,viecSel);
+    if(ev){
+      html+=`<div class="verdict ${ev.cls}" style="margin-top:8px"><div class="verdict-title">🎯 ${ev.verdict} (điểm việc: ${ev.vscore>=0?'+':''}${ev.vscore})</div>`;
+      if(ev.good.length)html+=`<span style="color:#4ade80">✓ Thuận: ${ev.good.join(', ')}.</span><br>`;
+      if(ev.bad.length)html+=`<span style="color:#f87171">✗ Kỵ: ${ev.bad.join(', ')}.</span><br>`;
+      html+=`<small style="color:#aaa">${ev.info.note}</small></div>`;
+    }
+  }
 
   // Tiết Khí
   html+=`<div class="verdict info" style="margin-top:8px"><div class="verdict-title">🌿 TIẾT KHÍ: ${currentTiet}</div>
@@ -2761,6 +3210,84 @@ function doDocToan(){
 
   html+='</div>';
   document.getElementById('docToanResult').innerHTML=html;
+}
+
+// ===== CHỌN SIM SỐ ĐẸP (5 đầu Bát Môn + 5 sau Lục Nhâm + mệnh chủ sim) =====
+function xemSo(){
+  const raw=(document.getElementById('soInput').value||'').replace(/\D/g,'');
+  if(!raw){alert('Nhập số sim (chỉ tính chữ số)');return}
+  if(raw.length<10){if(!confirm('Sim chuẩn 10 số. Số bạn nhập có '+raw.length+' chữ số — vẫn phân tích?'))return;}
+  const ownerY=parseInt(document.getElementById('soOwnerYear').value)||0;
+  const digits=raw.split('').map(Number);
+  const NHCOLOR={'Kim':'#9e9e9e','Mộc':'#43a047','Thủy':'#1e88e5','Hỏa':'#e53935','Thổ':'#b8860b'};
+  const NHSO={1:'Thủy',6:'Thủy',2:'Hỏa',7:'Hỏa',3:'Mộc',8:'Mộc',4:'Kim',9:'Kim',5:'Thổ',0:'Thổ'};
+  // Tách 5 đầu / 5 sau (sim 10 số). Nếu khác 10: 5 đầu = slice(0,5), 5 sau = slice(-5)
+  const head=digits.slice(0,5), tail=digits.slice(-5);
+  const sumHead=head.reduce((a,b)=>a+b,0), sumTail=tail.reduce((a,b)=>a+b,0);
+  // 5 đầu → Bát Môn (8 cửa)
+  const bm=BATMON[((sumHead-1)%8+8)%8];
+  // 5 sau → Lục Nhâm (6 cung)
+  const ln=LUCNHAM[((sumTail-1)%6+6)%6];
+  const bmGood=bm.cat==='Tốt', bmMid=bm.cat==='Trung', lnGood=ln.cat==='Tốt';
+  // Ngũ hành tổng sim (digital root Hà Đồ)
+  const sumAll=digits.reduce((a,b)=>a+b,0);
+  let dr=sumAll;while(dr>9)dr=String(dr).split('').reduce((a,b)=>a+ +b,0);
+  const simNH=NHSO[dr];
+  // Mệnh chủ sim
+  let menhNH=null,menhNapAm='';
+  if(ownerY){const sx=((ownerY-4)%60+60)%60;menhNapAm=NAP_AM[sx];menhNH=napAmEl(menhNapAm);}
+  // Tương quan sim ↔ mệnh
+  let menhRel=null;
+  if(menhNH){
+    if(NH_SINH_[simNH]===menhNH)menhRel={t:'Sim SINH mệnh (số sinh người - rất tốt)',cls:'good',pt:3};
+    else if(simNH===menhNH)menhRel={t:'Sim ĐỒNG hành mệnh (hỗ trợ - tốt)',cls:'good',pt:2};
+    else if(NH_KHAC_[menhNH]===simNH)menhRel={t:'Mệnh KHẮC sim (người chế ngự số - tạm)',cls:'neutral',pt:0};
+    else if(NH_SINH_[menhNH]===simNH)menhRel={t:'Mệnh sinh sim (người hao cho số - trung bình)',cls:'neutral',pt:0};
+    else if(NH_KHAC_[simNH]===menhNH)menhRel={t:'Sim KHẮC mệnh (số khắc người - xấu)',cls:'bad',pt:-3};
+  }
+  const cell=(title,o,sumv,sub,kind)=>{
+    const good=o.cat==='Tốt',mid=o.cat==='Trung';
+    const cls=good?'cat-dai':mid?'cat':'hung-dai';
+    return `<div class="dir-cell ${cls}"><span class="dn">${o.icon} ${title}</span><b style="font-size:14px">${o.name}</b> <small>(${o.cat})</small><br><small>${sub} · tổng ${sumv}</small><br><small style="font-size:10px;color:#aaa">${kind} · ${o.el}</small><br><small style="font-size:10px">${o.desc.split(',')[0]}</small></div>`;
+  };
+  let html='<div class="card" style="margin-top:12px"><h2>🔢 KẾT QUẢ PHÂN TÍCH SIM</h2>';
+  html+=`<p style="font-size:13px;color:#ccc">Sim: <b style="color:#ffd700">${raw}</b>${raw.length===10?'':' ('+raw.length+' số)'} · Ngũ hành sim (nút ${dr}): <b style="color:${NHCOLOR[simNH]}">${simNH}</b>`;
+  if(menhNH)html+=` · Chủ sim ${ownerY}: mệnh <b style="color:${NHCOLOR[menhNH]}">${menhNapAm} (${menhNH})</b>`;
+  html+='</p>';
+  html+='<div class="direction-grid" style="grid-template-columns:1fr 1fr;margin-top:10px">';
+  html+=cell('5 SỐ ĐẦU',bm,sumHead,raw.slice(0,5),'Bát Môn');
+  html+=cell('5 SỐ SAU',ln,sumTail,raw.slice(-5),'Lục Nhâm');
+  html+='</div>';
+  // Mệnh chủ sim
+  if(menhRel){
+    html+=`<div class="verdict ${menhRel.cls}" style="margin-top:10px"><div class="verdict-title">💎 SIM ↔ MỆNH CHỦ: ${menhRel.t}</div>
+      Ngũ hành sim <b style="color:${NHCOLOR[simNH]}">${simNH}</b> với mệnh chủ <b style="color:${NHCOLOR[menhNH]}">${menhNH}</b>. ${menhRel.pt>0?'Số hợp mệnh, hỗ trợ chủ nhân.':menhRel.pt<0?'Số khắc mệnh, không hợp - nên cân nhắc đổi.':'Tương quan trung tính.'}</div>`;
+  }else{
+    html+='<div class="verdict info" style="margin-top:10px"><div class="verdict-title">💎 SIM ↔ MỆNH CHỦ</div>Nhập <b>năm sinh chủ sim</b> để xét tương sinh ngũ hành giữa sim và mệnh chủ.</div>';
+  }
+  // Kết luận tổng
+  let pt=0;
+  pt+=bmGood?3:bmMid?1:-2; // 5 đầu Bát Môn
+  pt+=lnGood?3:-2;         // 5 sau Lục Nhâm
+  if(menhRel)pt+=menhRel.pt;
+  let vcls,vtitle,stars;
+  if(pt>=7){vcls='good';vtitle='✓ SIM RẤT ĐẸP - Nên dùng';stars='★★★★★';}
+  else if(pt>=4){vcls='good';vtitle='✓ SIM ĐẸP';stars='★★★★';}
+  else if(pt>=1){vcls='neutral';vtitle='○ Sim khá - Dùng được';stars='★★★';}
+  else if(pt>=-2){vcls='neutral';vtitle='○ Sim trung bình';stars='★★';}
+  else{vcls='bad';vtitle='✗ Sim chưa đẹp - Cân nhắc';stars='★';}
+  html+=`<div class="verdict ${vcls}" style="margin-top:8px"><div class="verdict-title">${vtitle}</div>
+    <div style="font-size:18px;letter-spacing:3px;color:${vcls==='good'?'#4ade80':vcls==='bad'?'#f87171':'#fbbf24'}">${stars}</div>
+    5 đầu: <b>${bm.name}</b> (${bm.cat}) · 5 sau: <b>${ln.name}</b> (${ln.cat})${menhRel?' · Mệnh: '+(menhRel.pt>0?'hợp':menhRel.pt<0?'khắc':'trung tính'):''}</div>`;
+  html+=`<div style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:11.5px;color:#bbb;line-height:1.7">
+    <b style="color:#ffd700">5 số đầu — Bát Môn (8 cửa):</b> 🟢 Sinh, Đỗ, Khai = tốt · 🟡 Cảnh = trung · 🔴 Thương, Tử, Kinh, Hưu = xấu.<br>
+    <b style="color:#ffd700">5 số sau — Lục Nhâm (6 cung):</b> 🟢 Đại An, Tốc Hỷ, Tiểu Cát · 🔴 Lưu Niên, Xích Khẩu, Vô Vong.<br>
+    <b>Ngũ hành Hà Đồ:</b> 1-6 Thủy · 2-7 Hỏa · 3-8 Mộc · 4-9 Kim · 5-0 Thổ. Sim tốt nhất khi <b>sinh hoặc đồng hành mệnh chủ</b>.<br>
+    <i>Tham khảo theo Lạc Việt - số đẹp còn tùy quan niệm.</i>
+  </div>`;
+  html+='</div>';
+  document.getElementById('soResult').innerHTML=html;
+  document.getElementById('soResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function getMonthChi(m){
@@ -3368,8 +3895,43 @@ function scoreDay(d,m,y){
   if(tnnk.tamNuong)score-=2;
   if(tnnk.nguyetKy)score-=2;
   score+=ts.adj; // cộng thần sát cát, trừ thần sát hung
-  return{score,tu,truc,trucCat,jd,lunar,chiDay,catH,tamNuong:tnnk.tamNuong,nguyetKy:tnnk.nguyetKy,thanSatCat:ts.cat,thanSatHung:ts.hung};
+  return{score,tu,tuIdx,truc,trucCat,jd,lunar,chiDay,catH,tamNuong:tnnk.tamNuong,nguyetKy:tnnk.nguyetKy,thanSatCat:ts.cat,thanSatHung:ts.hung};
 }
+
+// ===== Đánh giá ngày cho VIỆC cụ thể =====
+const VIEC_INFO={
+  cuoi:{name:'Cưới hỏi',nen:['cưới'],kieng:['cưới'],heavyKy:true,note:'Kỵ Tam Nương, Nguyệt Kỵ, Cô Thần/Quả Tú, Trực Phá/Nguy.'},
+  dongtho:{name:'Động thổ / Xây dựng',nen:['xây dựng','làm nhà','khai móng'],kieng:['an táng'],heavyKy:true,note:'Kỵ Thụ Tử, Nguyệt Phá, Trực Phá. Phải xét tuổi (Kim Lâu/Hoang Ốc/Tam Tai).'},
+  khaitruong:{name:'Khai trương / Mở hàng',nen:['khai trương','mọi việc','cầu tài'],kieng:['khai trương'],heavyKy:true,note:'Ưu tiên Thiên Đức/Nguyệt Đức. Kỵ Trực Phá, Nguyệt Kỵ.'},
+  nhaptrach:{name:'Nhập trạch',nen:['dọn nhà','làm nhà','mọi việc'],kieng:[],heavyKy:true,note:'Ưu tiên Trực Thành/Khai/Định. Kỵ Trực Phá, Tam Nương.'},
+  antang:{name:'An táng',nen:['an táng'],kieng:['an táng'],heavyKy:false,note:'Kỵ Trùng Tang (xem tab riêng), Trực Phá. Lưu ý sao Tú kỵ an táng.'},
+  caitang:{name:'Cải táng / Sửa mộ',nen:['an táng'],kieng:['an táng'],heavyKy:false,note:'Tương tự an táng; nên tránh ngày phạm Trùng Tang.'},
+  xuathanh:{name:'Xuất hành / Đi xa',nen:['xuất hành','đi xa'],kieng:['đi thuyền','đi xa','lên cao'],heavyKy:true,note:'Kỵ Tam Nương, Nguyệt Kỵ.'},
+  kyket:{name:'Ký kết / Giao dịch',nen:['mọi việc','cầu tài','khai trương'],kieng:[],heavyKy:false,note:'Ưu tiên Hoàng Đạo, tránh Trực Phá.'}
+};
+function evalViec(s,viec){
+  const info=VIEC_INFO[viec]; if(!info)return null;
+  const tuD=TU28_DETAIL[s.tuIdx]||{nen:'',kieng:''};
+  let vs=s.score; const good=[],bad=[];
+  const nenL=(tuD.nen||'').toLowerCase(),kiengL=(tuD.kieng||'').toLowerCase();
+  if(info.nen.some(k=>nenL.includes(k))){vs+=2;good.push('Sao '+s.tu.name+' hợp việc này');}
+  if(info.kieng.some(k=>kiengL.includes(k))){vs-=3;bad.push('Sao '+s.tu.name+' KỴ việc này');}
+  if(s.tamNuong){vs-=info.heavyKy?3:1;bad.push('Tam Nương sát');}
+  if(s.nguyetKy){vs-=info.heavyKy?3:1;bad.push('Nguyệt Kỵ');}
+  (s.thanSatCat||[]).forEach(t=>{if(t==='Thiên Đức'||t==='Nguyệt Đức'){vs+=1.5;good.push(t);}else{vs+=0.5;good.push(t);}});
+  (s.thanSatHung||[]).forEach(t=>{vs-=2;bad.push(t);});
+  const trucKy={'Phá':1,'Nguy':1},trucCat2={'Thành':1,'Khai':1,'Định':1,'Mãn':1};
+  if(trucKy[s.truc]){vs-=2;bad.push('Trực '+s.truc);}
+  else if(trucCat2[s.truc]){vs+=1;good.push('Trực '+s.truc);}
+  vs=Math.round(vs);
+  let cls,verdict;
+  if(vs>=3){cls='good';verdict='TỐT cho '+info.name;}
+  else if(vs>=0){cls='neutral';verdict='Dùng được cho '+info.name;}
+  else{cls='bad';verdict='KHÔNG hợp '+info.name;}
+  return{vscore:vs,cls,verdict,good,bad,info};
+}
+// Năm sinh → chi xung (lục xung)
+function chiXungYear(birthY){const chiI=(birthY+8)%12;return (chiI+6)%12;}
 
 function buildCalendar(y,m){
   document.getElementById('calLabel').textContent=`Tháng ${m}/${y}`;
@@ -3428,6 +3990,65 @@ function selectCalDay(d,m,y){
   xemNgay();
   // Scroll to result
   document.getElementById('ngayResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ===== LỌC NGÀY TỐT HỢP TUỔI =====
+function locNgayTot(){
+  const fromS=document.getElementById('locFrom').value;
+  const toS=document.getElementById('locTo').value;
+  const birthY=parseInt(document.getElementById('locYear').value)||0;
+  const viec=document.getElementById('ngayViec').value;
+  const pf=parseVNDate(fromS),pt=parseVNDate(toS);
+  if(!pf||!pt){alert('Nhập "Từ ngày" và "Đến ngày" theo DD/MM/YYYY');return}
+  const d1=new Date(pf.y,pf.m-1,pf.d),d2=new Date(pt.y,pt.m-1,pt.d);
+  if(d2<d1){alert('"Đến ngày" phải sau "Từ ngày"');return}
+  const span=Math.round((d2-d1)/86400000)+1;
+  if(span>120){alert('Khoảng thời gian tối đa 120 ngày');return}
+  // Chi xung tuổi & Tam Tai
+  const xungChi=birthY?chiXungYear(birthY):-1;
+  const cucTuoi=birthY?TAM_HOP[CHI[(birthY+8)%12]]:null;
+  const ttArr=cucTuoi?(TAM_TAI[cucTuoi]||[]):[];
+  const rows=[];
+  for(let i=0;i<span;i++){
+    const dd=new Date(d1);dd.setDate(dd.getDate()+i);
+    const d=dd.getDate(),m=dd.getMonth()+1,y=dd.getFullYear();
+    const s=scoreDay(d,m,y);
+    const chiNgay=(s.jd+1)%12;
+    const xungTuoi=birthY&&chiNgay===xungChi;
+    const ttDay=birthY&&ttArr.includes(CHI[chiNgay]);
+    let finalScore=s.score, viecEv=null;
+    if(viec){viecEv=evalViec(s,viec);finalScore=viecEv.vscore;}
+    // Loại nếu xung tuổi (nặng) hoặc ngày Tam Tai
+    if(xungTuoi)finalScore-=5;
+    if(ttDay)finalScore-=3;
+    rows.push({d,m,y,dow:dd.getDay(),score:finalScore,base:s,xungTuoi,ttDay,chiNgay,viecEv,
+      canChi:CAN_AL[(s.jd+9)%10]+' '+CHI_AL[chiNgay],lunar:s.lunar});
+  }
+  // Xếp hạng
+  const sorted=[...rows].filter(r=>!r.xungTuoi&&r.score>=2).sort((a,b)=>b.score-a.score);
+  const DOW=['CN','T2','T3','T4','T5','T6','T7'];
+  let html='<div class="card" style="margin-top:12px"><h2>🔎 NGÀY TỐT '+(viec?('CHO '+VIEC_INFO[viec].name.toUpperCase()):'')+'</h2>';
+  html+=`<p style="font-size:12.5px;color:#ccc">Quét ${span} ngày (${formatVNDate(pf.d,pf.m,pf.y)} → ${formatVNDate(pt.d,pt.m,pt.y)})${birthY?` · Gia chủ ${birthY} (${CAN[(birthY+6)%10]} ${CHI[(birthY+8)%12]}) — loại ngày xung tuổi (${CHI[xungChi]}) &amp; Tam Tai`:''}.</p>`;
+  if(!sorted.length){
+    html+='<div class="verdict bad" style="margin-top:8px"><div class="verdict-title">Không có ngày đẹp rõ rệt</div>Trong khoảng này không có ngày nào đạt điểm tốt (≥+2) sau khi loại xung tuổi. Hãy mở rộng khoảng thời gian hoặc xem từng ngày chi tiết.</div>';
+  }else{
+    html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:8px">';
+    sorted.slice(0,12).forEach((r,idx)=>{
+      const col=r.score>=4?'#1b5e20':'#2e7d32';
+      html+=`<div onclick="document.getElementById('ngayDate').value='${formatVNDate(r.d,r.m,r.y)}';xemNgay();document.getElementById('ngayResult').scrollIntoView({behavior:'smooth'})" style="cursor:pointer;background:rgba(76,175,80,.1);border-left:4px solid ${col};border-radius:6px;padding:8px 10px">
+        <div style="font-size:12px"><b style="color:#ffd700">#${idx+1}</b> · <b>${r.score>=0?'+':''}${r.score}đ</b></div>
+        <div style="font-size:13px;color:#fff;margin:2px 0"><b>${DOW[r.dow]} ${formatVNDate(r.d,r.m,r.y)}</b></div>
+        <div style="font-size:11.5px;color:#ccc">ÂL ${r.lunar.day}/${r.lunar.month} · ${r.canChi} · Sao ${r.base.tu.name} · Trực ${r.base.truc}</div>
+        ${r.ttDay?'<div style="font-size:10px;color:#fbbf24">⚠ Năm bạn Tam Tai - đã trừ điểm</div>':''}
+        <div style="font-size:10px;color:#888;margin-top:2px">👆 Bấm xem chi tiết</div>
+      </div>`;
+    });
+    html+='</div>';
+    html+=`<p style="font-size:11.5px;color:#888;margin-top:8px">Hiển thị tối đa 12 ngày tốt nhất (điểm ≥+2). Ngày xung tuổi gia chủ đã bị loại hoàn toàn.</p>`;
+  }
+  html+='</div>';
+  document.getElementById('locResult').innerHTML=html;
+  document.getElementById('locResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ============== TÍNH TRÙNG TANG - NHẬP MỘ ==============
@@ -4591,6 +5212,44 @@ function tuViAnSao(){
   }
   html+='</div>';
 
+  // ===== LƯU NIÊN & TIỂU HẠN =====
+  const viewYear=parseInt(document.getElementById('tvViewYear').value)||new Date().getFullYear();
+  const ageView=viewYear-sY+1; // tuổi mụ năm xem
+  // Lưu niên: cung có chi = chi của năm xem
+  const lnChi=(viewYear+8)%12;
+  const lnCung=cungs.find(c=>c.chi===lnChi);
+  // Tiểu hạn: khởi cung theo tam hợp năm sinh, nam thuận nữ nghịch, mỗi năm 1 cung
+  const thStart={2:4,6:4,10:4, 8:10,0:10,4:10, 5:7,9:7,1:7, 11:1,3:1,7:1}[yearChiIdx]; // Dần-Ngọ-Tuất→Thìn(4); Thân-Tý-Thìn→Tuất(10); Tỵ-Dậu-Sửu→Mùi(7); Hợi-Mão-Mùi→Sửu(1)
+  const thDir=gender==='nam'?1:-1;
+  const thChi=((thStart+(ageView-1)*thDir)%12+120)%12;
+  const thCung=cungs.find(c=>c.chi===thChi);
+  // Đại vận của năm xem
+  let dvView=null;for(const v of dv.vans){if(ageView>=v.start&&ageView<=v.end){dvView=v;break}}
+  function cungStars(c){if(!c)return'(vô chính diệu)';return c.stars.length?c.stars.join(', '):'(vô chính diệu)';}
+  html+=`<h3 style="margin-top:14px;color:#ffd700">🔮 VẬN NĂM ${viewYear} (${CAN_AL[(viewYear+6)%10]} ${CHI_AL[lnChi]}) — ${ageView} tuổi</h3>`;
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin-top:6px">';
+  html+=`<div style="background:rgba(33,150,243,.1);border-left:4px solid #2196f3;border-radius:6px;padding:8px 12px;font-size:12.5px">
+    <b style="color:#64b5f6">🌙 LƯU NIÊN</b> — cung <b>${lnCung?lnCung.name:'?'}</b> (${CHI_AL[lnChi]})<br>
+    Sao: ${cungStars(lnCung)}<br>
+    <small style="color:#aaa">Vận chính của năm ${viewYear}, xét theo cung trùng chi năm.</small></div>`;
+  html+=`<div style="background:rgba(156,39,176,.1);border-left:4px solid #9c27b0;border-radius:6px;padding:8px 12px;font-size:12.5px">
+    <b style="color:#ce93d8">⏳ TIỂU HẠN</b> — cung <b>${thCung?thCung.name:'?'}</b> (${CHI_AL[thChi]})<br>
+    Sao: ${cungStars(thCung)}<br>
+    <small style="color:#aaa">Hạn nhỏ theo tuổi (${gender==='nam'?'nam thuận':'nữ nghịch'}).</small></div>`;
+  if(dvView)html+=`<div style="background:rgba(255,215,0,.1);border-left:4px solid #ffd700;border-radius:6px;padding:8px 12px;font-size:12.5px">
+    <b style="color:#ffd700">📅 ĐẠI VẬN</b> — cung <b>${CHI_AL[dvView.chi]}</b> (${dvView.start}-${dvView.end}t)<br>
+    <small style="color:#aaa">Vận lớn 10 năm bao trùm năm này.</small></div>`;
+  html+='</div>';
+  // Cảnh báo Tuần/Triệt/Hóa Kỵ tại lưu niên
+  const lnWarn=[];
+  if(lnCung){
+    if(tuanPositions.includes(lnCung.chi))lnWarn.push('Lưu niên gặp <b>Tuần</b>');
+    if(trietPositions.includes(lnCung.chi))lnWarn.push('Lưu niên gặp <b>Triệt</b>');
+    if([...lnCung.stars,...lnCung.phuTinh].includes(tuHoa.Kỵ))lnWarn.push('Lưu niên có <b>Hóa Kỵ</b> ('+tuHoa.Kỵ+')');
+    if([...lnCung.stars,...lnCung.phuTinh].includes(tuHoa.Lộc))lnWarn.push('<span style="color:#4ade80">Lưu niên có <b>Hóa Lộc</b> - tài lộc tốt</span>');
+  }
+  if(lnWarn.length)html+=`<div class="verdict ${lnWarn.some(w=>w.includes('Lộc'))&&lnWarn.length===1?'good':'neutral'}" style="margin-top:6px;font-size:12.5px">⚠ Năm ${viewYear}: ${lnWarn.join(' · ')}.</div>`;
+
   // Tứ Hóa summary
   html+='<h3 style="margin-top:14px;color:#ffd700">⚡ TỨ HÓA NĂM '+yearCan+' '+yearChi+'</h3>';
   html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px;margin-top:6px">';
@@ -4739,6 +5398,334 @@ function cgsViewDetail(di,h){
   document.getElementById('tvName').value='Bé sinh '+formatVNDate(entry.dateObj.d,entry.dateObj.m,entry.dateObj.y)+' giờ '+CGS_HOURS[h-1];
   tuViAnSao();
   document.getElementById('tuViResult').scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+// ============== ĐẶT TÊN CON THEO TỨ TRỤ (BÁT TỰ) ==============
+const CAN_NH={'Giáp':'Mộc','Ất':'Mộc','Bính':'Hỏa','Đinh':'Hỏa','Mậu':'Thổ','Kỷ':'Thổ','Canh':'Kim','Tân':'Kim','Nhâm':'Thủy','Quý':'Thủy'};
+const CHI_NH={'Tý':'Thủy','Sửu':'Thổ','Dần':'Mộc','Mão':'Mộc','Thìn':'Thổ','Tỵ':'Hỏa','Ngọ':'Hỏa','Mùi':'Thổ','Thân':'Kim','Dậu':'Kim','Tuất':'Thổ','Hợi':'Thủy'};
+// Tàng can (địa chi tàng can) - các can ẩn trong mỗi chi
+const CHI_TANG={
+ 'Tý':['Quý'],'Sửu':['Kỷ','Quý','Tân'],'Dần':['Giáp','Bính','Mậu'],'Mão':['Ất'],
+ 'Thìn':['Mậu','Ất','Quý'],'Tỵ':['Bính','Canh','Mậu'],'Ngọ':['Đinh','Kỷ'],'Mùi':['Kỷ','Đinh','Ất'],
+ 'Thân':['Canh','Nhâm','Mậu'],'Dậu':['Tân'],'Tuất':['Mậu','Tân','Đinh'],'Hợi':['Nhâm','Giáp']
+};
+// Quan hệ ngũ hành
+const NH_SINH_={'Mộc':'Hỏa','Hỏa':'Thổ','Thổ':'Kim','Kim':'Thủy','Thủy':'Mộc'}; // X sinh Y
+const NH_KHAC_={'Mộc':'Thổ','Thổ':'Thủy','Thủy':'Hỏa','Hỏa':'Kim','Kim':'Mộc'}; // X khắc Y
+function sinhRa(x){return NH_SINH_[x]} // hành x sinh ra
+function sinhX(x){for(const k in NH_SINH_)if(NH_SINH_[k]===x)return k;} // hành sinh ra x
+function khacX(x){for(const k in NH_KHAC_)if(NH_KHAC_[k]===x)return k;} // hành khắc x
+
+// Chữ đặt tên theo ngũ hành (gợi ý phổ biến)
+const TEN_NGU_HANH={
+ 'Kim':{nam:['Cương','Tích','Phong','Nhuệ','Kim','Ngân','Cường','Tài','Tuấn','Thạch','Trung','Chính','Nghĩa'],nu:['Kim','Ngân','Châu','Bạch','Thu','Tâm','Nhã','Trinh','Thục','Tuyết','Linh','Diễm','Như']},
+ 'Mộc':{nam:['Lâm','Sâm','Tùng','Bách','Quân','Khang','Kiến','Đông','Nhiên','Kiệt','Vũ (cây)','Phúc','Quý'],nu:['Lan','Mai','Cúc','Hoa','Thảo','Diệp','Liễu','Quỳnh','Hương','Hà (lá)','Trúc','Phương','Nhiên']},
+ 'Thủy':{nam:['Hà','Giang','Hải','Dương','Hồ','Khê','Vũ (mưa)','Bằng','Nguyên','Mạnh','Lâm (mưa)','Tường','Phúc'],nu:['Hà','Giang','Vân','Tuyết','Băng','Sương','Thủy','Nhi','Linh','Hương','Mỹ','Trang','Ngọc']},
+ 'Hỏa':{nam:['Quang','Minh','Huy','Đăng','Hồng','Đan','Nhật','Luân','Đình','Chiếu','Vinh','Đức','Hùng'],nu:['Minh','Huệ','Linh','Đan','Hồng','Hạ','Diễm','Yến','Nhật','Châu','Ánh','Quyên','Hân']},
+ 'Thổ':{nam:['Sơn','Phong','Khôn','Thành','Cương','Mậu','Trung','Khang','Quân','Vĩ','An','Bình','Kiên'],nu:['Sơn','Viên','Khuê','Ngọc','Bích','An','Khang','Yên','Dung','Quân','Diên','Hiền','Tú']}
+};
+
+// Tứ Trụ theo TIẾT KHÍ: trả về {yearForPillar, monthChiIdx, monthNum}
+// 12 tiết chính (mở đầu tháng can-chi), [thángDương, ngàyDương xấp xỉ, chiIdx(Tý=0), monthNum(1=Dần)]
+function getTietKhiYM(d,m,y){
+  const mi=monthInfoByTiet(d,m,y);
+  return{yearForPillar:mi.yearForPillar,monthChiIdx:mi.chiIdx,monthNum:mi.monthNum};
+}
+
+// Thập Thần: quan hệ của 1 can với Nhật Chủ
+const CAN_DUONG_LIST=['Giáp','Bính','Mậu','Canh','Nhâm'];
+function thapThan(ncCan,x){
+  if(!x||!CAN_NH[x])return '';
+  const ncEl=CAN_NH[ncCan],xEl=CAN_NH[x];
+  const same=CAN_DUONG_LIST.includes(ncCan)===CAN_DUONG_LIST.includes(x);
+  if(xEl===ncEl)return same?'Tỷ Kiên':'Kiếp Tài';
+  if(NH_SINH_[ncEl]===xEl)return same?'Thực Thần':'Thương Quan';
+  if(NH_KHAC_[ncEl]===xEl)return same?'Thiên Tài':'Chính Tài';
+  if(NH_KHAC_[xEl]===ncEl)return same?'Thất Sát':'Chính Quan';
+  if(NH_SINH_[xEl]===ncEl)return same?'Thiên Ấn':'Chính Ấn';
+  return '';
+}
+const THAP_THAN_DESC={
+  'Tỷ Kiên':'Anh em, đồng nghiệp, cạnh tranh, tự lập','Kiếp Tài':'Cạnh tranh, hao tài, bạn bè',
+  'Thực Thần':'Tài năng, hưởng thụ, con cái (nữ), sáng tạo','Thương Quan':'Thông minh, ngạo, nghệ thuật, dễ thị phi',
+  'Thiên Tài':'Tiền lệch (kinh doanh), cha, hào phóng','Chính Tài':'Tiền chính, vợ (nam), cần kiệm',
+  'Thất Sát':'Quyền uy, dũng mãnh, áp lực, võ','Chính Quan':'Công danh, địa vị, chồng (nữ), kỷ luật',
+  'Thiên Ấn':'Học vấn lệch, mẹ kế, cô độc, tôn giáo','Chính Ấn':'Học vấn, mẹ, quý nhân, danh dự'
+};
+// Khởi vận đại vận: số ngày tới tiết / 3 ≈ tuổi
+function batTuKhoiVanAge(d,m,y,thuan){
+  const TIET=[[1,6],[2,4],[3,6],[4,5],[5,5],[6,6],[7,7],[8,8],[9,8],[10,8],[11,7],[12,7]];
+  const bd=new Date(y,m-1,d);let prev=null,next=null;
+  for(const yy of [y-1,y,y+1]){
+    for(const t of TIET){const dt=new Date(yy,t[0]-1,t[1]);
+      if(dt<=bd&&(!prev||dt>prev))prev=dt;
+      if(dt>bd&&(!next||dt<next))next=dt;}
+  }
+  const days=thuan?(next-bd)/86400000:(bd-prev)/86400000;
+  let age=Math.round(days/3);if(age<1)age=1;return age;
+}
+
+// Reverse lookup: chữ tên → ngũ hành (gộp từ TEN_NGU_HANH + mở rộng)
+let NAME_CHAR_NH=null;
+function buildNameCharNH(){
+  if(NAME_CHAR_NH)return NAME_CHAR_NH;
+  NAME_CHAR_NH={};
+  for(const nh in TEN_NGU_HANH){
+    ['nam','nu'].forEach(g=>{TEN_NGU_HANH[nh][g].forEach(w=>{
+      const k=w.replace(/\s*\(.*\)/,'').trim().toLowerCase();
+      if(!NAME_CHAR_NH[k])NAME_CHAR_NH[k]=nh;
+    })});
+  }
+  // Mở rộng thêm chữ phổ biến
+  const extra={
+    'Kim':['anh (kim)','bạch','châu','chung','đồng','sương','tú','thư','tịnh','trân','liên','tuyền'],
+    'Mộc':['gia','giai','kỳ','khải','khôi','nguyên (mộc)','nghi','quyên','quỳnh','thanh (mộc)','xuân','yên','ngân (cây)','hoài','vy','vi'],
+    'Thủy':['bích','hằng','huyền','khanh','mẫn','phượng','quân (nước)','tuyền','vĩnh','duyên','hạnh','mây','my','nhiên (nước)','phước'],
+    'Hỏa':['châu (lửa)','chí','danh','dũng','đạt','hiếu','khôi (lửa)','lương','nam','tiến','trí','tuấn (lửa)','thắng','bảo (lửa)','hạo','lệ','ly'],
+    'Thổ':['ái','duy','đôn','gia (thổ)','hậu','hoàng','khiêm','phú','thổ','trọng','uy','viết','y','ý','dao','my (đất)']
+  };
+  for(const nh in extra)extra[nh].forEach(w=>{const k=w.replace(/\s*\(.*\)/,'').trim().toLowerCase();if(!NAME_CHAR_NH[k])NAME_CHAR_NH[k]=nh;});
+  return NAME_CHAR_NH;
+}
+function wordNguHanh(w){
+  if(!w)return null;
+  const m=buildNameCharNH();
+  return m[w.trim().toLowerCase()]||null;
+}
+
+function datTenCon(){
+  const ho=document.getElementById('dtHo').value.trim();
+  const tenDem=document.getElementById('dtDem').value.trim();
+  const tenChinh=document.getElementById('dtTen').value.trim();
+  const gender=document.getElementById('dtGender').value;
+  if(!ho){alert('Họ là bắt buộc');return}
+  const dt=document.getElementById('dtDate').value;
+  if(!dt){alert('Nhập ngày sinh DD/MM/YYYY');return}
+  const p=parseVNDate(dt);
+  if(!p){alert('Ngày sinh không hợp lệ');return}
+  let hourIdx=parseInt(document.getElementById('dtnHour').value)||7;
+  // Hiệu chỉnh giờ chính xác nếu có
+  const lunar=getLunar(p.d,p.m,p.y);
+  let preciseInfo=null;
+  const prec=document.getElementById('dtnHourPrecise').value.trim();
+  if(prec){
+    const pp=parseHHMM(prec);
+    if(!pp){alert('Giờ chính xác sai định dạng HH:MM');return}
+    const old=hourIdx;
+    hourIdx=clockToGioChi(pp.h,pp.m,lunar.month);
+    preciseInfo={hhmm:String(pp.h).padStart(2,'0')+':'+String(pp.m).padStart(2,'0'),old:old!==hourIdx?gioChiName(old):null};
+  }
+  const jd=lunar.jd;
+  // ===== Lập Tứ Trụ theo TIẾT KHÍ (chuẩn Bát Tự) =====
+  // Trụ Năm đổi tại Lập Xuân (~4/2); trụ Tháng đổi tại mỗi Tiết (12 tiết chính)
+  const tk=getTietKhiYM(p.d,p.m,p.y);
+  // Năm
+  const yCanI=(tk.yearForPillar+6)%10,yChiI=(tk.yearForPillar+8)%12;
+  const truNam={can:CAN_AL[yCanI],chi:CHI_AL[yChiI]};
+  // Tháng (chi theo tiết khí; can theo Ngũ hổ độn từ Can năm tiết khí)
+  const thChiI=tk.monthChiIdx;
+  const thCanBase=[2,4,6,8,0][yCanI%5]; // Giáp/Kỷ→Bính(2)...
+  const thCanI=(thCanBase+tk.monthNum-1)%10;
+  const truThang={can:CAN_AL[thCanI],chi:CHI_AL[thChiI]};
+  // Ngày
+  const dCanI=(jd+9)%10,dChiI=(jd+1)%12;
+  const truNgay={can:CAN_AL[dCanI],chi:CHI_AL[dChiI]};
+  // Giờ (can giờ theo Ngũ thử độn)
+  const gChiI=hourIdx-1;
+  const gCanBase=[0,2,4,6,8][dCanI%5]; // Giáp/Kỷ ngày→giờ Tý khởi Giáp(0)...
+  const gCanI=(gCanBase+gChiI)%10;
+  const truGio={can:CAN_AL[gCanI],chi:CHI_AL[gChiI]};
+
+  const trus=[['Giờ',truGio],['Ngày',truNgay],['Tháng',truThang],['Năm',truNam]];
+  const nhatChu=truNgay.can, nhatChuNH=CAN_NH[nhatChu];
+
+  // ===== Đếm ngũ hành =====
+  const count={'Kim':0,'Mộc':0,'Thủy':0,'Hỏa':0,'Thổ':0};
+  // 8 chữ chính (4 can trọng số 1, 4 chi bản khí trọng số 1)
+  [truNam,truThang,truNgay,truGio].forEach(t=>{count[CAN_NH[t.can]]++;count[CHI_NH[t.chi]]++});
+  // Tàng can (trọng số 0.5)
+  const tangCount={'Kim':0,'Mộc':0,'Thủy':0,'Hỏa':0,'Thổ':0};
+  [truNam,truThang,truNgay,truGio].forEach(t=>{(CHI_TANG[t.chi]||[]).forEach(c=>tangCount[CAN_NH[c]]+=0.5)});
+  const total={};for(const e in count)total[e]=count[e]+tangCount[e];
+
+  // ===== Xét Nhật Chủ vượng/nhược =====
+  const dongHanh=nhatChuNH;
+  const sinhTa=sinhX(nhatChuNH);  // Ấn
+  const taKhac=NH_KHAC_[nhatChuNH]; // Tài
+  const khacTa=khacX(nhatChuNH);  // Quan Sát
+  const taSinh=sinhRa(nhatChuNH); // Thực Thương
+  const support=total[dongHanh]+total[sinhTa]; // phe trợ
+  const oppose=total[taKhac]+total[khacTa]+total[taSinh]; // phe tiết/khắc
+  const vuong=support>=oppose;
+  // Dụng Thần
+  let dungThan,dungThanNH;
+  if(vuong){
+    // Nhật chủ vượng → bổ hành làm yếu: ưu tiên hành ÍT nhất trong (taKhac, khacTa, taSinh)
+    const cands=[taKhac,khacTa,taSinh];
+    dungThanNH=cands.sort((a,b)=>total[a]-total[b])[0];
+    dungThan='Tài/Quan/Thực Thương (tiết-khắc)';
+  }else{
+    // Nhật chủ nhược → bổ hành sinh/trợ: ưu tiên hành ÍT nhất trong (sinhTa, dongHanh)
+    const cands=[sinhTa,dongHanh];
+    dungThanNH=cands.sort((a,b)=>total[a]-total[b])[0];
+    dungThan='Ấn/Tỷ (sinh-trợ)';
+  }
+  // Hành thiếu nhất (bổ khuyết)
+  const thieuNH=Object.keys(total).sort((a,b)=>total[a]-total[b])[0];
+  const khuyetList=Object.keys(count).filter(e=>count[e]===0);
+
+  // ===== Render =====
+  const NH_COLOR={'Kim':'#9e9e9e','Mộc':'#43a047','Thủy':'#1e88e5','Hỏa':'#e53935','Thổ':'#b8860b'};
+  let html='<div class="card" style="margin-top:12px"><h2>📜 KẾT QUẢ TỨ TRỤ &amp; GỢI Ý TÊN</h2>';
+  // Tứ Trụ
+  html+='<h3 style="color:#ffd700">🔮 TỨ TRỤ (BÁT TỰ)</h3>';
+  html+='<div style="overflow-x:auto"><table style="border-collapse:collapse;width:100%;margin:8px 0;font-size:13px;text-align:center">';
+  html+='<tr><th style="border:1px solid #444;padding:6px;background:#1a1a2e;color:#ffd700">Trụ</th>'+trus.map(t=>`<th style="border:1px solid #444;padding:6px;background:#1a1a2e;color:#ffd700">${t[0]}</th>`).join('')+'</tr>';
+  html+='<tr><td style="border:1px solid #444;padding:6px;color:#aaa">Thập Thần</td>'+trus.map(t=>{const tt=t[1].can===nhatChu?'<b style="color:#ffd700">Nhật Chủ</b>':thapThan(nhatChu,t[1].can);return `<td style="border:1px solid #444;padding:5px;font-size:10.5px;color:#bbb">${tt}</td>`}).join('')+'</tr>';
+  html+='<tr><td style="border:1px solid #444;padding:6px;color:#aaa">Thiên Can</td>'+trus.map(t=>{const e=CAN_NH[t[1].can];return `<td style="border:1px solid #444;padding:6px"><b>${t[1].can}</b><br><span style="color:${NH_COLOR[e]};font-size:11px">${e}</span></td>`}).join('')+'</tr>';
+  html+='<tr><td style="border:1px solid #444;padding:6px;color:#aaa">Địa Chi</td>'+trus.map(t=>{const e=CHI_NH[t[1].chi];return `<td style="border:1px solid #444;padding:6px"><b>${t[1].chi}</b><br><span style="color:${NH_COLOR[e]};font-size:11px">${e}</span></td>`}).join('')+'</tr>';
+  html+='<tr><td style="border:1px solid #444;padding:6px;color:#aaa">Tàng Can</td>'+trus.map(t=>{const tc=CHI_TANG[t[1].chi]||[];return `<td style="border:1px solid #444;padding:4px;font-size:9.5px;color:#999">${tc.map(c=>c+'<span style="color:'+NH_COLOR[CAN_NH[c]]+'">·</span>').join(' ')}</td>`}).join('')+'</tr>';
+  html+='</table></div>';
+  html+=`<p style="font-size:12px;color:#ccc">Sinh: <b>${formatVNDate(p.d,p.m,p.y)}</b> (DL) — <b>${lunar.day}/${lunar.month}/${lunar.year}</b> (ÂL) · Giờ <b>${CHI_AL[gChiI]}</b>${preciseInfo?` <span style="color:#4ade80;font-size:11px">(từ ${preciseInfo.hhmm}${preciseInfo.old?', đã hiệu chỉnh khỏi giờ '+preciseInfo.old:''})</span>`:''}<br><span style="font-size:11px;color:#888">📐 Trụ Năm &amp; Tháng tính theo <b>Tiết Khí</b> (Năm đổi tại Lập Xuân, Tháng đổi tại mỗi tiết) — chuẩn Bát Tự. Năm trụ: <b>${truNam.can} ${truNam.chi}</b>${tk.yearForPillar!==lunar.year?` <span style="color:#fbbf24">(khác năm âm lịch ${lunar.year} do sinh trước Lập Xuân)</span>`:''}</span></p>`;
+
+  // Nhật Chủ
+  html+=`<div class="verdict info" style="margin-top:10px"><div class="verdict-title">👤 NHẬT CHỦ: ${nhatChu} (${nhatChuNH})</div>
+    Đại diện cho bản thân bé. Trạng thái: <b style="color:${vuong?'#f87171':'#4ade80'}">${vuong?'VƯỢNG (mạnh)':'NHƯỢC (yếu)'}</b> — Phe sinh-trợ: ${support.toFixed(1)} vs Phe tiết-khắc: ${oppose.toFixed(1)}</div>`;
+
+  // ===== ĐẠI VẬN BÁT TỰ =====
+  const yyDuong=CAN_DUONG_LIST.includes(truNam.can); // Dương năm?
+  const dvThuan=(yyDuong&&gender==='nam')||(!yyDuong&&gender==='nu');
+  const dvDir=dvThuan?1:-1;
+  const khoiVan=batTuKhoiVanAge(p.d,p.m,p.y,dvThuan);
+  const nowAge=new Date().getFullYear()-p.y+1;
+  html+=`<h3 style="color:#ffd700;margin-top:12px">⏳ ĐẠI VẬN BÁT TỰ ${dvThuan?'(thuận)':'(nghịch)'} — khởi vận ~${khoiVan} tuổi</h3>`;
+  html+='<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(92px,1fr));gap:5px;margin-top:6px">';
+  for(let i=1;i<=8;i++){
+    const c=((thCanI+i*dvDir)%10+10)%10, ch=((thChiI+i*dvDir)%12+12)%12;
+    const st=khoiVan+(i-1)*10, en=st+9;
+    const isNow=nowAge>=st&&nowAge<=en;
+    const tt=thapThan(nhatChu,CAN_AL[c]);
+    html+=`<div style="background:${isNow?'rgba(255,215,0,.2)':'rgba(255,255,255,.04)'};border:1px solid ${isNow?'#ffd700':'rgba(255,255,255,.08)'};border-radius:6px;padding:5px;text-align:center;font-size:11px">
+      <b style="color:#ffd700">${st}-${en}t</b><br>
+      <b>${CAN_AL[c]} ${CHI_AL[ch]}</b><br>
+      <span style="color:#999;font-size:9.5px">${tt}</span>
+    </div>`;
+  }
+  html+='</div>';
+  html+='<p style="font-size:11px;color:#888;margin-top:4px">Đại vận: Dương Nam/Âm Nữ đi thuận, Âm Nam/Dương Nữ đi nghịch. Khởi vận tính theo số ngày tới tiết khí ÷ 3 (xấp xỉ).</p>';
+
+  // Bảng Thập Thần đầy đủ (10 thần)
+  html+='<details style="margin-top:8px"><summary style="color:#ffd700;cursor:pointer">📖 Ý nghĩa Thập Thần trong lá số</summary><div style="font-size:12px;color:#ccc;line-height:1.7;margin-top:6px">';
+  const ttPresent=new Set([truNam.can,truThang.can,truGio.can].map(c=>thapThan(nhatChu,c)).filter(Boolean));
+  ttPresent.forEach(t=>{html+=`• <b style="color:#ffd700">${t}</b>: ${THAP_THAN_DESC[t]||''}<br>`;});
+  html+='</div></details>';
+
+  // Biểu đồ ngũ hành
+  html+='<h3 style="color:#ffd700;margin-top:12px">🌳 PHÂN BỐ NGŨ HÀNH (8 chữ + tàng can)</h3>';
+  html+='<div style="margin:8px 0">';
+  const maxV=Math.max(...Object.values(total),1);
+  ['Kim','Mộc','Thủy','Hỏa','Thổ'].forEach(e=>{
+    const pct=Math.round(total[e]/maxV*100);
+    html+=`<div style="display:flex;align-items:center;gap:8px;margin:4px 0">
+      <span style="width:48px;color:${NH_COLOR[e]};font-weight:bold">${e}</span>
+      <div style="flex:1;background:rgba(255,255,255,.06);border-radius:4px;height:20px;position:relative">
+        <div style="width:${pct}%;background:${NH_COLOR[e]};height:100%;border-radius:4px;min-width:2px"></div>
+      </div>
+      <span style="width:60px;text-align:right;font-size:12px">${total[e].toFixed(1)} ${count[e]===0?'<span style="color:#f87171">(khuyết)</span>':''}</span>
+    </div>`;
+  });
+  html+='</div>';
+
+  // Dụng Thần & kết luận
+  html+=`<div class="verdict good" style="margin-top:10px"><div class="verdict-title">⭐ DỤNG THẦN: ${dungThanNH}</div>
+    Nhật Chủ ${vuong?'vượng → cần <b>tiết/khắc</b> bớt':'nhược → cần <b>sinh/trợ</b> thêm'}. Loại Dụng Thần: <b>${dungThan}</b>.<br>
+    → <b style="color:${NH_COLOR[dungThanNH]}">Nên đặt tên có chữ thuộc hành ${dungThanNH}</b> để cân bằng &amp; hỗ trợ vận mệnh bé.
+    ${khuyetList.length?`<br><br>📌 Lá số <b>khuyết hành: ${khuyetList.join(', ')}</b>. Hành thiếu nhất: <b style="color:${NH_COLOR[thieuNH]}">${thieuNH}</b>.`:''}</div>`;
+
+  // ===== PHÂN TÍCH TÊN BỐ MẸ THÍCH =====
+  if(tenDem||tenChinh){
+    const fullName=[ho,tenDem,tenChinh].filter(Boolean).join(' ');
+    // Phân tích từng chữ trong tên đệm + tên (không tính họ vì họ cố định theo dòng tộc)
+    const parts=[];
+    if(tenDem)tenDem.split(/\s+/).forEach(w=>parts.push({w,role:'đệm'}));
+    if(tenChinh)tenChinh.split(/\s+/).forEach(w=>parts.push({w,role:'tên'}));
+    let hasDung=false,hasKhac=false;const analyzed=[];
+    parts.forEach(part=>{
+      const nh=wordNguHanh(part.w);
+      let stt='unknown';
+      if(nh){
+        if(nh===dungThanNH){stt='dung';hasDung=true;}
+        else if(nh===NH_KHAC_[dungThanNH]||nh===khacX(dungThanNH)){stt='khac';hasKhac=true;}
+        else stt='other';
+      }
+      analyzed.push({...part,nh,stt});
+    });
+    html+='<h3 style="color:#ffd700;margin-top:14px">🔍 PHÂN TÍCH TÊN BỐ MẸ THÍCH</h3>';
+    html+=`<div class="verdict info" style="margin-top:6px"><div class="verdict-title">Tên: "${fullName}"</div>`;
+    html+='<div style="display:flex;flex-wrap:wrap;gap:8px;margin:6px 0">';
+    analyzed.forEach(a=>{
+      const col=a.stt==='dung'?'#4ade80':a.stt==='khac'?'#f87171':a.nh?'#fbbf24':'#888';
+      const lbl=a.nh?(a.nh+(a.stt==='dung'?' ✓ hợp Dụng Thần':a.stt==='khac'?' ✗ kỵ (không lợi)':'')):'? không rõ hành';
+      html+=`<span style="background:rgba(255,255,255,.06);border:1px solid ${col};border-radius:8px;padding:4px 10px;font-size:12.5px"><b>${a.w}</b> <span style="color:${a.nh?NH_COLOR[a.nh]:'#888'};font-size:11px">(${lbl})</span> <span style="color:#888;font-size:10px">[${a.role}]</span></span>`;
+    });
+    html+='</div>';
+    // Verdict
+    if(hasDung){
+      html+='<div style="color:#4ade80;margin-top:4px">✓ <b>Tên HỢP MỆNH</b> — có chữ thuộc hành Dụng Thần ('+dungThanNH+'), hỗ trợ tốt cho bé. Bố mẹ có thể yên tâm dùng tên này.</div>';
+    }else if(hasKhac){
+      html+='<div style="color:#f87171;margin-top:4px">✗ <b>Tên CHƯA HỢP</b> — có chữ thuộc hành <b>kỵ</b> (làm lệch thêm cán cân ngũ hành). Nên cân nhắc đổi hoặc thêm 1 chữ thuộc hành <b style="color:'+NH_COLOR[dungThanNH]+'">'+dungThanNH+'</b> để bù.</div>';
+    }else{
+      const unknownAll=analyzed.every(a=>!a.nh);
+      if(unknownAll){
+        html+='<div style="color:#fbbf24;margin-top:4px">○ Không xác định được ngũ hành của các chữ này trong từ điển. Gợi ý: ưu tiên chọn thêm chữ thuộc hành <b style="color:'+NH_COLOR[dungThanNH]+'">'+dungThanNH+'</b> (xem danh sách bên dưới).</div>';
+      }else{
+        html+='<div style="color:#fbbf24;margin-top:4px">○ <b>Tên trung tính</b> — không khắc Dụng Thần nhưng cũng chưa bổ trực tiếp. Để tốt hơn, có thể thêm/đổi 1 chữ thuộc hành <b style="color:'+NH_COLOR[dungThanNH]+'">'+dungThanNH+'</b>.</div>';
+      }
+    }
+    // Đề xuất thay thế nếu chưa hợp
+    if(!hasDung){
+      const dl=TEN_NGU_HANH[dungThanNH][gender==='nam'?'nam':'nu'];
+      html+=`<div style="margin-top:8px;font-size:12.5px"><b style="color:#ffd700">💡 Gợi ý điều chỉnh:</b> giữ họ "<b>${ho}</b>"`;
+      if(tenDem)html+=` + đệm "<b>${tenDem}</b>"`;
+      html+=`, thay/thêm tên thuộc hành ${dungThanNH}: `;
+      html+=dl.slice(0,8).map(c=>{const base=[ho,tenDem].filter(Boolean).join(' ');return `<b>${base} ${c}</b>`}).join(' · ');
+      html+='</div>';
+    }
+    html+='</div>';
+  }
+
+  // Gợi ý tên
+  const recNH=[dungThanNH];
+  if(thieuNH!==dungThanNH&&count[thieuNH]===0)recNH.push(thieuNH); // thêm hành khuyết nếu khác
+  html+='<h3 style="color:#ffd700;margin-top:12px">✨ GỢI Ý CHỮ ĐẶT TÊN</h3>';
+  recNH.forEach(nh=>{
+    const list=TEN_NGU_HANH[nh][gender==='nam'?'nam':'nu'];
+    html+=`<div style="background:rgba(255,255,255,.04);border-left:4px solid ${NH_COLOR[nh]};border-radius:6px;padding:10px 14px;margin:8px 0">
+      <b style="color:${NH_COLOR[nh]}">Hành ${nh}${nh===dungThanNH?' (Dụng Thần)':' (bổ khuyết)'}:</b><br>
+      <div style="margin-top:6px;display:flex;flex-wrap:wrap;gap:6px">${list.map(c=>`<span style="background:rgba(255,255,255,.06);padding:3px 10px;border-radius:12px;font-size:13px">${c}</span>`).join('')}</div>
+    </div>`;
+  });
+  // Tên mẫu ghép họ (+ đệm nếu có)
+  if(ho){
+    const base=[ho,tenDem].filter(Boolean).join(' ');
+    const dungList=TEN_NGU_HANH[dungThanNH][gender==='nam'?'nam':'nu'];
+    html+=`<div class="verdict info" style="margin-top:8px"><div class="verdict-title">💡 VÍ DỤ TÊN HOÀN CHỈNH (ghép họ${tenDem?' + đệm':''})</div>`;
+    const samples=dungList.slice(0,6).map(c=>`${base} ${c}`);
+    html+=samples.join(' · ');
+    html+='</div>';
+  }
+
+  html+=`<div style="margin-top:10px;padding:10px 14px;background:rgba(255,193,7,.08);border-left:3px solid #ffc107;border-radius:4px;font-size:11.5px;color:#ccc;line-height:1.7">
+    <b style="color:#ffc107">📚 LƯU Ý:</b><br>
+    • Phương pháp Bát Tự đơn giản hóa: đếm ngũ hành 8 chữ (trọng số 1) + tàng can (0.5), xét Nhật Chủ vượng/nhược để chọn Dụng Thần.<br>
+    • Bát Tự chuyên sâu còn xét: mùa sinh (đắc lệnh hay không), thấu can-thông căn, hỉ-kỵ thần, cách cục đặc biệt... nên kết quả này là <b>tham khảo</b>.<br>
+    • Tên hay cần hài hòa cả <b>ngũ hành + âm điệu + ý nghĩa + truyền thống gia đình</b>.<br>
+    • Nên đối chiếu thêm với thầy có kinh nghiệm cho trường hợp quan trọng.
+  </div>`;
+  html+='</div>';
+  document.getElementById('dtResult').innerHTML=html;
+  document.getElementById('pdfBarDatTen').style.display='flex';
+  document.getElementById('dtResult').scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 // ============== PDF EXPORT (via Native Print-to-PDF) ==============
@@ -4925,10 +5912,70 @@ function exportPDF(srcId,filenamePrefix,reportTitle){
   win.document.close();
 }
 
+// ============== TỪ ĐIỂN THUẬT NGỮ ==============
+const GLOSSARY=[
+ ['Hậu Thiên Bát Quái Lạc Việt','Bát quái Hậu Thiên có hoán đổi Tốn ↔ Khôn so với Văn Vương: Khôn ở Đông Nam (135°), Tốn ở Tây Nam (225°), phối Hà Đồ.'],
+ ['Lạc Thư Hoa Giáp','Bảng 60 nạp âm của Lạc Việt, hoán đổi tên các cặp Thủy ↔ Hỏa so với Lục Thập Hoa Giáp Hán (vd Bính Ngọ: Thiên Hà Thủy → Sơn Hạ Hỏa).'],
+ ['Thiên Can','10 can: Giáp Ất Bính Đinh Mậu Kỷ Canh Tân Nhâm Quý. Yếu tố Dương, trọng số lớn nhất khi luận tuổi (55-65%).'],
+ ['Địa Chi','12 chi: Tý Sửu Dần Mão Thìn Tỵ Ngọ Mùi Thân Dậu Tuất Hợi. Yếu tố Âm.'],
+ ['Thân Mạng / Nạp Âm','Ngũ hành bản mệnh theo Lạc Thư Hoa Giáp, ứng với vợ/mẹ. Trọng số 30-40% khi luận tuổi.'],
+ ['Tam Hợp','3 chi hợp cục: Thân-Tý-Thìn (Thủy), Hợi-Mão-Mùi (Mộc), Dần-Ngọ-Tuất (Hỏa), Tỵ-Dậu-Sửu (Kim).'],
+ ['Lục Hợp','6 cặp chi hợp: Tý-Sửu, Dần-Hợi, Mão-Tuất, Thìn-Dậu, Tỵ-Thân, Ngọ-Mùi.'],
+ ['Lục Xung','6 cặp chi xung khắc đối đỉnh: Tý-Ngọ, Sửu-Mùi, Dần-Thân, Mão-Dậu, Thìn-Tuất, Tỵ-Hợi.'],
+ ['Lục Hại','6 cặp chi tương hại: Tý-Mùi, Sửu-Ngọ, Dần-Tỵ, Mão-Thìn, Thân-Hợi, Dậu-Tuất.'],
+ ['Tam Tai','3 năm hạn của mỗi Tam Hợp cục. Vd cục Thủy (Thân-Tý-Thìn) gặp Tam Tai năm Dần-Mão-Thìn. Kỵ việc lớn.'],
+ ['Kim Lâu','Hạn tính theo tuổi mụ chia 9 dư 1/3/6/8 → hại Thân/Thê/Tử/Lục Súc. Kỵ làm nhà, cưới hỏi.'],
+ ['Hoang Ốc','Hạn nhà ở, bấm 6 cung (Nhất Cát, Nhì Nghi, Tam Địa Sát, Tứ Tấn Tài, Ngũ Thọ Tử, Lục Hoang Ốc). 3 cung sau xấu.'],
+ ['Bát Trạch','8 hướng tốt-xấu theo cung phi: Sinh Khí, Diên Niên, Thiên Y, Phục Vị (cát); Họa Hại, Lục Sát, Ngũ Quỷ, Tuyệt Mệnh (hung).'],
+ ['Cung Phi','Quái mệnh của người tính theo năm sinh + giới tính, chia Đông tứ mệnh / Tây tứ mệnh.'],
+ ['Đông tứ mệnh','Khảm, Ly, Chấn, Tốn — hợp các hướng Bắc, Nam, Đông, Tây Nam (Tốn-Lạc Việt).'],
+ ['Tây tứ mệnh','Càn, Khôn, Cấn, Đoài — hợp Tây Bắc, Đông Nam (Khôn-Lạc Việt), Đông Bắc, Tây.'],
+ ['Sơn - Hướng','Tọa Sơn Hướng Thủy: lưng nhà (sơn) tựa đâu, mặt (hướng) nhìn đâu.'],
+ ['24 Sơn','24 phương vị trên La Kinh, mỗi sơn 15°, gồm 8 Can + 12 Chi + 4 Duy (Càn Khôn Cấn Tốn).'],
+ ['Cửu Tinh','9 sao: Tham Lang, Cự Môn, Lộc Tồn, Văn Khúc, Liêm Trinh, Vũ Khúc, Phá Quân, Tả Phù, Bật.'],
+ ['28 Tú','28 chòm sao (Nhị Thập Bát Tú) luân chuyển theo ngày, mỗi sao cát hoặc hung, có việc nên/kiêng riêng.'],
+ ['12 Trực','Kiến, Trừ, Mãn, Bình, Định, Chấp, Phá, Nguy, Thành, Thâu, Khai, Bế — luân theo tiết khí.'],
+ ['Hoàng Đạo - Hắc Đạo','12 giờ trong ngày có 6 giờ Hoàng Đạo (tốt: Thanh Long, Minh Đường, Kim Quỹ, Bảo Quang, Ngọc Đường, Tư Mệnh) và 6 Hắc Đạo.'],
+ ['Tam Nương sát','Ngày kiêng dân gian: mùng 3, 7, 13, 18, 22, 27 âm lịch. Kỵ việc trọng đại.'],
+ ['Nguyệt Kỵ','Ngày kiêng: mùng 5, 14, 23 âm lịch ("ngày con nước").'],
+ ['Thiên Đức - Nguyệt Đức','Cát thần lớn theo tháng, hóa giải hung tinh, tốt cho khởi sự.'],
+ ['Nguyệt Phá','Hung thần: chi ngày xung chi tháng. Đại kỵ xây dựng, cưới hỏi.'],
+ ['Thụ Tử','Hung thần theo tháng, kỵ an táng và khởi sự (chỉ tốt cho săn bắt).'],
+ ['Dương Công Kỵ Nhật','13 ngày âm cố định trong năm, đại kỵ mọi việc lớn.'],
+ ['Trùng Tang','Quan niệm người mất vào thời điểm xấu khiến họ hàng có thêm tang. Tính qua 12 cung (Nhập Mộ/Trùng Tang/Thiên Di).'],
+ ['Nhập Mộ','Cung tốt trong tính Trùng Tang (Thìn-Tuất-Sửu-Mùi), giúp hóa giải.'],
+ ['Tử Vi Đẩu Số','Phép xem số mệnh qua 12 cung + 14 chính tinh + phụ tinh + Tứ Hóa, theo giờ-ngày-tháng-năm sinh.'],
+ ['Cục (Tử Vi)','Thủy Nhị / Mộc Tam / Kim Tứ / Thổ Ngũ / Hỏa Lục Cục — quyết định vị trí Tử Vi và khởi đại vận.'],
+ ['Tứ Hóa','Hóa Lộc - Quyền - Khoa - Kỵ, gán cho chính tinh theo Can năm sinh.'],
+ ['Tuần - Triệt','Hai "không vong" trong Tử Vi làm gián đoạn, trắc trở cung bị đóng.'],
+ ['Đại Vận / Lưu Niên / Tiểu Hạn','Vận 10 năm / vận từng năm / hạn nhỏ theo tuổi trong Tử Vi.'],
+ ['Tứ Trụ / Bát Tự','4 trụ Năm-Tháng-Ngày-Giờ (8 chữ Can-Chi), nền tảng luận mệnh; trụ Năm-Tháng tính theo tiết khí.'],
+ ['Nhật Chủ','Thiên Can trụ Ngày, đại diện bản thân trong Bát Tự.'],
+ ['Dụng Thần','Hành cần bổ trong Bát Tự để cân bằng: Nhật Chủ nhược bổ Ấn/Tỷ, vượng bổ Tài/Quan/Thực Thương.'],
+ ['Thập Thần','10 quan hệ của các Can với Nhật Chủ: Tỷ Kiên, Kiếp Tài, Thực Thần, Thương Quan, Chính/Thiên Tài, Chính Quan, Thất Sát, Chính/Thiên Ấn.'],
+ ['Tiết Khí','24 thời điểm theo kinh độ mặt trời (mỗi 15°). 12 "tiết" đầu tháng quyết định tháng can-chi.'],
+ ['Thước Phong Thủy Lạc Việt','Thước đo chu kỳ 41cm với 6 nhóm cung (4 cát, 2 hung), khác Lỗ Ban Hán 42.9cm.'],
+ ['Lạc Việt Độn Toán','Phép bói nhanh kết hợp Bát Môn (8 cửa) + Lục Nhâm (6 cung) theo Hà Đồ - Hậu Thiên Lạc Việt.'],
+ ['Lục Nhâm','6 cung bói: Đại An, Lưu Niên, Tốc Hỷ, Xích Khẩu, Tiểu Cát, Vô Vong (3 tốt 3 xấu).'],
+ ['Giờ chuẩn theo tháng','Hiệu chỉnh ranh giới giờ Chi theo tháng âm (Equation of Time + múi giờ VN), quan trọng cho ca sinh sát biên.']
+];
+function buildGlossary(){
+  const c=document.getElementById('glossaryList');if(!c)return;
+  const sorted=[...GLOSSARY].sort((a,b)=>a[0].localeCompare(b[0],'vi'));
+  c.innerHTML=sorted.map(g=>`<div class="gloss-item" data-t="${(g[0]+' '+g[1]).toLowerCase()}" style="padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.06)"><b style="color:#ffd700">${g[0]}</b><br><span style="font-size:12.5px;color:#ccc">${g[1]}</span></div>`).join('');
+  document.getElementById('glossaryCount').textContent=GLOSSARY.length;
+}
+function filterGlossary(){
+  const s=(document.getElementById('glossarySearch').value||'').toLowerCase();
+  let n=0;document.querySelectorAll('.gloss-item').forEach(el=>{const sh=!s||el.dataset.t.includes(s);el.style.display=sh?'':'none';if(sh)n++;});
+  document.getElementById('glossaryCount').textContent=n;
+}
+
 // ============== INIT ==============
 buildHoaGiapTable();
 buildCuuTinhTable();
 buildThuocTable();
+buildGioRefTable();
 updateSonDropdown();
 // Set today's date in xem ngày (Vietnamese DD/MM/YYYY format)
 {
@@ -4941,6 +5988,7 @@ buildCalendar(calCurY,calCurM);
 // Pre-fill example
 addChild();
 addChild();
+buildGlossary();
 </script>
 </body>
 </html>
