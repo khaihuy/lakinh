@@ -837,7 +837,7 @@
       <div id="docToanResult"></div>
 
       <h3 style="margin-top:22px;color:#ffd700">🔢 CHỌN SIM SỐ ĐẸP (theo chủ sim)</h3>
-      <p style="font-size:12.5px;color:#ccc;margin-bottom:8px">Sim 10 số: <b>5 số đầu</b> luận theo <b>Bát Môn</b> (8 cửa Hà Đồ - Hậu Thiên Lạc Việt), <b>5 số sau</b> luận theo <b>Lục Nhâm</b> (6 cung). Kết hợp <b>mệnh chủ sim</b> (nạp âm Lạc Thư Hoa Giáp) để xét tương sinh.</p>
+      <p style="font-size:12.5px;color:#ccc;margin-bottom:8px">Sim 10 số: tính <b>ngũ hành từng số</b> (Hà Đồ: 0-5 Thổ, 1-6 Thủy, 2-7 Hỏa, 3-8 Mộc, 4-9 Kim) xét hợp/kỵ mệnh chủ; <b>5 số đầu</b> luận theo <b>Bát Môn</b>, <b>5 số sau</b> theo <b>Lục Nhâm</b>; kết hợp <b>mệnh chủ sim</b> (nạp âm Lạc Thư Hoa Giáp) với hành của 2 cung. <b>Không cộng dồn</b> sim thành 1 số.</p>
       <div class="form-grid">
         <div class="form-row">
           <label>Số sim (10 chữ số)</label>
@@ -3212,7 +3212,18 @@ function doDocToan(){
   document.getElementById('docToanResult').innerHTML=html;
 }
 
-// ===== CHỌN SIM SỐ ĐẸP (5 đầu Bát Môn + 5 sau Lục Nhâm + mệnh chủ sim) =====
+// ===== CHỌN SIM SỐ ĐẸP (mạng từng số + Bát Môn 5 đầu + Lục Nhâm 5 sau + mệnh chủ) =====
+const SO_NGU_HANH={0:'Thổ',5:'Thổ',1:'Thủy',6:'Thủy',2:'Hỏa',7:'Hỏa',3:'Mộc',8:'Mộc',4:'Kim',9:'Kim'};
+// Quan hệ 1 hành (của số/cung) với mệnh chủ → {label, pt, cls}
+function relToMenh(el,menhEl){
+  if(!menhEl)return null;
+  if(NH_SINH_[el]===menhEl)return{label:'sinh mệnh',pt:2,cls:'good'};   // số/cung sinh người
+  if(el===menhEl)return{label:'đồng mệnh',pt:1.5,cls:'good'};
+  if(NH_KHAC_[el]===menhEl)return{label:'khắc mệnh',pt:-2,cls:'bad'};   // số/cung khắc người
+  if(NH_KHAC_[menhEl]===el)return{label:'mệnh khắc',pt:0,cls:'neutral'};// người chế ngự được
+  if(NH_SINH_[menhEl]===el)return{label:'mệnh sinh (hao)',pt:0,cls:'neutral'};
+  return{label:'trung tính',pt:0,cls:'neutral'};
+}
 function xemSo(){
   const raw=(document.getElementById('soInput').value||'').replace(/\D/g,'');
   if(!raw){alert('Nhập số sim (chỉ tính chữ số)');return}
@@ -3220,70 +3231,89 @@ function xemSo(){
   const ownerY=parseInt(document.getElementById('soOwnerYear').value)||0;
   const digits=raw.split('').map(Number);
   const NHCOLOR={'Kim':'#9e9e9e','Mộc':'#43a047','Thủy':'#1e88e5','Hỏa':'#e53935','Thổ':'#b8860b'};
-  const NHSO={1:'Thủy',6:'Thủy',2:'Hỏa',7:'Hỏa',3:'Mộc',8:'Mộc',4:'Kim',9:'Kim',5:'Thổ',0:'Thổ'};
-  // Tách 5 đầu / 5 sau (sim 10 số). Nếu khác 10: 5 đầu = slice(0,5), 5 sau = slice(-5)
-  const head=digits.slice(0,5), tail=digits.slice(-5);
-  const sumHead=head.reduce((a,b)=>a+b,0), sumTail=tail.reduce((a,b)=>a+b,0);
-  // 5 đầu → Bát Môn (8 cửa)
-  const bm=BATMON[((sumHead-1)%8+8)%8];
-  // 5 sau → Lục Nhâm (6 cung)
-  const ln=LUCNHAM[((sumTail-1)%6+6)%6];
-  const bmGood=bm.cat==='Tốt', bmMid=bm.cat==='Trung', lnGood=ln.cat==='Tốt';
-  // Ngũ hành tổng sim (digital root Hà Đồ)
-  const sumAll=digits.reduce((a,b)=>a+b,0);
-  let dr=sumAll;while(dr>9)dr=String(dr).split('').reduce((a,b)=>a+ +b,0);
-  const simNH=NHSO[dr];
-  // Mệnh chủ sim
+  // Mệnh chủ sim (nạp âm Lạc Thư Hoa Giáp)
   let menhNH=null,menhNapAm='';
   if(ownerY){const sx=((ownerY-4)%60+60)%60;menhNapAm=NAP_AM[sx];menhNH=napAmEl(menhNapAm);}
-  // Tương quan sim ↔ mệnh
-  let menhRel=null;
-  if(menhNH){
-    if(NH_SINH_[simNH]===menhNH)menhRel={t:'Sim SINH mệnh (số sinh người - rất tốt)',cls:'good',pt:3};
-    else if(simNH===menhNH)menhRel={t:'Sim ĐỒNG hành mệnh (hỗ trợ - tốt)',cls:'good',pt:2};
-    else if(NH_KHAC_[menhNH]===simNH)menhRel={t:'Mệnh KHẮC sim (người chế ngự số - tạm)',cls:'neutral',pt:0};
-    else if(NH_SINH_[menhNH]===simNH)menhRel={t:'Mệnh sinh sim (người hao cho số - trung bình)',cls:'neutral',pt:0};
-    else if(NH_KHAC_[simNH]===menhNH)menhRel={t:'Sim KHẮC mệnh (số khắc người - xấu)',cls:'bad',pt:-3};
-  }
-  const cell=(title,o,sumv,sub,kind)=>{
-    const good=o.cat==='Tốt',mid=o.cat==='Trung';
-    const cls=good?'cat-dai':mid?'cat':'hung-dai';
-    return `<div class="dir-cell ${cls}"><span class="dn">${o.icon} ${title}</span><b style="font-size:14px">${o.name}</b> <small>(${o.cat})</small><br><small>${sub} · tổng ${sumv}</small><br><small style="font-size:10px;color:#aaa">${kind} · ${o.el}</small><br><small style="font-size:10px">${o.desc.split(',')[0]}</small></div>`;
-  };
+  // ===== Mạng TỪNG SỐ (Hà Đồ) =====
+  let hopCount=0,kyCount=0;
+  const digCells=digits.map(d=>{
+    const el=SO_NGU_HANH[d];const rel=menhNH?relToMenh(el,menhNH):null;
+    if(rel){if(rel.pt>0)hopCount++;else if(rel.pt<0)kyCount++;}
+    return{d,el,rel};
+  });
+  // ===== Bát Môn (5 đầu) + Lục Nhâm (5 sau) =====
+  const head=digits.slice(0,5),tail=digits.slice(-5);
+  const sumHead=head.reduce((a,b)=>a+b,0),sumTail=tail.reduce((a,b)=>a+b,0);
+  const bm=BATMON[((sumHead-1)%8+8)%8];
+  const ln=LUCNHAM[((sumTail-1)%6+6)%6];
+  const bmGood=bm.cat==='Tốt',bmMid=bm.cat==='Trung',lnGood=ln.cat==='Tốt';
+  // Kết hợp mệnh chủ với hành của cung Bát Môn & Lục Nhâm
+  const bmRel=menhNH?relToMenh(bm.el,menhNH):null;
+  const lnRel=menhNH?relToMenh(ln.el,menhNH):null;
+
   let html='<div class="card" style="margin-top:12px"><h2>🔢 KẾT QUẢ PHÂN TÍCH SIM</h2>';
-  html+=`<p style="font-size:13px;color:#ccc">Sim: <b style="color:#ffd700">${raw}</b>${raw.length===10?'':' ('+raw.length+' số)'} · Ngũ hành sim (nút ${dr}): <b style="color:${NHCOLOR[simNH]}">${simNH}</b>`;
+  html+=`<p style="font-size:13px;color:#ccc">Sim: <b style="color:#ffd700">${raw}</b>${raw.length===10?'':' ('+raw.length+' số)'}`;
   if(menhNH)html+=` · Chủ sim ${ownerY}: mệnh <b style="color:${NHCOLOR[menhNH]}">${menhNapAm} (${menhNH})</b>`;
   html+='</p>';
-  html+='<div class="direction-grid" style="grid-template-columns:1fr 1fr;margin-top:10px">';
-  html+=cell('5 SỐ ĐẦU',bm,sumHead,raw.slice(0,5),'Bát Môn');
-  html+=cell('5 SỐ SAU',ln,sumTail,raw.slice(-5),'Lục Nhâm');
+
+  // Mạng từng số
+  html+='<h3 style="color:#ffd700;margin-top:8px">🔢 NGŨ HÀNH TỪNG SỐ (Hà Đồ)</h3>';
+  html+='<div style="display:flex;flex-wrap:wrap;gap:5px;margin-top:6px">';
+  digCells.forEach((c,i)=>{
+    const isHead=i<5;
+    let bd='rgba(255,255,255,.15)';
+    if(c.rel){bd=c.rel.cls==='good'?'#2e7d32':c.rel.cls==='bad'?'#c62828':'#888';}
+    html+=`<div style="text-align:center;border:2px solid ${bd};border-radius:8px;padding:5px 7px;min-width:40px;background:rgba(255,255,255,.04)">
+      <div style="font-size:18px;font-weight:bold;color:#fff">${c.d}</div>
+      <div style="font-size:10px;color:${NHCOLOR[c.el]};font-weight:bold">${c.el}</div>
+      ${c.rel?`<div style="font-size:8.5px;color:${c.rel.cls==='good'?'#4ade80':c.rel.cls==='bad'?'#f87171':'#aaa'}">${c.rel.label}</div>`:''}
+    </div>`;
+  });
   html+='</div>';
-  // Mệnh chủ sim
-  if(menhRel){
-    html+=`<div class="verdict ${menhRel.cls}" style="margin-top:10px"><div class="verdict-title">💎 SIM ↔ MỆNH CHỦ: ${menhRel.t}</div>
-      Ngũ hành sim <b style="color:${NHCOLOR[simNH]}">${simNH}</b> với mệnh chủ <b style="color:${NHCOLOR[menhNH]}">${menhNH}</b>. ${menhRel.pt>0?'Số hợp mệnh, hỗ trợ chủ nhân.':menhRel.pt<0?'Số khắc mệnh, không hợp - nên cân nhắc đổi.':'Tương quan trung tính.'}</div>`;
+  if(menhNH){
+    const ratio=Math.round(hopCount/digits.length*100);
+    const rcls=hopCount>kyCount?'good':kyCount>hopCount?'bad':'neutral';
+    html+=`<div class="verdict ${rcls}" style="margin-top:8px"><div class="verdict-title">💎 SỐ HỢP MỆNH: ${hopCount}/${digits.length} số (${ratio}%)</div>
+      ${hopCount} số sinh/đồng hành mệnh <b style="color:${NHCOLOR[menhNH]}">${menhNH}</b> · ${kyCount} số khắc mệnh · ${digits.length-hopCount-kyCount} số trung tính.</div>`;
   }else{
-    html+='<div class="verdict info" style="margin-top:10px"><div class="verdict-title">💎 SIM ↔ MỆNH CHỦ</div>Nhập <b>năm sinh chủ sim</b> để xét tương sinh ngũ hành giữa sim và mệnh chủ.</div>';
+    html+='<p style="font-size:12px;color:#fbbf24;margin-top:6px">💡 Nhập năm sinh chủ sim để xét mạng từng số hợp/kỵ với mệnh chủ.</p>';
   }
-  // Kết luận tổng
+
+  // Bát Môn + Lục Nhâm (kết hợp mệnh)
+  const cell=(title,o,sub,kind,rel)=>{
+    const cls=o.cat==='Tốt'?'cat-dai':o.cat==='Trung'?'cat':'hung-dai';
+    return `<div class="dir-cell ${cls}"><span class="dn">${o.icon} ${title}</span><b style="font-size:14px">${o.name}</b> <small>(${o.cat})</small><br>
+      <small>${sub}</small><br><small style="font-size:10px;color:#aaa">${kind} · hành ${o.el}</small>
+      ${rel?`<br><small style="font-size:10px;color:${rel.cls==='good'?'#4ade80':rel.cls==='bad'?'#f87171':'#aaa'}">vs mệnh: ${rel.label}</small>`:''}</div>`;
+  };
+  html+='<h3 style="color:#ffd700;margin-top:12px">🚪 BÁT MÔN (5 đầu) &amp; LỤC NHÂM (5 sau)</h3>';
+  html+='<div class="direction-grid" style="grid-template-columns:1fr 1fr;margin-top:6px">';
+  html+=cell('5 SỐ ĐẦU',bm,raw.slice(0,5),'Bát Môn',bmRel);
+  html+=cell('5 SỐ SAU',ln,raw.slice(-5),'Lục Nhâm',lnRel);
+  html+='</div>';
+
+  // Kết luận tổng (KHÔNG cộng dồn - kết hợp 3 yếu tố)
   let pt=0;
-  pt+=bmGood?3:bmMid?1:-2; // 5 đầu Bát Môn
-  pt+=lnGood?3:-2;         // 5 sau Lục Nhâm
-  if(menhRel)pt+=menhRel.pt;
+  pt+=bmGood?3:bmMid?1:-2;
+  pt+=lnGood?3:-2;
+  if(bmRel)pt+=bmRel.pt;       // mệnh ↔ cung Bát Môn
+  if(lnRel)pt+=lnRel.pt;       // mệnh ↔ cung Lục Nhâm
+  if(menhNH)pt+=(hopCount-kyCount)*0.5; // mạng từng số hợp mệnh
+  pt=Math.round(pt);
   let vcls,vtitle,stars;
-  if(pt>=7){vcls='good';vtitle='✓ SIM RẤT ĐẸP - Nên dùng';stars='★★★★★';}
-  else if(pt>=4){vcls='good';vtitle='✓ SIM ĐẸP';stars='★★★★';}
-  else if(pt>=1){vcls='neutral';vtitle='○ Sim khá - Dùng được';stars='★★★';}
-  else if(pt>=-2){vcls='neutral';vtitle='○ Sim trung bình';stars='★★';}
+  if(pt>=8){vcls='good';vtitle='✓ SIM RẤT ĐẸP - Nên dùng';stars='★★★★★';}
+  else if(pt>=5){vcls='good';vtitle='✓ SIM ĐẸP';stars='★★★★';}
+  else if(pt>=2){vcls='neutral';vtitle='○ Sim khá - Dùng được';stars='★★★';}
+  else if(pt>=-1){vcls='neutral';vtitle='○ Sim trung bình';stars='★★';}
   else{vcls='bad';vtitle='✗ Sim chưa đẹp - Cân nhắc';stars='★';}
   html+=`<div class="verdict ${vcls}" style="margin-top:8px"><div class="verdict-title">${vtitle}</div>
     <div style="font-size:18px;letter-spacing:3px;color:${vcls==='good'?'#4ade80':vcls==='bad'?'#f87171':'#fbbf24'}">${stars}</div>
-    5 đầu: <b>${bm.name}</b> (${bm.cat}) · 5 sau: <b>${ln.name}</b> (${ln.cat})${menhRel?' · Mệnh: '+(menhRel.pt>0?'hợp':menhRel.pt<0?'khắc':'trung tính'):''}</div>`;
+    5 đầu: <b>${bm.name}</b> (${bm.cat})${bmRel?', '+bmRel.label:''} · 5 sau: <b>${ln.name}</b> (${ln.cat})${lnRel?', '+lnRel.label:''}${menhNH?' · '+hopCount+'/'+digits.length+' số hợp mệnh':''}</div>`;
   html+=`<div style="margin-top:8px;padding:8px 12px;background:rgba(255,255,255,.04);border-radius:6px;font-size:11.5px;color:#bbb;line-height:1.7">
-    <b style="color:#ffd700">5 số đầu — Bát Môn (8 cửa):</b> 🟢 Sinh, Đỗ, Khai = tốt · 🟡 Cảnh = trung · 🔴 Thương, Tử, Kinh, Hưu = xấu.<br>
-    <b style="color:#ffd700">5 số sau — Lục Nhâm (6 cung):</b> 🟢 Đại An, Tốc Hỷ, Tiểu Cát · 🔴 Lưu Niên, Xích Khẩu, Vô Vong.<br>
-    <b>Ngũ hành Hà Đồ:</b> 1-6 Thủy · 2-7 Hỏa · 3-8 Mộc · 4-9 Kim · 5-0 Thổ. Sim tốt nhất khi <b>sinh hoặc đồng hành mệnh chủ</b>.<br>
-    <i>Tham khảo theo Lạc Việt - số đẹp còn tùy quan niệm.</i>
+    <b style="color:#ffd700">Ngũ hành từng số (Hà Đồ):</b> 0-5 Thổ · 1-6 Thủy · 2-7 Hỏa · 3-8 Mộc · 4-9 Kim. Số <b>sinh/đồng hành mệnh chủ</b> là tốt.<br>
+    <b style="color:#ffd700">5 số đầu — Bát Môn:</b> 🟢 Sinh, Đỗ, Khai · 🟡 Cảnh · 🔴 Thương, Tử, Kinh, Hưu.<br>
+    <b style="color:#ffd700">5 số sau — Lục Nhâm:</b> 🟢 Đại An, Tốc Hỷ, Tiểu Cát · 🔴 Lưu Niên, Xích Khẩu, Vô Vong.<br>
+    Điểm tổng = Bát Môn + Lục Nhâm + (hành cung ↔ mệnh) + (số hợp mệnh). <i>Không cộng dồn sim thành 1 số.</i>
   </div>`;
   html+='</div>';
   document.getElementById('soResult').innerHTML=html;
