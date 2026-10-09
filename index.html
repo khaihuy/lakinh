@@ -135,6 +135,43 @@
   .principle-list{font-size:12.5px;color:#ddd;line-height:1.7}
   .principle-list b{color:#ffd700}
   @media(max-width:600px){h1{font-size:22px}.direction-grid{grid-template-columns:repeat(2,1fr)}}
+  /* ===== Biển Số tab ===== */
+  .bien-input-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+  .bien-input-row input{background:rgba(255,255,255,.06);border:1px solid rgba(255,215,0,.3);border-radius:8px;color:#f0e8d0;padding:10px 14px;font-size:16px;font-family:inherit;width:200px;letter-spacing:2px;text-transform:uppercase}
+  .bien-input-row input:focus{outline:none;border-color:#ffd700}
+  .bien-result{background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:10px;padding:14px 18px;margin-top:10px;font-size:13.5px;line-height:1.7}
+  .bien-score{font-size:28px;font-weight:bold;margin-bottom:6px}
+  .bien-score.tot{color:#4caf50}.bien-score.kha{color:#8bc34a}.bien-score.trung{color:#ffd700}.bien-score.xau{color:#ff7043}.bien-score.ratxau{color:#f44336}
+  .bien-criteria{margin-top:8px}
+  .bien-criteria .item{padding:4px 0;border-bottom:1px solid rgba(255,255,255,.06);font-size:12.5px}
+  .bien-criteria .item:last-child{border-bottom:none}
+  .bien-criteria .plus{color:#4caf50}.bien-criteria .minus{color:#f44336}.bien-criteria .neutral{color:#888}
+  .vpa-tabs{display:flex;gap:0;margin:14px 0 10px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,215,0,.25);width:fit-content;flex-wrap:wrap}
+  .vpa-tabs button{padding:7px 16px;background:transparent;border:none;border-right:1px solid rgba(255,215,0,.15);color:#aaa;font-size:12px;cursor:pointer;font-family:inherit;transition:all .2s}
+  .vpa-tabs button:last-child{border-right:none}
+  .vpa-tabs button.active{background:rgba(255,215,0,.15);color:#ffd700;font-weight:bold}
+  .vpa-list{margin-top:8px;min-height:120px}
+  .vpa-loading{text-align:center;color:#aaa;padding:30px;font-size:13px}
+  .vpa-table{width:100%;border-collapse:collapse;font-size:12px}
+  .vpa-table th{background:rgba(255,215,0,.12);color:#ffd700;padding:7px 10px;text-align:left;font-weight:600;border-bottom:1px solid rgba(255,215,0,.2)}
+  .vpa-table td{padding:6px 10px;border-bottom:1px solid rgba(255,255,255,.05);color:#ddd;vertical-align:middle}
+  .vpa-table tr:hover td{background:rgba(255,215,0,.04)}
+  .vpa-table .bsnum{font-size:14px;font-weight:bold;color:#fff;letter-spacing:1px}
+  .vpa-table .price{color:#ffd700;font-weight:600}
+  .vpa-table .good{color:#4caf50;font-size:11px}
+  .vpa-pager{display:flex;gap:6px;align-items:center;margin-top:8px;flex-wrap:wrap;font-size:12px;color:#888}
+  .vpa-pager button{padding:4px 10px;background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);border-radius:5px;color:#ffd700;cursor:pointer;font-size:11px;font-family:inherit}
+  .vpa-pager button:hover{background:rgba(255,215,0,.2)}
+  .vpa-pager button:disabled{opacity:.35;cursor:default}
+  .vpa-filter{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:8px;font-size:12px}
+  .vpa-filter input{background:rgba(255,255,255,.05);border:1px solid rgba(255,215,0,.2);border-radius:6px;color:#f0e8d0;padding:5px 10px;font-size:12px;font-family:inherit;width:130px}
+  .vpa-filter input:focus{outline:none;border-color:#ffd700}
+  .vpa-filter label{color:#aaa}
+  .vpa-error{color:#ff7043;font-size:13px;padding:16px;text-align:center}
+  .vpa-iframe-btn{margin-top:10px}
+  #vpa-iframe-wrap{display:none;margin-top:10px;border-radius:8px;overflow:hidden;border:1px solid rgba(255,215,0,.2)}
+  #vpa-iframe-wrap.show{display:block}
+  #vpa-iframe{width:100%;min-height:500px;border:none;background:#f5f5f5}
 </style>
 </head>
 <body>
@@ -154,6 +191,7 @@
     <button class="tab" data-tab="docton">🔮 ĐỘN TOÁN</button>
     <button class="tab" data-tab="guide">📖 NGUYÊN LÝ</button>
     <button class="tab" data-tab="tuvi">⭐ TỬ VI LẠC VIỆT</button>
+    <button class="tab" data-tab="bien">🚗 BIỂN SỐ ĐẸP</button>
   </nav>
 
   <!-- ==================== TAB 1: CALCULATOR ==================== -->
@@ -722,6 +760,49 @@
         📜 KẾT QUẢ LÁ SỐ TỬ VI — Nguồn: Tử Vi Lạc Việt / dialylacviet.com
       </div>
       <iframe name="tuvi-frame" id="tuvi-frame"></iframe>
+    </div>
+  </div>
+
+  <!-- ==================== TAB: BIỂN SỐ ĐẸP ==================== -->
+  <div class="panel" id="panel-bien">
+    <div class="card">
+      <h2>🚗 KIỂM TRA BIỂN SỐ ĐẸP</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:14px">Phân tích số biển xe theo phong thủy số học — tứ quý, tiến lộc, tổng số may mắn.</p>
+      <div class="bien-input-row">
+        <input type="text" id="bien-input" placeholder="VD: 51K-12345" maxlength="12" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')checkBienSo()">
+        <button class="action" onclick="checkBienSo()">🔍 Kiểm tra</button>
+      </div>
+      <div id="bien-result"></div>
+    </div>
+
+    <div class="card" style="margin-top:14px">
+      <h2>🏆 BIỂN SỐ ĐẤU GIÁ — VPA</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:6px">Dữ liệu từ <b style="color:#ffd700">vpa.com.vn</b> — Công ty Đấu giá Hợp danh Việt Nam</p>
+
+      <div class="vpa-tabs">
+        <button class="active" onclick="loadVPA('cong-bo','oto')" id="vpa-btn-cb-oto">📋 Công bố (Ô tô)</button>
+        <button onclick="loadVPA('chinh-thuc','oto')" id="vpa-btn-ct-oto">✅ Chính thức (Ô tô)</button>
+        <button onclick="loadVPA('cong-bo','moto')" id="vpa-btn-cb-moto">📋 Công bố (Mô tô)</button>
+        <button onclick="loadVPA('chinh-thuc','moto')" id="vpa-btn-ct-moto">✅ Chính thức (Mô tô)</button>
+      </div>
+
+      <div class="vpa-filter">
+        <label>Lọc biển:</label>
+        <input type="text" id="vpa-filter-input" placeholder="VD: 88, 168, 999..." oninput="filterVPATable()">
+        <label style="margin-left:8px">
+          <input type="checkbox" id="vpa-filter-dep" onchange="filterVPATable()"> Chỉ biển đẹp
+        </label>
+      </div>
+
+      <div class="vpa-list" id="vpa-list"><div class="vpa-loading">⏳ Nhấn tab trên để tải dữ liệu...</div></div>
+      <div class="vpa-pager" id="vpa-pager"></div>
+
+      <div class="vpa-iframe-btn">
+        <button class="action secondary" style="font-size:12px;padding:6px 14px" onclick="toggleVPAFrame()">🌐 Mở trang vpa.com.vn trực tiếp</button>
+      </div>
+      <div id="vpa-iframe-wrap">
+        <iframe id="vpa-iframe" src="https://vpa.com.vn"></iframe>
+      </div>
     </div>
   </div>
 
@@ -2917,6 +2998,314 @@ function onTuViSubmit(){
     hh.value=`${String(n.getHours()).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}`;
   }
 })();
+
+// ============== BIỂN SỐ ĐẸP ==============
+
+function extractDigits(plate){
+  // Extract only the numeric part after the dash/hyphen
+  const m=plate.replace(/[^0-9]/g,' ').trim().split(/\s+/);
+  // The last group of digits is the main number
+  const nums=m.filter(x=>x.length>0);
+  return nums.length?nums[nums.length-1]:'';
+}
+
+function digitSum(s){
+  let sum=s.split('').reduce((a,c)=>a+parseInt(c),0);
+  while(sum>=10)sum=String(sum).split('').reduce((a,c)=>a+parseInt(c),0);
+  return sum;
+}
+
+function isTuQuy(s){
+  // All same digit
+  return s.length>=4&&s.split('').every(c=>c===s[0]);
+}
+
+function isTienLoc(s){
+  if(s.length<3)return false;
+  let asc=true,desc=true;
+  for(let i=1;i<s.length;i++){
+    if(parseInt(s[i])!==parseInt(s[i-1])+1)asc=false;
+    if(parseInt(s[i])!==parseInt(s[i-1])-1)desc=false;
+  }
+  return asc||desc;
+}
+
+function countEight(s){return s.split('').filter(c=>c==='8').length;}
+function countFour(s){return s.split('').filter(c=>c==='4').length;}
+
+function scorePlate(digits){
+  const items=[];
+  let score=0;
+
+  if(!digits||digits.length<2)return{score:0,items:[]};
+
+  const ds=digitSum(digits);
+  const eights=countEight(digits);
+  const fours=countFour(digits);
+
+  // Tứ quý (4 same digits)
+  if(isTuQuy(digits)){
+    const v=digits[0]==='8'?50:digits[0]==='9'?40:digits[0]==='6'?35:digits[0]==='4'?-20:30;
+    score+=v;
+    items.push({type:v>0?'plus':'minus',text:`Số TỨ QUÝ (${digits[0]}${digits[0]}${digits[0]}${digits[0]}) ${v>0?'— đặc biệt quý':'— 4 là số hung'}`});
+  }
+
+  // Số tiến / lùi
+  if(isTienLoc(digits)){
+    score+=20;
+    items.push({type:'plus',text:'Số TIẾN LỘC (tăng/giảm đều) — thăng tiến thuận lợi'});
+  }
+
+  // Tổng số
+  const totMap={8:{v:18,t:'Tổng số = 8 (Bát) — đại phát, giàu có'},
+                9:{v:15,t:'Tổng số = 9 (Cửu) — trường cửu, bền vững'},
+                6:{v:12,t:'Tổng số = 6 (Lục) — hanh thông, thuận lợi'},
+                1:{v:8,t:'Tổng số = 1 — khởi đầu, độc lập'},
+                3:{v:6,t:'Tổng số = 3 — phát triển, sinh sôi'},
+                7:{v:5,t:'Tổng số = 7 (Thất) — may mắn, trí tuệ'},
+                5:{v:0,t:'Tổng số = 5 — trung tính'},
+                2:{v:-3,t:'Tổng số = 2 — dễ chia đôi, tranh cãi'},
+                4:{v:-10,t:'Tổng số = 4 (Tứ ~ Tử) — hung số'}};
+  if(totMap[ds]){
+    const e=totMap[ds];
+    score+=e.v;
+    items.push({type:e.v>5?'plus':e.v<0?'minus':'neutral',text:e.t});
+  }
+
+  // Có nhiều số 8
+  if(eights>=3){score+=12;items.push({type:'plus',text:`Có ${eights} số 8 — nhiều bát phát`});}
+  else if(eights===2){score+=6;items.push({type:'plus',text:'Có 2 số 8 — tốt'});}
+
+  // Tránh số 4
+  if(fours>=2){score-=10;items.push({type:'minus',text:`Có ${fours} số 4 — hung số Tứ ~ Tử`});}
+  else if(fours===1&&digits.length<=4){score-=5;items.push({type:'minus',text:'Có số 4 — cần lưu ý'});}
+
+  // Kết thúc bằng 8 hoặc 88
+  if(digits.endsWith('88')){score+=10;items.push({type:'plus',text:'Kết thúc 88 — song bát đại phát'});}
+  else if(digits.endsWith('8')){score+=5;items.push({type:'plus',text:'Kết thúc số 8 — phát tài'});}
+  else if(digits.endsWith('68')){score+=8;items.push({type:'plus',text:'Kết thúc 68 — lộc phát'});}
+  else if(digits.endsWith('86')){score+=7;items.push({type:'plus',text:'Kết thúc 86 — phát lộc'});}
+  else if(digits.endsWith('99')){score+=8;items.push({type:'plus',text:'Kết thúc 99 — trường cửu'});}
+  else if(digits.endsWith('69')){score+=6;items.push({type:'plus',text:'Kết thúc 69 — âm dương hòa hợp'});}
+
+  // Số lặp đẹp (1122, 1234 loại)
+  if(/(.)\1(.)\2/.test(digits)){score+=8;items.push({type:'plus',text:'Số đôi lặp (AABB) — cặp đôi may mắn'});}
+
+  // Số đối xứng
+  const rev=digits.split('').reverse().join('');
+  if(digits===rev&&digits.length>=4){score+=10;items.push({type:'plus',text:'Số ĐỐI XỨNG — gương lành'});}
+
+  // Số kết thúc 0 (tương đối tệ)
+  if(digits.endsWith('0')){score-=3;items.push({type:'minus',text:'Kết thúc số 0 — kém phát động'});}
+
+  return{score,items};
+}
+
+function checkBienSo(){
+  const raw=document.getElementById('bien-input').value.trim();
+  const el=document.getElementById('bien-result');
+  if(!raw){el.innerHTML='';return;}
+
+  const digits=extractDigits(raw);
+  if(!digits||digits.length<2){
+    el.innerHTML='<div class="bien-result"><span style="color:#ff7043">Không nhận diện được số biển. Vui lòng nhập dạng: 51K-12345</span></div>';
+    return;
+  }
+
+  const {score,items}=scorePlate(digits);
+  const cls=score>=50?'tot':score>=25?'kha':score>=5?'trung':score>=-10?'xau':'ratxau';
+  const label=score>=50?'RẤT ĐẸP ✨':score>=25?'Khá đẹp ✓':score>=5?'Trung bình':score>=-10?'Không đẹp lắm':'Xấu ✗';
+
+  let html=`<div class="bien-result">`;
+  html+=`<div style="color:#aaa;font-size:12px;margin-bottom:4px">Phần số: <b style="color:#fff;font-size:15px;letter-spacing:2px">${digits}</b> &nbsp;|&nbsp; Tổng số: <b style="color:#ffd700">${digitSum(digits)}</b></div>`;
+  html+=`<div class="bien-score ${cls}">${label} (điểm: ${score>0?'+':''}${score})</div>`;
+  if(items.length){
+    html+='<div class="bien-criteria">';
+    items.forEach(i=>html+=`<div class="item ${i.type}">${i.type==='plus'?'✅':i.type==='minus'?'❌':'➖'} ${i.text}</div>`);
+    html+='</div>';
+  }else{
+    html+='<div style="color:#888;font-size:12px;margin-top:6px">Không có đặc điểm phong thủy nổi bật.</div>';
+  }
+  html+='</div>';
+  el.innerHTML=html;
+}
+
+// ============== VPA ĐẤU GIÁ ==============
+let vpaCurrentData=[];
+let vpaCurrentPage=1;
+const VPA_PAGE_SIZE=30;
+let vpaCurrentKey='';
+
+const VPA_URLS={
+  'cong-bo-oto':'https://vpa.com.vn/auction/list?type=1&status=1',
+  'chinh-thuc-oto':'https://vpa.com.vn/auction/list?type=1&status=2',
+  'cong-bo-moto':'https://vpa.com.vn/auction/list?type=2&status=1',
+  'chinh-thuc-moto':'https://vpa.com.vn/auction/list?type=2&status=2'
+};
+
+// Fallback page URLs for iframe
+const VPA_PAGE_URLS={
+  'cong-bo-oto':'https://vpa.com.vn/xe-o-to/danh-sach-cong-bo',
+  'chinh-thuc-oto':'https://vpa.com.vn/xe-o-to/danh-sach-chinh-thuc',
+  'cong-bo-moto':'https://vpa.com.vn/xe-mo-to/danh-sach-cong-bo',
+  'chinh-thuc-moto':'https://vpa.com.vn/xe-mo-to/danh-sach-chinh-thuc'
+};
+
+async function loadVPA(loai,loaixe){
+  const key=loai+'-'+loaixe;
+  vpaCurrentKey=key;
+  vpaCurrentPage=1;
+
+  // Update tab highlight
+  ['cong-bo-oto','chinh-thuc-oto','cong-bo-moto','chinh-thuc-moto'].forEach(k=>{
+    const btn=document.getElementById('vpa-btn-'+k.replace(/-/g,'-').replace('cong-bo','cb').replace('chinh-thuc','ct').replace('oto','oto').replace('moto','moto'));
+    if(btn)btn.classList.toggle('active',k===key);
+  });
+  // Simpler: remove active from all vpa-tabs buttons
+  document.querySelectorAll('.vpa-tabs button').forEach(b=>b.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+
+  const listEl=document.getElementById('vpa-list');
+  const pagerEl=document.getElementById('vpa-pager');
+  listEl.innerHTML='<div class="vpa-loading">⏳ Đang tải dữ liệu từ vpa.com.vn...</div>';
+  pagerEl.innerHTML='';
+
+  try{
+    const proxyUrl='https://api.allorigins.win/get?url='+encodeURIComponent('https://vpa.com.vn');
+    // Try to detect VPA API endpoints dynamically
+    const resp=await fetchVPAData(key);
+    if(resp&&resp.length>0){
+      vpaCurrentData=resp;
+      renderVPATable();
+    }else{
+      showVPAFallback(key,listEl);
+    }
+  }catch(e){
+    showVPAFallback(key,listEl);
+  }
+}
+
+async function fetchVPAData(key){
+  const PROXY='https://api.allorigins.win/get?url=';
+  const pageUrl=VPA_PAGE_URLS[key]||'https://vpa.com.vn';
+  const url=PROXY+encodeURIComponent(pageUrl);
+
+  const resp=await fetch(url,{signal:AbortSignal.timeout(12000)});
+  if(!resp.ok)throw new Error('proxy '+resp.status);
+  const json=await resp.json();
+  const html=json.contents||'';
+
+  // Parse HTML to extract plate table
+  const parser=new DOMParser();
+  const doc=parser.parseFromString(html,'text/html');
+
+  const rows=[];
+  // Try common table patterns on VPA site
+  const tables=doc.querySelectorAll('table');
+  for(const tbl of tables){
+    const trs=tbl.querySelectorAll('tr');
+    if(trs.length<2)continue;
+    for(let i=1;i<trs.length;i++){
+      const tds=trs[i].querySelectorAll('td');
+      if(tds.length<2)continue;
+      // Look for a cell that looks like a plate number
+      let plateCell='',priceCell='',otherCells=[];
+      for(const td of tds){
+        const t=td.innerText||td.textContent||'';
+        const trimmed=t.trim();
+        if(/\d{2}[A-Z]-\d{4,5}/.test(trimmed)||/\d{2}[A-Z]\d-\d{4,5}/.test(trimmed)){
+          plateCell=trimmed;
+        }else if(/\d[\d,\.]+/.test(trimmed)&&trimmed.length>3){
+          priceCell=priceCell||trimmed;
+        }else if(trimmed){
+          otherCells.push(trimmed);
+        }
+      }
+      if(plateCell){
+        rows.push({plate:plateCell,price:priceCell,extra:otherCells.join(' | ')});
+      }
+    }
+  }
+
+  // If no structured table found, try list-type items
+  if(rows.length===0){
+    const cells=doc.querySelectorAll('[class*="bien"],[class*="plate"],[class*="bienso"],[class*="number"]');
+    cells.forEach(c=>{
+      const t=(c.innerText||c.textContent||'').trim();
+      if(/\d{2}[A-Z][\d-]{5,8}/.test(t))rows.push({plate:t,price:'',extra:''});
+    });
+  }
+
+  return rows;
+}
+
+function showVPAFallback(key,listEl){
+  const pageUrl=VPA_PAGE_URLS[key]||'https://vpa.com.vn';
+  listEl.innerHTML=`<div class="vpa-error">
+    ⚠️ Không tải được dữ liệu tự động (VPA có thể chặn truy cập từ xa).<br><br>
+    <b style="color:#ffd700">Cách khắc phục:</b><br>
+    1️⃣ Nhấn <b>"Mở trang vpa.com.vn trực tiếp"</b> bên dưới để xem trong khung.<br>
+    2️⃣ Hoặc mở <a href="${pageUrl}" target="_blank" style="color:#ffd700">${pageUrl}</a> rồi sao chép danh sách vào đây.<br><br>
+    <small style="color:#888">Lý do: vpa.com.vn yêu cầu đăng nhập hoặc dùng chính sách CORS / Cloudflare bảo vệ.</small>
+  </div>`;
+}
+
+function renderVPATable(){
+  const filterText=(document.getElementById('vpa-filter-input').value||'').toLowerCase().replace(/\s/g,'');
+  const onlyDep=document.getElementById('vpa-filter-dep').checked;
+
+  let data=vpaCurrentData;
+
+  if(filterText)data=data.filter(r=>r.plate.toLowerCase().replace(/[^0-9a-z]/g,'').includes(filterText));
+  if(onlyDep)data=data.filter(r=>{
+    const d=extractDigits(r.plate);
+    return scorePlate(d).score>=15;
+  });
+
+  const total=data.length;
+  const pages=Math.max(1,Math.ceil(total/VPA_PAGE_SIZE));
+  if(vpaCurrentPage>pages)vpaCurrentPage=pages;
+  const slice=data.slice((vpaCurrentPage-1)*VPA_PAGE_SIZE,vpaCurrentPage*VPA_PAGE_SIZE);
+
+  const listEl=document.getElementById('vpa-list');
+  const pagerEl=document.getElementById('vpa-pager');
+
+  if(total===0){listEl.innerHTML='<div class="vpa-loading">Không tìm thấy biển số phù hợp.</div>';pagerEl.innerHTML='';return;}
+
+  let html='<table class="vpa-table"><thead><tr><th>#</th><th>Biển số</th><th>Phong thủy</th><th>Giá khởi điểm</th><th>Thông tin</th></tr></thead><tbody>';
+  slice.forEach((r,i)=>{
+    const d=extractDigits(r.plate);
+    const {score}=scorePlate(d);
+    const cls=score>=50?'tot':score>=25?'kha':score>=5?'trung':score>=-10?'xau':'ratxau';
+    const lbl=score>=50?'✨ Rất đẹp':score>=25?'✓ Khá đẹp':score>=5?'Trung bình':score>=-10?'Không đẹp':'✗ Xấu';
+    html+=`<tr>
+      <td style="color:#888">${(vpaCurrentPage-1)*VPA_PAGE_SIZE+i+1}</td>
+      <td><span class="bsnum">${r.plate}</span></td>
+      <td><span class="bien-score ${cls}" style="font-size:12px">${lbl} (${score>0?'+':''}${score})</span></td>
+      <td><span class="price">${r.price||'—'}</span></td>
+      <td style="color:#888;font-size:11px">${r.extra||''}</td>
+    </tr>`;
+  });
+  html+='</tbody></table>';
+  listEl.innerHTML=html;
+
+  // Pager
+  pagerEl.innerHTML=`<span>Trang ${vpaCurrentPage}/${pages} (${total} biển)</span>
+    <button onclick="vpaGoPage(${vpaCurrentPage-1})" ${vpaCurrentPage<=1?'disabled':''}>◀ Trước</button>
+    <button onclick="vpaGoPage(${vpaCurrentPage+1})" ${vpaCurrentPage>=pages?'disabled':''}>Sau ▶</button>`;
+}
+
+function vpaGoPage(p){vpaCurrentPage=p;renderVPATable();}
+
+function filterVPATable(){if(vpaCurrentData.length)renderVPATable();}
+
+function toggleVPAFrame(){
+  const wrap=document.getElementById('vpa-iframe-wrap');
+  const showing=wrap.classList.toggle('show');
+  if(showing&&!document.getElementById('vpa-iframe').src.includes('vpa.com.vn')){
+    document.getElementById('vpa-iframe').src='https://vpa.com.vn';
+  }
+}
 
 // ============== INIT ==============
 buildHoaGiapTable();
