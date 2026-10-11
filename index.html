@@ -766,11 +766,12 @@
   <!-- ==================== TAB: BIỂN SỐ ĐẸP ==================== -->
   <div class="panel" id="panel-bien">
     <div class="card">
-      <h2>🚗 KIỂM TRA BIỂN SỐ ĐẸP</h2>
-      <p style="font-size:13px;color:#ccc;margin-bottom:14px">Phân tích số biển xe theo phong thủy số học — tứ quý, tiến lộc, tổng số may mắn.</p>
+      <h2>🚗 PHÂN TÍCH BIỂN SỐ</h2>
+      <p style="font-size:13px;color:#ccc;margin-bottom:12px">Phân tích theo <b style="color:#ffd700">Ngũ hành Hà Đồ từng số</b> · <b style="color:#ffd700">Bát Môn (abc)</b> · <b style="color:#ffd700">Lục Nhâm (de)</b> · <b style="color:#ffd700">Quẻ kết hợp</b> · hợp mệnh chủ xe.</p>
       <div class="bien-input-row">
         <input type="text" id="bien-input" placeholder="VD: 51K-12345" maxlength="12" oninput="this.value=this.value.toUpperCase()" onkeydown="if(event.key==='Enter')checkBienSo()">
-        <button class="action" onclick="checkBienSo()">🔍 Kiểm tra</button>
+        <input type="number" id="bien-year" placeholder="Năm sinh" min="1920" max="2010" style="width:100px">
+        <button class="action" onclick="checkBienSo()">🔍 Phân tích</button>
       </div>
       <div id="bien-result"></div>
     </div>
@@ -3101,8 +3102,11 @@ function scorePlate(digits){
   return{score,items};
 }
 
+const HA_DO_EL={'0':'Thổ','1':'Thủy','2':'Hỏa','3':'Mộc','4':'Kim','5':'Thổ','6':'Thủy','7':'Hỏa','8':'Mộc','9':'Kim'};
+
 function checkBienSo(){
   const raw=document.getElementById('bien-input').value.trim();
+  const yearVal=document.getElementById('bien-year').value.trim();
   const el=document.getElementById('bien-result');
   if(!raw){el.innerHTML='';return;}
 
@@ -3112,20 +3116,166 @@ function checkBienSo(){
     return;
   }
 
-  const {score,items}=scorePlate(digits);
-  const cls=score>=50?'tot':score>=25?'kha':score>=5?'trung':score>=-10?'xau':'ratxau';
-  const label=score>=50?'RẤT ĐẸP ✨':score>=25?'Khá đẹp ✓':score>=5?'Trung bình':score>=-10?'Không đẹp lắm':'Xấu ✗';
+  const da=digits.split('');
 
-  let html=`<div class="bien-result">`;
-  html+=`<div style="color:#aaa;font-size:12px;margin-bottom:4px">Phần số: <b style="color:#fff;font-size:15px;letter-spacing:2px">${digits}</b> &nbsp;|&nbsp; Tổng số: <b style="color:#ffd700">${digitSum(digits)}</b></div>`;
-  html+=`<div class="bien-score ${cls}">${label} (điểm: ${score>0?'+':''}${score})</div>`;
-  if(items.length){
-    html+='<div class="bien-criteria">';
-    items.forEach(i=>html+=`<div class="item ${i.type}">${i.type==='plus'?'✅':i.type==='minus'?'❌':'➖'} ${i.text}</div>`);
-    html+='</div>';
-  }else{
-    html+='<div style="color:#888;font-size:12px;margin-top:6px">Không có đặc điểm phong thủy nổi bật.</div>';
+  // Mệnh từ năm sinh
+  let menhEl='',menhName='';
+  if(yearVal){
+    const y=parseInt(yearVal);
+    if(y>=1900&&y<=2020){
+      const cc=yearToCanChi(y);
+      menhName=cc.napAm;
+      menhEl=napAmEl(cc.napAm);
+    }
   }
+
+  // abc = tổng 3 số đầu; de = tổng 2 số cuối
+  const abcLen=Math.min(3,Math.max(da.length-2,1));
+  const abc=da.slice(0,abcLen).reduce((s,c)=>s+parseInt(c),0)+(da.length===4?parseInt(da[2]):0);
+  // Simpler: always abc = first 3 digits summed, de = last 2 summed
+  const abc3=da.slice(0,3).reduce((s,c)=>s+parseInt(c),0);
+  const de2=da.slice(-2).reduce((s,c)=>s+parseInt(c),0);
+
+  // Bát Môn từ abc
+  let bmIdx=abc3%8; if(bmIdx===0)bmIdx=8;
+  const bm=BATMON[bmIdx-1];
+
+  // Lục Nhâm từ de
+  let lnIdx=de2%6; if(lnIdx===0)lnIdx=6;
+  const ln=LUCNHAM[lnIdx-1];
+
+  // Quẻ diễn giải
+  const queKey=bm.name+'-'+ln.name;
+  const queInfo=QUE_LVDT[queKey]||null;
+
+  // Ngũ hành tương tác Bát Môn ↔ Lục Nhâm
+  const bmLnCmp=compareEl(bm.el,ln.el);
+  const bmLnDesc=bmLnCmp==='AsinhB'?`${bm.el} sinh ${ln.el} — Bát Môn nuôi Lục Nhâm`
+    :bmLnCmp==='BsinhA'?`${ln.el} sinh ${bm.el} — Lục Nhâm bổ trợ Bát Môn`
+    :bmLnCmp==='AkhacB'?`${bm.el} khắc ${ln.el} — Bát Môn chế áp Lục Nhâm`
+    :bmLnCmp==='BkhacA'?`${ln.el} khắc ${bm.el} — Lục Nhâm cản Bát Môn`
+    :'Bình hòa đồng hành';
+
+  // Mệnh vs Bát Môn / Lục Nhâm
+  let menhBmLabel='',menhLnLabel='',menhBmPos=0,menhLnPos=0;
+  if(menhEl){
+    const bc=compareEl(menhEl,bm.el);
+    if(bc==='BsinhA'){menhBmLabel='sinh mệnh ✅';menhBmPos=2;}
+    else if(bc==='AsinhB'){menhBmLabel='mệnh sinh ✓';menhBmPos=1;}
+    else if(bc==='BkhacA'){menhBmLabel='khắc mệnh ❌';menhBmPos=-2;}
+    else if(bc==='AkhacB'){menhBmLabel='mệnh khắc ✗';menhBmPos=-1;}
+    else{menhBmLabel='đồng hành ○';menhBmPos=0;}
+    const lc=compareEl(menhEl,ln.el);
+    if(lc==='BsinhA'){menhLnLabel='sinh mệnh ✅';menhLnPos=1;}
+    else if(lc==='AsinhB'){menhLnLabel='mệnh sinh ✓';menhLnPos=0;}
+    else if(lc==='BkhacA'){menhLnLabel='khắc mệnh ❌';menhLnPos=-2;}
+    else if(lc==='AkhacB'){menhLnLabel='mệnh khắc ✗';menhLnPos=-1;}
+    else{menhLnLabel='đồng hành ○';menhLnPos=0;}
+  }
+
+  // Phong thủy số học
+  const {score,items}=scorePlate(digits);
+
+  // Tổng điểm → sao
+  const queCat=queInfo?queInfo.cat:(bm.cat==='Tốt'&&ln.cat==='Tốt'?'good':bm.cat==='Xấu'&&ln.cat==='Xấu'?'bad':'neutral');
+  const queScore=queCat==='good'?4:queCat==='neutral'?1:-2;
+  const numScore=score>=50?3:score>=25?2:score>=5?1:score>=-10?0:-1;
+  const menhScore=menhEl?menhBmPos+menhLnPos:0;
+  const totalPts=queScore+numScore+menhScore;
+  const stars=Math.max(1,Math.min(5,totalPts>=8?5:totalPts>=5?4:totalPts>=2?3:totalPts>=0?2:1));
+
+  // ==== BUILD HTML ====
+  let html='<div class="bien-result" style="padding:0;background:none;border:none">';
+
+  // Header
+  html+=`<div style="display:flex;align-items:center;gap:10px;margin:10px 0 12px;flex-wrap:wrap">
+    <span style="font-size:22px;font-weight:bold;color:#fff;letter-spacing:3px">${digits}</span>
+    ${menhEl?`<span style="font-size:12px;color:#aaa">·</span><span style="font-size:13px;color:#ffd700">${menhName} (<b>${menhEl}</b>)</span>`:''}
+  </div>`;
+
+  // 1. Ngũ hành từng số (Hà Đồ)
+  html+=`<div style="margin-bottom:14px">
+    <div style="font-size:11px;color:#888;margin-bottom:7px">🔢 NGŨ HÀNH TỪNG SỐ (Hà Đồ)</div>
+    <div style="display:flex;gap:6px;flex-wrap:wrap;align-items:center">`;
+  const sepAt=da.length>=5?da.length-2:null;
+  da.forEach((d,i)=>{
+    if(i===sepAt)html+=`<div style="color:#666;font-size:20px;align-self:center">·</div>`;
+    const dEl=HA_DO_EL[d];
+    let vs='',vsColor='#888';
+    if(menhEl){
+      const cmp=compareEl(menhEl,dEl);
+      if(cmp==='BsinhA'){vs='sinh mệnh';vsColor='#4caf50';}
+      else if(cmp==='AsinhB'){vs='mệnh sinh';vsColor='#8bc34a';}
+      else if(cmp==='BkhacA'){vs='khắc mệnh';vsColor='#f44336';}
+      else if(cmp==='AkhacB'){vs='mệnh khắc';vsColor='#ff7043';}
+      else{vs='đồng hành';vsColor='#666';}
+    }
+    html+=`<div style="background:rgba(255,255,255,.07);border:1px solid rgba(255,215,0,.18);border-radius:9px;padding:7px 9px;text-align:center;min-width:44px">
+      <div style="font-size:20px;font-weight:bold;color:#fff;line-height:1">${d}</div>
+      <div style="font-size:10px;color:#aaa;margin-top:2px">${dEl}</div>
+      ${vs?`<div style="font-size:9px;color:${vsColor};margin-top:1px">${vs}</div>`:''}
+    </div>`;
+  });
+  html+=`</div></div>`;
+
+  // 2. Bát Môn & Lục Nhâm
+  const bmColor=bm.cat==='Tốt'?'#4caf50':bm.cat==='Xấu'?'#f44336':'#ffc107';
+  const lnColor=ln.cat==='Tốt'?'#4caf50':'#f44336';
+  html+=`<div style="font-size:11px;color:#888;margin-bottom:7px">🗓 BÁT MÔN (tổng abc) &amp; LỤC NHÂM (tổng de)</div>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px">
+    <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.15);border-radius:9px;padding:11px">
+      <div style="font-size:10px;color:#888">📋 abc = ${da.slice(0,3).join('')} = ${abc3}</div>
+      <div style="font-size:20px;font-weight:bold;color:${bmColor};margin:3px 0">${bm.name}</div>
+      <div style="font-size:11px;color:#ccc">(${bm.cat}) · hành ${bm.el}</div>
+      ${menhEl?`<div style="font-size:10px;margin-top:4px;color:${menhBmPos>=1?'#4caf50':menhBmPos<=-1?'#f44336':'#888'}">vs mệnh: ${menhBmLabel}</div>`:''}
+    </div>
+    <div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.15);border-radius:9px;padding:11px">
+      <div style="font-size:10px;color:#888">💰 de = ${da.slice(-2).join('')} = ${de2}</div>
+      <div style="font-size:20px;font-weight:bold;color:${lnColor};margin:3px 0">${ln.name}</div>
+      <div style="font-size:11px;color:#ccc">(${ln.cat}) · hành ${ln.el}</div>
+      ${menhEl?`<div style="font-size:10px;margin-top:4px;color:${menhLnPos>=1?'#4caf50':menhLnPos<=-1?'#f44336':'#888'}">vs mệnh: ${menhLnLabel}</div>`:''}
+    </div>
+  </div>`;
+
+  // 3. Quẻ kết hợp diễn giải
+  const qBg=queCat==='good'?'rgba(76,175,80,.1)':queCat==='bad'?'rgba(244,67,54,.1)':'rgba(255,193,7,.07)';
+  const qBdr=queCat==='good'?'rgba(76,175,80,.3)':queCat==='bad'?'rgba(244,67,54,.25)':'rgba(255,193,7,.2)';
+  const qTc=queCat==='good'?'#4caf50':queCat==='bad'?'#f44336':'#ffc107';
+  html+=`<div style="background:${qBg};border:1px solid ${qBdr};border-radius:9px;padding:12px;margin-bottom:14px">
+    <div style="font-size:10px;color:#888;margin-bottom:5px">🔮 QUẺ KẾT HỢP: ${bm.name} × ${ln.name}</div>`;
+  if(queInfo){
+    html+=`<div style="font-size:15px;font-weight:bold;color:${qTc};margin-bottom:5px">${queInfo.title}</div>
+    <div style="font-size:13px;color:#ddd;line-height:1.6">${queInfo.text}</div>`;
+  }else{
+    const autoSummary=bm.cat==='Tốt'&&ln.cat==='Tốt'?'Lưỡng cát — cả hai quẻ đều thuận, tổng thể tốt đẹp.'
+      :bm.cat==='Xấu'&&ln.cat==='Xấu'?'Lưỡng hung — cả hai quẻ đều không thuận, cần cân nhắc kỹ.'
+      :bm.cat==='Tốt'?`Bát Môn ${bm.name} tốt nhưng Lục Nhâm ${ln.name} không thuận, kết quả bán cát.`
+      :`Lục Nhâm ${ln.name} tốt nhưng Bát Môn ${ln.name} không thuận, cần nhìn tổng thể.`;
+    html+=`<div style="font-size:14px;font-weight:bold;color:${qTc};margin-bottom:5px">${autoSummary}</div>`;
+  }
+  html+=`<div style="font-size:11px;color:#888;margin-top:6px;padding-top:6px;border-top:1px solid rgba(255,255,255,.07)">Tương tác: ${bm.el}(${bm.name}) ↔ ${ln.el}(${ln.name}) — ${bmLnDesc}</div>
+  </div>`;
+
+  // 4. Phong thủy số học
+  if(items.length){
+    html+=`<div style="margin-bottom:14px">
+      <div style="font-size:11px;color:#888;margin-bottom:6px">🔢 PHONG THỦY SỐ HỌC (điểm ${score>0?'+':''}${score})</div>`;
+    items.forEach(i=>html+=`<div style="font-size:12px;padding:3px 0;color:${i.type==='plus'?'#8bc34a':i.type==='minus'?'#f44336':'#777'}">${i.type==='plus'?'✅':i.type==='minus'?'❌':'➖'} ${i.text}</div>`);
+    html+=`</div>`;
+  }
+
+  // 5. Tổng kết sao
+  const starsStr='⭐'.repeat(stars)+'☆'.repeat(5-stars);
+  const vColor=stars>=4?'#4caf50':stars===3?'#ffd700':'#f44336';
+  const vText=stars===5?'✓ BIỂN RẤT ĐẸP - Nên chọn':stars===4?'Biển đẹp - Khá tốt':stars===3?'Biển trung bình - Được':stars===2?'Biển không đẹp - Nên chọn biển khác':'✗ Biển xấu - Tránh';
+  html+=`<div style="background:rgba(255,215,0,.06);border:1px solid rgba(255,215,0,.2);border-radius:9px;padding:13px;text-align:center">
+    <div style="font-size:24px;margin-bottom:4px">${starsStr}</div>
+    <div style="font-size:16px;font-weight:bold;color:${vColor}">${vText}</div>
+    <div style="font-size:11px;color:#aaa;margin-top:5px;line-height:1.5">
+      abc(${abc3}): <b>${bm.name}</b>(${bm.cat}) · de(${de2}): <b>${ln.name}</b>(${ln.cat})${menhEl?' · 2/'+da.length+' số hợp mệnh '+menhEl:''}
+    </div>
+  </div>`;
+
   html+='</div>';
   el.innerHTML=html;
 }
